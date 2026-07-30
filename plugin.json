@@ -1,0 +1,307 @@
+{
+  "id": "verse",
+  "kind": "plugin",
+  "version": "1.0.22",
+  "label": "UEFN Verse",
+  "description": "Verse digests, device wiring, compile/errors, skill reader, UMG Widget Blueprint tools, and New-file system template packs (Player Core, Economy, Progression, Tycoon, UMG Widget, \u2026). Bundles verse + islandsettings skills.",
+  "min_app_version": "1.0.0",
+  "default_enabled": true,
+  "secret_keys": [],
+  "contributes": {
+    "agent.tools": {
+      "category": "verse",
+      "tools": [
+        "list_verse_digests",
+        "list_verse_types",
+        "list_verse_devices",
+        "search_verse_digest",
+        "get_verse_api",
+        "list_verse_modules",
+        "inspect_verse_device",
+        "resize_verse_array",
+        "patch_verse_array_entry",
+        "list_verse_property_hashes",
+        "get_verse_editables",
+        "set_verse_editable",
+        "wire_player_spawners",
+        "set_verse_texture_icon",
+        "list_verse_reference_types",
+        "wire_verse_device_ref",
+        "wire_verse_device_array",
+        "wire_verse_prop_assets",
+        "set_currency_config_entries",
+        "workspace_list_verse_errors",
+        "workspace_open_verse_file",
+        "workspace_compile_verse",
+        "workspace_push_verse_changes",
+        "uefn_skill",
+        "skill_read_subskill",
+        "verse_template_list",
+        "verse_template_get",
+        "verse_template_apply",
+        "umg_capabilities",
+        "list_widget_blueprints",
+        "get_widget_blueprint_info",
+        "create_widget_blueprint",
+        "add_widget_to_tree",
+        "remove_widget_from_tree",
+        "set_widget_property",
+        "list_widget_bindings",
+        "add_widget_binding",
+        "remove_widget_binding"
+      ],
+      "intent_pattern": "\\b(verse|digest|editable|wire_|island\\s*settings|uefn_skill|verse\\s*template|economy_manager|progression_manager|player_manager|game_player|tycoon|shop_controller|umg|user\\s*widget|widget\\s*blueprint|view\\s*binding|viewmodel|verse\\s*field)\\b",
+      "plan_tools": [
+        "list_verse_digests",
+        "list_verse_types",
+        "list_verse_devices",
+        "search_verse_digest",
+        "get_verse_api",
+        "list_verse_modules",
+        "inspect_verse_device",
+        "list_verse_property_hashes",
+        "get_verse_editables",
+        "list_verse_reference_types",
+        "verse_template_list",
+        "workspace_list_verse_errors",
+        "uefn_skill",
+        "skill_read_subskill",
+        "umg_capabilities",
+        "list_widget_blueprints",
+        "get_widget_blueprint_info",
+        "list_widget_bindings"
+      ]
+    },
+    "verse.templates": [
+      {
+        "id": "device_onbegin",
+        "name": "Device + OnBegin",
+        "icon": "\u26a1",
+        "description": "Single-file creative_device with OnBegin",
+        "file": "templates/device_onbegin.verse",
+        "order": 5
+      },
+      {
+        "id": "hud_canvas",
+        "name": "HUD Canvas",
+        "icon": "\ud83d\udda5\ufe0f",
+        "description": "Single-file canvas + text_block starter",
+        "file": "templates/hud_canvas.verse",
+        "order": 6
+      },
+      {
+        "id": "helpers",
+        "name": "Subscribe Helpers",
+        "icon": "\ud83e\uddf0",
+        "description": "Subscribe* wrappers with ExtraData for listenables",
+        "file": "templates/subscribe_helpers.verse",
+        "order": 8
+      },
+      {
+        "id": "player_core",
+        "name": "Player Core",
+        "icon": "\ud83d\udc64",
+        "description": "player_manager + game_player + save_service. ?option slots for Economy / Progression / Playtime.",
+        "folder": "PlayerCore",
+        "connects": [
+          "registers:currency_provider",
+          "registers:xp_awarder",
+          "registers:playtime_provider"
+        ],
+        "files": [
+          {
+            "path": "save_service.verse",
+            "file": "templates/player_core/save_service.verse"
+          },
+          {
+            "path": "game_player.verse",
+            "file": "templates/player_core/game_player.verse"
+          },
+          {
+            "path": "player_manager.verse",
+            "file": "templates/player_core/player_manager.verse"
+          }
+        ],
+        "order": 10
+      },
+      {
+        "id": "economy",
+        "name": "Economy Manager",
+        "icon": "\ud83d\udcb0",
+        "description": "Currencies + HUD canvas. Registers currency_provider. Needs Player Core.",
+        "folder": "Economy",
+        "connects": [
+          "registers:currency_provider",
+          "needs:PlayerCore"
+        ],
+        "files": [
+          {
+            "path": "economy_manager.verse",
+            "file": "templates/economy/economy_manager.verse"
+          },
+          {
+            "path": "economy_canvas_builder.verse",
+            "file": "templates/economy/economy_canvas_builder.verse"
+          },
+          {
+            "path": "economy_manager_device.verse",
+            "file": "templates/economy/economy_manager_device.verse"
+          }
+        ],
+        "order": 20
+      },
+      {
+        "id": "progression",
+        "name": "Progression Manager",
+        "icon": "\ud83d\udcc8",
+        "description": "XP / levels + HUD. Registers xp_awarder. Currency rewards when Economy present.",
+        "folder": "Progression",
+        "connects": [
+          "registers:xp_awarder",
+          "consumes:currency_provider",
+          "needs:PlayerCore"
+        ],
+        "files": [
+          {
+            "path": "progression_manager.verse",
+            "file": "templates/progression/progression_manager.verse"
+          },
+          {
+            "path": "progression_canvas_builder.verse",
+            "file": "templates/progression/progression_canvas_builder.verse"
+          },
+          {
+            "path": "progression_manager_device.verse",
+            "file": "templates/progression/progression_manager_device.verse"
+          }
+        ],
+        "order": 30
+      },
+      {
+        "id": "time_tracker",
+        "name": "Time Tracker",
+        "icon": "\u23f1\ufe0f",
+        "description": "Session / playtime + offline seconds. Registers playtime_provider.",
+        "folder": "TimeTracker",
+        "connects": [
+          "registers:playtime_provider",
+          "needs:PlayerCore"
+        ],
+        "files": [
+          {
+            "path": "player_time_tracker.verse",
+            "file": "templates/time_tracker/player_time_tracker.verse"
+          },
+          {
+            "path": "time_tracker_device.verse",
+            "file": "templates/time_tracker/time_tracker_device.verse"
+          }
+        ],
+        "order": 40
+      },
+      {
+        "id": "shop",
+        "name": "Shop Controllers",
+        "icon": "\ud83d\uded2",
+        "description": "Buy + currency exchange via ?currency_provider. Standalone; no-ops without Economy.",
+        "folder": "Shop",
+        "connects": [
+          "consumes:currency_provider",
+          "needs:PlayerCore"
+        ],
+        "files": [
+          {
+            "path": "shop_controller.verse",
+            "file": "templates/shop/shop_controller.verse"
+          },
+          {
+            "path": "currency_exchange_controller.verse",
+            "file": "templates/shop/currency_exchange_controller.verse"
+          }
+        ],
+        "order": 50
+      },
+      {
+        "id": "match_timer",
+        "name": "Match Timer",
+        "icon": "\u23f2\ufe0f",
+        "description": "Countdown/count-up controller + swappable timer_canvas builder.",
+        "folder": "MatchTimer",
+        "connects": [
+          "needs:PlayerCore"
+        ],
+        "files": [
+          {
+            "path": "timer_canvas_builder.verse",
+            "file": "templates/match_timer/timer_canvas_builder.verse"
+          },
+          {
+            "path": "match_timer_controller.verse",
+            "file": "templates/match_timer/match_timer_controller.verse"
+          }
+        ],
+        "order": 60
+      },
+      {
+        "id": "tycoon",
+        "name": "Tycoon Core",
+        "icon": "\ud83c\udfed",
+        "description": "building_unlock_manager + generator_manager. Pays via Economy; offline via Time Tracker.",
+        "folder": "Tycoon",
+        "connects": [
+          "consumes:currency_provider",
+          "consumes:playtime_provider",
+          "needs:PlayerCore"
+        ],
+        "files": [
+          {
+            "path": "building_unlock_manager.verse",
+            "file": "templates/tycoon/building_unlock_manager.verse"
+          },
+          {
+            "path": "generator_manager.verse",
+            "file": "templates/tycoon/generator_manager.verse"
+          }
+        ],
+        "order": 70
+      },
+      {
+        "id": "umg_widget",
+        "name": "UMG Widget Device",
+        "icon": "\ud83d\uddb1\ufe0f",
+        "description": "event_subscription helpers + creative_device skeleton for driving a UW_* User Widget (Verse fields / field events). Uncomment SETUP lines after the widget exists in Assets digest.",
+        "folder": "UMGWidget",
+        "files": [
+          {
+            "path": "widget_event_helpers.verse",
+            "file": "templates/umg-widget/widget_event_helpers.verse"
+          },
+          {
+            "path": "umg_widget_device.verse",
+            "file": "templates/umg-widget/umg_widget_device.verse"
+          }
+        ],
+        "order": 65
+      }
+    ],
+    "walkthrough": {
+      "id": "verse",
+      "title": "Verse tools ready",
+      "auto_start": "first_enable",
+      "settings_tab": "Store",
+      "steps": [
+        {
+          "target": "settings.store.root",
+          "title": "Verse tools ready",
+          "body": "Verse digests, wiring, compile/errors, and template tools are live. Ask for digests, wire devices, or apply templates.",
+          "advance": "next",
+          "mode": "rect"
+        }
+      ]
+    }
+  },
+  "backend": {
+    "entry": "backend",
+    "register": "register"
+  }
+}
