@@ -5,7 +5,7 @@ description: "Writing Verse code — syntax, best practices, and finding APIs/as
 license: All Rights Reserved
 metadata:
   label: UEFN Verse
-  version: 23
+  version: 24
   managed_by: uefn-ducky
   author: UEFN-Ducky
   copyright: Copyright 2026 UEFN-Ducky

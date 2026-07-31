@@ -171,29 +171,41 @@ race:
 Creative `SpawnProp` arrows do **not** collide with SG walls. Use an entity +
 mesh component + keyframed motion:
 
-1. Spawn `entity{}`, add `sphere` (or mesh) with `Collidable = true`, `Queryable = true`, `Visible = true`.
+1. Spawn `entity{}`, add a **`transform_component`** (without one the mesh is
+   not positioned at all), then `sphere` (or a mesh) with `Collidable = true`,
+   `Queryable = true`, `Visible = true`.
 2. Add `keyframed_movement_component`, `Sim.AddEntities`, `SetGlobalTransform` at muzzle.
 3. **Pre-sweep** walls: `FindSweepHits` along the flight path; clamp end position to first hit past a min clearance.
-4. Build one `keyframed_movement_delta` (translation delta, duration = distance/speed, linear easing), `SetKeyframes` + `Play`.
-5. Per-frame loop (`Sleep(0.0)`): read global transform; if within `HitRadius` of aim point → `ApplyHitDamage` and stop; optional shoot-down (player holding fire + aim ray near projectile); exit when keyframes finish.
+4. Build one `keyframed_movement_delta` (translation delta, duration = distance/speed, linear easing), `SetKeyframes` + `Play`. `SetKeyframes` rebases onto the entity's **current** transform and does not autoplay — so muzzle placement must happen before it, and `Play()` is mandatory.
+5. Per-frame check via `TickEvents.PrePhysics` on the component that owns the shot: read the transform; if within `HitRadius` of the aim point → `ApplyHitDamage` and stop; optional shoot-down (player holding fire + aim ray near projectile); finish on `FinishedEvent`. Cancel the subscription when the shot ends.
 6. Cleanup: cancel trail VFX handles, `RemoveFromParent()`.
 
 ```verse
-# Pseudocode — confirm types in digests / scenegraph pack
+using { /UnrealEngine.com/BasicShapes }   # cube / sphere / plane / cone / cylinder
+
 ArrowEnt := entity{}
+Xform := transform_component{Entity := ArrowEnt}
 Mesh := sphere{Entity := ArrowEnt}
 set Mesh.Collidable = true
 set Mesh.Queryable = true
 set Mesh.Visible = true
 MoveComp := keyframed_movement_component{Entity := ArrowEnt}
-ArrowEnt.AddComponents(array{Mesh, MoveComp})
+ArrowEnt.AddComponents(array{Xform, Mesh, MoveComp})
 Sim.AddEntities(array{ArrowEnt})
-# SetGlobalTransform → FindSweepHits pre-sweep → SetKeyframes → Play → hit loop → RemoveFromParent
+# SetGlobalTransform → FindSweepHits pre-sweep → SetKeyframes → Play → PrePhysics hit check → RemoveFromParent
 ```
+
+Lifecycle, `TickEvents` and transform rules:
+`skill_read_subskill("scenegraph", "movement_transforms")`.
 
 **Shoot-down trap:** Fortnite guns cannot damage SG spheres. Track "fire held"
 via an `input_trigger_device` (see `sys_input_devices`) into a `weak_map(player, logic)`,
 then each frame: if fire held AND aim ray within `ShootDownRadius` of the projectile → destroy + VFX.
+
+**Do not drive the flight with `loop` + `Sleep(0.0)`.** That is not a frame hook
+— it stutters and can read a transform the physics step has not applied yet.
+Keyframed movement plays in the Pre-Physics phase, so check hits from
+`TickEvents.PrePhysics` and cancel the subscription in `OnEndSimulation`.
 
 **Walls:** dungeon / cover colliders must be Scene Graph entities with Queryable
 collision, or every shot flies through.

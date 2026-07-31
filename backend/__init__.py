@@ -203,7 +203,7 @@ def _umg_json(api, command: str, params: dict, *, pretty: bool = False) -> str:
 
 
 def _register_umg_tools(api) -> None:
-    """UMG tools ship in this plugin zip via api.tool — app EXE may not have backend.tools.umg yet."""
+    """UMG tools ship in this plugin zip via api.tool — app EXE may not have backend.tools.verse.umg yet."""
 
     @api.tool(intent=_UMG_INTENT)
     def umg_capabilities(pretty: bool = False) -> str:
@@ -333,11 +333,11 @@ def _register_umg_tools(api) -> None:
 
 def register(api) -> None:
     """Import gated MCP tools onto the shared FastMCP instance."""
-    import backend.tools.verse  # noqa: F401
-    import backend.tools.verse_focused  # noqa: F401
-    import backend.tools.verse_editable  # noqa: F401
-    import backend.tools.verse_diagnostics  # noqa: F401
-    import backend.tools.skill_tool  # noqa: F401
+    import backend.tools.verse.verse  # noqa: F401
+    import backend.tools.verse.verse_focused  # noqa: F401
+    import backend.tools.verse.verse_editable  # noqa: F401
+    import backend.tools.verse.verse_diagnostics  # noqa: F401
+    import backend.tools.verse.skill_tool  # noqa: F401
 
     _register_template_tools(api)
     _register_umg_tools(api)
