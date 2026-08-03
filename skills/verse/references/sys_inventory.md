@@ -14,6 +14,11 @@ shared persistable table, plus a runtime manager and a placed device that
 hooks the **player-manager connected bus** — same programming flow as wallet /
 level (`sys_architecture`, `sys_player_data`, `sys_economy`). Names are generic.
 
+**Player custom firearms** (Armory Entity Prefabs, `fort_trace_weapon_component`,
+Verse grant/equip/clear) → `skill_read_subskill("scenegraph", "custom_weapons")`.
+This file is soft persist bags + Creative Item Granter re-grants — not Scene
+Graph Armory weapons.
+
 ### Layers (same five-part shape)
 
 ```

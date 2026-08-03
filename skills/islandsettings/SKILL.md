@@ -2,7 +2,7 @@
 source_plugin_id: verse
 name: islandsettings
 description: "UEFN Island Settings — CORE gameplay session setup: MaxPlayers, starting class, teams, spawn rules. ALWAYS pair MaxPlayers with one Player Spawn Pad per slot. Use when setting up a game for N players, changing max players, starting class, matchmaking, or Device_ExperienceSettings."
-license: All Rights Reserved
+license: Ducky Source-Available License v1.0
 metadata:
   label: UEFN Island Settings
   version: 3

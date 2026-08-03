@@ -2,10 +2,10 @@
 source_plugin_id: verse
 name: verse
 description: "Writing Verse code — syntax, best practices, and finding APIs/assets via digests"
-license: All Rights Reserved
+license: Ducky Source-Available License v1.0
 metadata:
   label: UEFN Verse
-  version: 24
+  version: 25
   managed_by: uefn-ducky
   author: UEFN-Ducky
   copyright: Copyright 2026 UEFN-Ducky
@@ -145,7 +145,7 @@ Read the matching file before working in that area:
   Load when: Adding analytics/telemetry events, tracking funnels/milestones, or awarding accolades/XP for actions
 - `references/sys_time_tracking.md` — Session & playtime tracking — persistable login timestamps, epoch-seconds vs simulation clock, join/leave session lifecycle, offline-elapsed calculation, and formatted duration display
   Load when: Tracking playtime, first/last login, session duration, offline elapsed time, or real-world timestamps across sessions
-- `references/sys_inventory.md` — Per-player inventory — persistable item entry arrays, immutable add/remove, quantity checks, re-granting physical items on load, and per-entry persist vs reset flags
+- `references/sys_inventory.md` — Per-player inventory — persistable item entry arrays, immutable add/remove, quantity checks, re-granting physical items on load, and per-entry persist vs reset flags (soft bags + Creative granters; player custom firearms → scenegraph `custom_weapons`)
   Load when: Building a per-player item inventory, owned-collection, stackable items, re-granting items on join, or persist vs session-reset item flags
 - `references/sys_hud_template.md` — Any-manager display template — *_canvas_builder, ShowHUD/RemoveHud, shop rows, inventory slots, progress bars; driven by any Services manager
   Load when: Creating per-player on-screen UI for any manager — wallet, XP, shop rows, inventory slots, tabs, progress bars — canvas_builder and ShowHUD

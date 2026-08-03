@@ -1,9 +1,9 @@
 {
   "id": "verse",
   "kind": "plugin",
-  "version": "1.0.24",
+  "version": "1.0.27",
   "label": "UEFN Verse",
-  "description": "Verse digests, device wiring, compile/errors, skill reader, UMG Widget Blueprint tools, and New-file system template packs (Player Core, Economy, Progression, Tycoon, UMG Widget, \u2026). Bundles verse + islandsettings skills.",
+  "description": "Verse digests, device wiring, compile/errors, skill reader, UMG Widget Blueprint tools, and New-file system template packs (Player Core, Economy, Progression, Tycoon, UMG Widget, …). Bundles verse + islandsettings skills.",
   "min_app_version": "1.0.0",
   "default_enabled": true,
   "secret_keys": [],
@@ -76,7 +76,7 @@
       {
         "id": "device_onbegin",
         "name": "Device + OnBegin",
-        "icon": "\u26a1",
+        "icon": "⚡",
         "description": "Single-file creative_device with OnBegin",
         "file": "templates/device_onbegin.verse",
         "order": 5
@@ -84,7 +84,7 @@
       {
         "id": "hud_canvas",
         "name": "HUD Canvas",
-        "icon": "\ud83d\udda5\ufe0f",
+        "icon": "🖥️",
         "description": "Single-file canvas + text_block starter",
         "file": "templates/hud_canvas.verse",
         "order": 6
@@ -92,7 +92,7 @@
       {
         "id": "helpers",
         "name": "Subscribe Helpers",
-        "icon": "\ud83e\uddf0",
+        "icon": "🧰",
         "description": "Subscribe* wrappers with ExtraData for listenables",
         "file": "templates/subscribe_helpers.verse",
         "order": 8
@@ -100,7 +100,7 @@
       {
         "id": "player_core",
         "name": "Player Core",
-        "icon": "\ud83d\udc64",
+        "icon": "👤",
         "description": "player_manager + game_player + save_service. ?option slots for Economy / Progression / Playtime.",
         "folder": "PlayerCore",
         "connects": [
@@ -127,7 +127,7 @@
       {
         "id": "economy",
         "name": "Economy Manager",
-        "icon": "\ud83d\udcb0",
+        "icon": "💰",
         "description": "Currencies + HUD canvas. Registers currency_provider. Needs Player Core.",
         "folder": "Economy",
         "connects": [
@@ -153,7 +153,7 @@
       {
         "id": "progression",
         "name": "Progression Manager",
-        "icon": "\ud83d\udcc8",
+        "icon": "📈",
         "description": "XP / levels + HUD. Registers xp_awarder. Currency rewards when Economy present.",
         "folder": "Progression",
         "connects": [
@@ -180,7 +180,7 @@
       {
         "id": "time_tracker",
         "name": "Time Tracker",
-        "icon": "\u23f1\ufe0f",
+        "icon": "⏱️",
         "description": "Session / playtime + offline seconds. Registers playtime_provider.",
         "folder": "TimeTracker",
         "connects": [
@@ -202,7 +202,7 @@
       {
         "id": "shop",
         "name": "Shop Controllers",
-        "icon": "\ud83d\uded2",
+        "icon": "🛒",
         "description": "Buy + currency exchange via ?currency_provider. Standalone; no-ops without Economy.",
         "folder": "Shop",
         "connects": [
@@ -224,7 +224,7 @@
       {
         "id": "match_timer",
         "name": "Match Timer",
-        "icon": "\u23f2\ufe0f",
+        "icon": "⏲️",
         "description": "Countdown/count-up controller + swappable timer_canvas builder.",
         "folder": "MatchTimer",
         "connects": [
@@ -245,7 +245,7 @@
       {
         "id": "tycoon",
         "name": "Tycoon Core",
-        "icon": "\ud83c\udfed",
+        "icon": "🏭",
         "description": "building_unlock_manager + generator_manager. Pays via Economy; offline via Time Tracker.",
         "folder": "Tycoon",
         "connects": [
@@ -268,7 +268,7 @@
       {
         "id": "umg_widget",
         "name": "UMG Widget Device",
-        "icon": "\ud83d\uddb1\ufe0f",
+        "icon": "🖱️",
         "description": "event_subscription helpers + creative_device skeleton for driving a UW_* User Widget (Verse fields / field events). Uncomment SETUP lines after the widget exists in Assets digest.",
         "folder": "UMGWidget",
         "files": [
