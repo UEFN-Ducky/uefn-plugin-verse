@@ -57,7 +57,8 @@ DefaultClassIdentifier: {"class_type": "NoClass", "class_slot": 1}
 
 ```
 search_assets(search="Player_Spawner", limit=5)
-# spawn N times (or N-P more), ~200–400 uu apart — ONE spawn_actor per call
+# spawn N times (or N-P more), ~200–400 uu apart — ONE spawn_actor per call;
+# wait for each result before the next (never parallel / same-turn multi)
 spawn_actor(
   asset_path="…/BP_Creative_Player_Spawner_Prop.BP_Creative_Player_Spawner_Prop_C",
   location=[x, y, z],

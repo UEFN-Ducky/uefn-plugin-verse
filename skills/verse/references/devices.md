@@ -36,6 +36,10 @@ buy_with_currency := class(creative_device):
 
 ### `@editable` — the Details-panel surface
 
+For `@editable audio_player_device` (horns / SFX): place a Fortnite Creative
+**Audio Player** in the level first —
+`skill_read_subskill("uefn", "creative_devices")` — never Speakers or prop meshes.
+
 `@editable` exposes a field in the UEFN editor so a designer wires it to a placed
 device/prop. Every `@editable` needs a **default** (that's why device/struct refs
 are `= trigger_device{}` etc., and optionals are `= false`).
@@ -53,7 +57,9 @@ Group related references into a `struct<concrete>()` (see `classes`) so one
 `timer_device`, or a `team_devices` struct holding a team's granters and messages.
 
 > Wiring the *actual* placed references (which prop/device a field points to) is
-> done in UEFN or with MCP `wire_verse_device_ref` / `set_verse_editable` when the listener is
+> done in UEFN or with MCP `wire_verse_device_ref` / `set_verse_editable` (**one
+> field per turn** — never parallel wire/spawn;
+> `skill_read_subskill("uefn", "batch_commands")`) when the listener is
 > online — **not** by writing paths in source. The source only declares the field.
 
 ### `OnBegin` — the entry point

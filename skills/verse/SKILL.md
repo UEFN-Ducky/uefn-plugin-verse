@@ -5,7 +5,7 @@ description: "Writing Verse code — syntax, best practices, and finding APIs/as
 license: Ducky Source-Available License v1.0
 metadata:
   label: UEFN Verse
-  version: 25
+  version: 26
   managed_by: uefn-ducky
   author: UEFN-Ducky
   copyright: Copyright 2026 UEFN-Ducky
@@ -13,6 +13,13 @@ metadata:
 ---
 
 # Verse — writing code for UEFN
+
+**CRITICAL — level place/wire is SERIAL (uefn tools):** when placing devices or
+wiring `@editable` refs, one heavy MCP call → wait → next. Never parallel
+`spawn_actor` / `wire_verse_*` / `save_current_level`. SFX fields use Creative
+**Audio Player** (`audio_player_device`). Details:
+`skill_read_subskill("uefn", "batch_commands")` and `creative_devices`.
+
 
 **Never guess API names, types, or signatures — search the digests.** Every engine class, function, device, weapon, and every custom asset in the project is listed there. If a name is in no digest, it does not exist in this project — don't write it.
 

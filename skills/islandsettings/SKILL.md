@@ -5,7 +5,7 @@ description: "UEFN Island Settings — CORE gameplay session setup: MaxPlayers, 
 license: Ducky Source-Available License v1.0
 metadata:
   label: UEFN Island Settings
-  version: 3
+  version: 4
   author: UEFN-Ducky
   copyright: Copyright 2026 UEFN-Ducky
   allow_redistribute: false
@@ -13,6 +13,10 @@ metadata:
 ---
 
 # UEFN Island Settings — CORE session setup
+
+**CRITICAL — editor mutations are SERIAL:** spawn pads / Creative field sets —
+one heavy MCP call → wait → next. Never parallel `spawn_actor` for N pads in
+one turn. Details: `skill_read_subskill("uefn", "batch_commands")`.
 
 Island Settings (`Device_ExperienceSettings_V2_UEFN_C`) is **where you configure the game for players** — not a side device. This is the source of truth for:
 
