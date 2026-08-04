@@ -13,6 +13,20 @@ Player data that survives between sessions lives in a **`weak_map` keyed by
 `player`**, holding a `<persistable>` class. Centralize it in one file so every
 system shares the same store. Type names below are generic — adapt to your game.
 
+### HARD RULE — persistence is immutable
+
+- **Keys are append-only.** Once `set PlayerStatsMap[Player] = …` succeeds, **never**
+  remove, clear, or filter that key out. Removing a key from a persistence
+  `weak_map` breaks saves.
+- **Leave / session cleanup must not touch the persistence map.** Do not rebuild
+  `PlayerStatsMap` without a player on leave. Session maps (`AllPlayers`,
+  per-session scores) may drop keys — the persistence `weak_map` must not. See
+  `sys_player_data`.
+- **Values are immutable.** Replace the whole table via rebuild + `set` (below);
+  never mutate a persistable field in place.
+- **Schema is careful.** Do not remove persistable fields. Add fields only via
+  `sys_persistence_migration` + updating every carry-all helper.
+
 ### The three pieces
 
 **1. A module-level `weak_map`** (the store):
@@ -21,8 +35,8 @@ system shares the same store. Type names below are generic — adapt to your gam
 var PlayerStatsMap <public> : weak_map(player, game_player_table) = map{}
 ```
 
-- `weak_map(player, v)` — persists `v` per player; entries vanish if the value is
-  no longer referenceable, hence "weak".
+- `weak_map(player, v)` — persists `v` per player. The engine may GC unreferenced
+  entries; **you must never delete keys yourself**.
 - Declared at module scope (not inside a device) so every system shares it.
 
 **2. A `<persistable>` data class** (what gets saved):
@@ -140,6 +154,8 @@ system. See `sys_persistence_migration` for the add-field checklist.
 
 ### Gotchas
 
+- **Removing a player from `PlayerStatsMap` on leave** — breaks persistence. Leave
+  the key alone; session maps are the ones that drop entries.
 - Forgetting `<final>` or defaulting a field → the class won't be `<persistable>`.
 - Mutating a field and expecting it to save — build a new value and `set` it into
   the map instead.

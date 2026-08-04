@@ -105,6 +105,11 @@ OnPlayerRemoved<private>(OutAgent : agent) : void =
 (A per-session score map drops entries the same way, with `if (set NewMap[A] = …)`.)
 **Always drop per-player entries on leave** or maps leak across a session.
 
+> **Session maps only.** This rebuild-without-key pattern is for **session** maps
+> (`AllPlayers`, per-session scores). **Never** apply it to the persistence
+> `weak_map` (`PlayerStatsMap`) — removing a persist key breaks saves. See
+> `persistence`.
+
 ### The typed custom event bus
 
 The project rolls its own pub/sub so any number of systems can react to a moment.

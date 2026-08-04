@@ -36,7 +36,7 @@ CurrentSaveVersion<public> : int = 3
 | **Add** a nested `<persistable>` (defaulted) | ✅ yes* | same — the nested default fills in |
 | **Rename** a field | ❌ no | the old value is lost; migrate it into the new field |
 | **Change a field's meaning/units** | ❌ no | e.g. seconds→ms; convert old values on load |
-| **Remove** a field | ✅ (data just stops loading) | but back-compute anything that depended on it |
+| **Remove** a field | ❌ avoid | leaves orphan data / breaks loads for existing players; leave the field unused or migrate into a new field instead |
 | **Change a field's type** | ❌ no | not directly persistable-compatible; add a new field + migrate |
 
 \* **Safe for load, not for write** — deserialization fills the new default, but
@@ -111,6 +111,8 @@ after join, then vanishes the first time another system saves.
 
 ### Rules
 
+- **Do not remove persistable fields** — leave unused or migrate into a new field;
+  deleting schema breaks existing saves.
 - **Bump `CurrentSaveVersion` whenever you change the schema in a non-additive
   way** — and add a matching `if (Version < N)` step.
 - **Never reorder or reuse a field's meaning silently** — add a new field and
