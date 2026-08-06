@@ -5,7 +5,7 @@ description: "Writing Verse code — syntax, best practices, and finding APIs/as
 license: Ducky Source-Available License v1.0
 metadata:
   label: UEFN Verse
-  version: 27
+  version: 28
   managed_by: uefn-ducky
   author: UEFN-Ducky
   copyright: Copyright 2026 UEFN-Ducky
@@ -44,6 +44,8 @@ When the **UEFN Verse** plugin is enabled, **check packs before writing** player
 Pack names match `sys_architecture` (`player_core`, `economy`, `progression`, `time_tracker`, `shop`, `match_timer`, `tycoon`). Cross-pack links use `player_manager` `?option` slots (`GetCurrencyProvider`, `GetXPAwarder`, `GetPlaytimeProvider`) so packs stay standalone.
 
 ## Digests (before you write)
+
+**HARD — digests are READ ONLY; UEFN auto-edits them.** Never write/edit/delete/rename any `*.digest.verse`. After new assets or Verse that should appear in digests: `workspace_compile_verse` (UEFN open) → then look inside with `search_verse_digest` / `get_verse_api`. Project Verse goes under `Content/Verse/**` only.
 
 UEFN generates digest files covering the whole surface. **Listener offline OK** — tools read digests from disk. Start with `list_verse_digests()` to see which files exist and what each is for:
 
@@ -96,6 +98,7 @@ my_device := class(creative_device):
 | Guess a device / asset / function name | `search_verse_digest` first; copy the exact signature |
 | `// comment` | `#` comment |
 | Read a whole `*.digest.verse` into chat | `search_verse_digest` (compact matches) |
+| Write / patch / delete any `*.digest.verse` | Never — UEFN auto-edits digests on Verse build; you only search/read after `workspace_compile_verse` |
 | Hunt compile errors via the game / listener / `ping` / `get_project_info` / `execute_python` / `ducky_get_errors` | `workspace_list_verse_errors` FIRST (host) |
 
 For anything non-trivial, load the matching reference below with `skill_read_subskill` — deep language topics (`classes`, `control_flow`, `async`, `effects`, `devices`, `datatypes`, `persistence`, `ui`, `modules`, `digests`) and `sys_*` recipes for whole game systems. **Start any new game system with `sys_architecture`** — the backbone the other `sys_*` recipes specialize.

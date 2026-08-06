@@ -9,6 +9,14 @@ metadata:
 
 ## Digests — the source of truth for names
 
+**HARD RULE — READ ONLY. NEVER write, edit, delete, rename, or patch any
+`*.digest.verse` (Fortnite / Verse / UnrealEngine / Assets).** UEFN **auto-edits**
+digests itself on Verse build / import — you do not. Workflow: write project
+Verse under `Content/Verse/**` → run Verse build (`workspace_compile_verse`
+when UEFN is open) → then **look inside** with `search_verse_digest` /
+`get_verse_api` / `list_verse_types`. Missing a new material/mesh/prefab in
+Assets? Build first, then re-search — never invent by patching a digest.
+
 For the open project, UEFN writes a digest (a `.verse` stub of every public
 declaration, each with its `#` doc comment) under:
 
@@ -61,5 +69,6 @@ pass `digest_path=` an absolute path to target one file. Content Browser weapon/
 - **A function signature:** `search_verse_digest("GrantItem")` → copy params + effects exactly.
 - **Orientation:** `list_verse_modules()` → find `SceneGraph`, `Devices`, `SpatialMath`, your asset modules.
 
-To read one digest in full (rarely needed — prefer search), open its path with the
-workspace file tools. If a name appears in no digest, don't write it.
+To read one digest in full (rarely needed — prefer search), open its path with
+`workspace_read_file` only — never `workspace_write_file`. If a name appears in
+no digest, don't write it (and never invent it by editing a digest).
