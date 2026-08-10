@@ -26,7 +26,7 @@ Both end the same way: `GetPlayerUI[Player].AddWidget(...)`.
 
 **In the editor:** Content Browser → right-click → **User Interface → Widget Blueprint**. Name it `UW_*` (e.g. `UW_StyleHud`). Design Text / Image / ProgressBar / Button widgets. Animations: Animations tab → Details → **Auto Play** if they should run on construct (Verse cannot call PlayAnimation by name — verify with digests / Epic docs if that changes).
 
-**Via MCP tools:** `umg_capabilities` → `get_project_info()` for `content_root` → `create_widget_blueprint(asset_name="UW_StyleHud", folder="/VideoTest/UI")` (or omit `folder` / pass `""` so the listener auto-pins) → scaffold with `add_widget_to_tree` → polish with `open_asset_in_uefn`. Details: `umg_mcp_tools`.
+**Via MCP tools:** `umg_capabilities` → `get_project_info()` for `content_root` → `create_widget_blueprint(asset_name="UW_StyleHud", folder="/MyProject/UI")` (or omit `folder` / pass `""` so the listener auto-pins) → scaffold with `add_widget_to_tree` → polish with `open_asset_in_uefn`. Details: `umg_mcp_tools`.
 
 ### Never guess the Verse type — use the Assets digest
 

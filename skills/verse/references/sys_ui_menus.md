@@ -1,5 +1,5 @@
 ---
-description: "Interactive UI menus — modal popups, shops, collect screens with ui_input_mode.All, button_loud, open/close, ButtonToAgent map"
+description: "Interactive UI menus — modal popups, shops, collect screens with ui_input_mode.All, open/close, ButtonToAgent map (custom/controller buttons → sys_custom_buttons)"
 metadata:
   order: 37
   label: "Game systems — UI menus & modals (UIMenuController)"
@@ -13,16 +13,23 @@ Interactive screens **capture** player input. Layouts come from
 `sys_canvas_cookbook` (modal, shop list, tabs). Show/hide wiring mirrors
 `sys_hud_template` but uses `ui_input_mode.All`.
 
+**Whole-card / row / hover / gamepad:** load **`sys_custom_buttons` first**.
+That file is the default button type (chrome-less native `button` + `SetFocus`).
+Use stock `button_loud` / `button_quiet` only for plain text CTAs with Epic
+chrome — not for painted cards/rows.
+
 ### Modal recipe
 
 1. Build canvas: full-screen dim `color_block` + centered panel + title/body +
-   `button_loud` actions (cookbook **modal**).
-2. Show:
+   action buttons (cookbook **modal**). Prefer `MakeUiLabelButton` /
+   `MakeUiButton` from `sys_custom_buttons` (or project `ui_buttons.verse`).
+2. Show — **SetFocus before AddWidget** (required for controller):
 
 ```verse
 ShowMenu(Agent : agent) : void =
     if (Player := player[Agent], PlayerUI := GetPlayerUI[Player]):
         set MenuCanvas = BuildMenuCanvas()
+        PlayerUI.SetFocus(ConfirmButton)   # or ConfirmUi.Btn — BEFORE AddWidget
         PlayerUI.AddWidget(MenuCanvas, player_ui_slot{ InputMode := ui_input_mode.All })
         # map buttons → agent so click handlers know who clicked
         if (set ButtonToAgent[ConfirmButton] = Agent) {}
@@ -38,13 +45,18 @@ CloseMenu(Agent : agent) : void =
 ```
 
 Never leave `.All` widgets up after the menu is done — the player stays trapped.
+Modal with **no** focusable buttons → `InputMode.None` (else gamepad soft-lock).
 
 ### Buttons
 
+Default: chrome-less native `button` — see **`sys_custom_buttons`**.
+
+Simple text CTA only:
+
 ```verse
 var ConfirmButton : button_loud = button_loud{}
-# after creating the button widget, subscribe (confirm exact API in digest):
 ConfirmButton.OnClick().Subscribe(OnConfirmClicked)
+# still: PlayerUI.SetFocus(ConfirmButton) before AddWidget
 
 OnConfirmClicked(WM : widget_message) : void =
     if (Agent := ButtonToAgent[ConfirmButton]):
@@ -52,9 +64,9 @@ OnConfirmClicked(WM : widget_message) : void =
         CloseMenu(Agent)
 ```
 
-Keep `var ButtonToAgent : [button_loud]agent = map{}` (or rebuild the map when
-showing). Some projects use a helper that passes extra ints — search digest /
-`helpers` patterns; do not invent signatures.
+Keep `var ButtonToAgent : [button]agent = map{}` (or `[button_loud]agent` for
+stock CTAs). Rebuild with `if (set …) {}` — avoid `ConcatenateMaps` on button
+keys (widens to `widget`).
 
 ### Shop menu
 
@@ -78,8 +90,8 @@ menu itself stays `.All`.
 
 | | HUD (`sys_hud_template`) | Menu (this file) |
 |--|--------------------------|------------------|
-| InputMode | `.None` | `.All` |
-| Buttons | none | `button_loud` / tabs |
+| InputMode | `.None` | `.All` (+ `SetFocus`) |
+| Buttons | none | `sys_custom_buttons` (or plain `button_loud` CTA) |
 | Lifetime | often whole session | open → act → close |
 
 ### Gotchas
@@ -87,3 +99,4 @@ menu itself stays `.All`.
 - Visibility checklist still applies (`sys_canvas_cookbook`).
 - Stacking two `.All` menus without removing the first confuses input.
 - Look up buyer with `GetGamePlayer` — never assume the click agent is registered.
+- Gamepad dead without `SetFocus` — see `sys_custom_buttons`.

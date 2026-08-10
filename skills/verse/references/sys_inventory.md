@@ -16,8 +16,10 @@ level (`sys_architecture`, `sys_player_data`, `sys_economy`). Names are generic.
 
 **Player custom firearms** (Armory Entity Prefabs, `fort_trace_weapon_component`,
 Verse grant/equip/clear) → `skill_read_subskill("scenegraph", "custom_weapons")`.
-This file is soft persist bags + Creative Item Granter re-grants — not Scene
-Graph Armory weapons.
+**Custom non-weapon Scene Graph items** (Entity Prefab pickup / icon / mesh) →
+`skill_read_subskill("scenegraph", "custom_items")`. This file is soft persist
+bags + Creative Item Granter re-grants — not Scene Graph Armory weapons or
+custom item prefabs.
 
 ### Layers (same five-part shape)
 

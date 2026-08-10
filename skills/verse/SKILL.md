@@ -5,7 +5,7 @@ description: "Writing Verse code — syntax, best practices, and finding APIs/as
 license: Ducky Source-Available License v1.0
 metadata:
   label: UEFN Verse
-  version: 28
+  version: 31
   managed_by: uefn-ducky
   author: UEFN-Ducky
   copyright: Copyright 2026 UEFN-Ducky
@@ -29,7 +29,9 @@ wiring `@editable` refs, one heavy MCP call → wait → next. Never parallel
 
 **Persistence `weak_map` (HARD):** never remove keys once added (removing breaks saves); never delete persistable fields without migration. Replace values only via rebuild+`set`. Load `persistence` + `sys_persistence_migration` before any save-schema change. Session maps ≠ persist maps.
 
-**Any on-screen canvas (shop / inventory / HUD / modal / grid):** `sys_canvas_cookbook` (compositions + visibility checklist) → `sys_hud_template` (ShowHUD wiring) → interactive clicks use `sys_ui_menus` (`.All`). Skills alone must invent UI that **shows visually**.
+**Any on-screen canvas (shop / inventory / HUD / modal / grid):** `sys_canvas_cookbook` (compositions + visibility checklist) → `sys_hud_template` (ShowHUD wiring) → interactive clicks: **`sys_custom_buttons`** (chrome-less whole-card/row `button`, hover, **`SetFocus` before AddWidget**) then `sys_ui_menus` (`.All` lifetime). Skills alone must invent UI that **shows visually**.
+
+**Epic Text Localization / PO / publish L10N readiness:** named `<localizes>` + `message` for gatherable copy — `skill_read_subskill("localization", "ui_ready")` (pipeline: `localization` pack).
 
 **Designer UMG User Widget (`UW_*`, Verse fields 38.00+, field events 39.40+):** `umg_widgets` first → `umg_verse_fields` / `umg_verse_field_events` / `umg_view_bindings` / `umg_ui_materials`. MCP create/inspect: `umg_mcp_tools` (`umg_capabilities` before other umg_* tools). Never invent a placeholder `MyUMGWidget := class:` — types come from the Assets digest.
 
@@ -157,13 +159,15 @@ Read the matching file before working in that area:
   Load when: Adding analytics/telemetry events, tracking funnels/milestones, or awarding accolades/XP for actions
 - `references/sys_time_tracking.md` — Session & playtime tracking — persistable login timestamps, epoch-seconds vs simulation clock, join/leave session lifecycle, offline-elapsed calculation, and formatted duration display
   Load when: Tracking playtime, first/last login, session duration, offline elapsed time, or real-world timestamps across sessions
-- `references/sys_inventory.md` — Per-player inventory — persistable item entry arrays, immutable add/remove, quantity checks, re-granting physical items on load, and per-entry persist vs reset flags (soft bags + Creative granters; player custom firearms → scenegraph `custom_weapons`)
+- `references/sys_inventory.md` — Per-player inventory — persistable item entry arrays, immutable add/remove, quantity checks, re-granting physical items on load, and per-entry persist vs reset flags (soft bags + Creative granters; custom firearms → scenegraph `custom_weapons`; custom items → scenegraph `custom_items`)
   Load when: Building a per-player item inventory, owned-collection, stackable items, re-granting items on join, or persist vs session-reset item flags
 - `references/sys_hud_template.md` — Any-manager display template — *_canvas_builder, ShowHUD/RemoveHud, shop rows, inventory slots, progress bars; driven by any Services manager
   Load when: Creating per-player on-screen UI for any manager — wallet, XP, shop rows, inventory slots, tabs, progress bars — canvas_builder and ShowHUD
 - `references/sys_input_devices.md` — Input devices — input_trigger_device Register/Unregister, Pressed/Released, held-key repeat, UI buttons vs Creative triggers
   Load when: Wiring input_trigger_device, Register/Unregister per agent, held movement keys, or choosing UI buttons vs Creative input triggers
-- `references/sys_ui_menus.md` — Interactive UI menus — modal popups, shops, collect screens with ui_input_mode.All, button_loud, open/close
+- `references/sys_custom_buttons.md` — Custom chrome-less Verse buttons — whole-card/row hit targets, HighlightEvent hover + gamepad focus, SetFocus before AddWidget, locked-but-focusable cards, ui_buttons pattern
+  Load when: Building custom Verse UI buttons, whole-card/row click targets, hover chrome, gamepad/controller navigation, SetFocus, or ui_buttons.verse
+- `references/sys_ui_menus.md` — Interactive UI menus — modal popups, shops, collect screens with ui_input_mode.All, open/close (button type → sys_custom_buttons)
   Load when: Building interactive Verse UI — shops, collect popups, pickers, tabbed menus with button clicks and ui_input_mode.All
 - `references/sys_minigame_overlay.md` — Overlay minigames — per-agent instance map, stasis, dynamic canvas grid, input_trigger movement, game loop, cleanup
   Load when: Building an on-screen overlay or grid minigame — dynamic color_block cells, stasis, input triggers, per-player game instances

@@ -76,7 +76,7 @@ Replace `UW_FieldsTest` / `MI_*` / field names with **exact** digest identifiers
 ### Rules that keep this working
 
 - Field names in Verse must match the UMG Verse-field names (digest is authoritative).
-- `message` fields: use `<localizes>` helpers or `message` literals — plain `string` will not type-check where `message` is required.
+- `message` fields: use `<localizes>` helpers or `message` literals — plain `string` will not type-check where `message` is required. For Epic PO / Export Localization readiness (named gatherable copy), load `skill_read_subskill("localization", "ui_ready")`.
 - Materials / textures: use the Verse ids from Assets digest (`MI_*`, texture names), usually created from `Fortnite > UI > Material` (see `umg_ui_materials`).
 - Updates apply when you `set` the field after the widget is on a `player_ui`. Binding re-eval is View Bindings' job — if nothing changes, check the binding direction and conversion function.
 - Multiplayer: one shared widget instance is a trap — see `umg_widgets`.
