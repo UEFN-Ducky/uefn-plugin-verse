@@ -17,7 +17,7 @@ Inspect first; only set keys that are writable. Adjust numbers for the island.
 
 ```
 # Requires 4 Player Spawn Pads in the level
-set_creative_device_fields("<label>", fields={
+set_creative_device_fields(actor_path="<label>", fields={
   "MaxPlayers": 4,
   "Matchmaking_MaxPlayersPerSession": 4,
   "MatchmakingType": "Off",
@@ -33,7 +33,7 @@ set_creative_device_fields("<label>", fields={
 ## Free-for-all deathmatch (respawn)
 
 ```
-set_creative_device_fields("<label>", fields={
+set_creative_device_fields(actor_path="<label>", fields={
   "Teams": {"team_type": "FreeForAll", "team_index": 1},
   "bAllowFriendlyFire": false,
   "bLastStandingEndsGame": false,
@@ -48,7 +48,7 @@ set_creative_device_fields("<label>", fields={
 ## Co-op / same-team PvE
 
 ```
-set_creative_device_fields("<label>", fields={
+set_creative_device_fields(actor_path="<label>", fields={
   "Teams": {"team_type": "TeamIndex", "team_index": 1},
   "TeamSize": "Dynamic",
   "bAllowFriendlyFire": false,
@@ -62,7 +62,7 @@ set_creative_device_fields("<label>", fields={
 ## BR-style inventory + movement (common UEFN default)
 
 ```
-set_creative_device_fields("<label>", fields={
+set_creative_device_fields(actor_path="<label>", fields={
   "LocomotionPreset": "Current BR",
   "MovementSpeedTunings": "Ch 5 Movement",
   "CustomInventoryConfiguration": "/Script/ItemizationCoreRuntime.ItemizationConfigurationAsset'/Itemization/BRStyle/ItemizationConfiguration_BRStyle.ItemizationConfiguration_BRStyle'",
@@ -76,7 +76,7 @@ set_creative_device_fields("<label>", fields={
 ## Infinite resources playtest
 
 ```
-set_creative_device_fields("<label>", fields={
+set_creative_device_fields(actor_path="<label>", fields={
   "bInfiniteAmmo": true,
   "bInfiniteMagazineAmmo": true,
   "bInfiniteConsumables": true,
@@ -89,7 +89,7 @@ set_creative_device_fields("<label>", fields={
 
 ```
 # Requires 16 Player Spawn Pads — place them first if you only have fewer
-set_creative_device_fields("<label>", fields={
+set_creative_device_fields(actor_path="<label>", fields={
   "MaxPlayers": 16,
   "Matchmaking_MaxPlayersPerSession": 16,
   "Matchmaking_MaxTeamCount": 16,

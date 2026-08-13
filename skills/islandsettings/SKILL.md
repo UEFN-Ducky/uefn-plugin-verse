@@ -5,7 +5,7 @@ description: "UEFN Island Settings — CORE gameplay session setup: MaxPlayers, 
 license: Ducky Source-Available License v1.0
 metadata:
   label: UEFN Island Settings
-  version: 4
+  version: 5
   author: UEFN-Ducky
   copyright: Copyright 2026 UEFN-Ducky
   allow_redistribute: false
@@ -80,7 +80,7 @@ inspect_creative_device(
   keys=["MaxPlayers", "Matchmaking_MaxPlayersPerSession", "SpawnLocation", "SpawnPadSelection"],
 )
 
-# If P < N: spawn (N-P) more Player Spawn Pads, label + set_actor_folder("Hub/Spawners"), save
+# If P < N: spawn (N-P) more Player Spawn Pads via spawn_actor(..., label=..., folder="Hub/Spawners"), then save
 # Then:
 set_creative_device_fields(actor_path="IslandSettings0", fields={
   "MaxPlayers": N,

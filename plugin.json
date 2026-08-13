@@ -1,7 +1,7 @@
 {
   "id": "verse",
   "kind": "plugin",
-  "version": "1.0.33",
+  "version": "1.0.34",
   "label": "UEFN Verse",
   "description": "Verse digests, device wiring, compile/errors, skill reader, UMG Widget Blueprint tools, and New-file system template packs (Player Core, Economy, Progression, Tycoon, UMG Widget, \u2026). Bundles verse + islandsettings skills. Serial editor ops (one MCP call per turn).",
   "min_app_version": "1.0.0",

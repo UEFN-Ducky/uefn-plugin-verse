@@ -17,6 +17,12 @@ when UEFN is open) → then **look inside** with `search_verse_digest` /
 `get_verse_api` / `list_verse_types`. Missing a new material/mesh/prefab in
 Assets? Build first, then re-search — never invent by patching a digest.
 
+`workspace_compile_verse` returning `[WinError 10054]` means the build
+**started** — wait minutes, poll `list_verse_types`, never retry. A regenerated
+digest does **not** mean the Verse VM relinked. Digest deadlock (`9002` /
+`9000`): comment out problem Verse → rebuild → confirm digest → uncomment →
+rebuild. Details: `skill_read_subskill("uefn", "verse_build_lifecycle")`.
+
 For the open project, UEFN writes a digest (a `.verse` stub of every public
 declaration, each with its `#` doc comment) under:
 

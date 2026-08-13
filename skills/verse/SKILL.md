@@ -5,7 +5,7 @@ description: "Writing Verse code — syntax, best practices, and finding APIs/as
 license: Ducky Source-Available License v1.0
 metadata:
   label: UEFN Verse
-  version: 31
+  version: 32
   managed_by: uefn-ducky
   author: UEFN-Ducky
   copyright: Copyright 2026 UEFN-Ducky
@@ -70,7 +70,7 @@ Workflow: `list_verse_digests` / search → `get_verse_api` for the exact signat
 ## Error checks
 
 - **FIRST tool on a fix-errors turn:** `workspace_list_verse_errors()` — never `ping`, `get_project_info`, `ducky_get_errors`, `execute_python`, or listener tools. If a listener call does not return immediately it is broken; do not retry.
-- `workspace_list_verse_errors()` with **no args** after every edit (incremental; offline OK). Its list is complete — fix the files it names; don't re-scan to "make sure" and never pass `full=true` just to re-confirm (full rescan is slow). `rescan=false` re-reads without scanning.
+- `workspace_list_verse_errors()` with **no args** after every edit (incremental; offline OK). Its list is complete **unless the result says `from_cache`** (stale — wait for the Verse build, then list again). Fix the files it names; don't re-scan to "make sure" and never pass `full=true` just to re-confirm (full rescan is slow). `rescan=false` re-reads without scanning.
 - `workspace_compile_verse` only after Problems is clean and UEFN is known open (not a substitute for listing errors).
 
 ## Syntax must-knows
