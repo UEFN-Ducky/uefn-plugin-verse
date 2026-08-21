@@ -50,9 +50,9 @@ Setting max players alone is incomplete. Players beyond the pad count cannot joi
 
 **Always do both** when sizing a session:
 
-1. Count pads: `find_devices(label_filter="Spawn", class_filter="Player_Spawner")`
-2. Set Island Settings: `MaxPlayers` (+ usually `Matchmaking_MaxPlayersPerSession`) to that count (or place more pads first)
-3. If pads < MaxPlayers → **place more pads** (or lower MaxPlayers). Never leave a mismatch.
+1. Count pads with nested Epic `unreal__*` Creative device tools (Player Spawn Pad / Player_Spawner)
+2. Set Island Settings `MaxPlayers` (+ usually `Matchmaking_MaxPlayersPerSession`) to that count (or place more pads first)
+3. If pads < MaxPlayers → **place more pads** via Epic device tools (or lower MaxPlayers). Never leave a mismatch.
 
 Pad asset (append `_C`): search `Player_Spawner` → typically  
 `/Game/Creative/Devices/PlayerSpawner/BP_Creative_Player_Spawner_Prop.BP_Creative_Player_Spawner_Prop_C`  
@@ -64,38 +64,22 @@ If a Verse player-manager has `AllPlayerSpawners`, wire after placement: `wire_p
 
 | Job | Tool |
 |-----|------|
-| Find Island Settings | `find_devices(label_filter="Island", class_filter="ExperienceSettings")` |
-| Count spawn pads | `find_devices(label_filter="Spawn", class_filter="Player_Spawner")` |
-| Read / write settings | `inspect_creative_device` / `set_creative_device_fields` |
+| Find Island Settings / spawn pads | nested Epic `unreal__*` Creative device tools |
+| Read / write Island Settings | nested Epic `unreal__*` (not `inspect_creative_device`) |
 | Wire pads → manager | `wire_player_spawners("<manager_label>")` |
 
 ## Session setup golden path (N players)
 
 ```
-ping
-find_devices(label_filter="Spawn", class_filter="Player_Spawner")   # count = P
-find_devices(label_filter="Island", class_filter="ExperienceSettings")
-inspect_creative_device(
-  actor_path="IslandSettings0",
-  keys=["MaxPlayers", "Matchmaking_MaxPlayersPerSession", "SpawnLocation", "SpawnPadSelection"],
-)
-
-# If P < N: spawn (N-P) more Player Spawn Pads via spawn_actor(..., label=..., folder="Hub/Spawners"), then save
-# Then:
-set_creative_device_fields(actor_path="IslandSettings0", fields={
-  "MaxPlayers": N,
-  "Matchmaking_MaxPlayersPerSession": N,
-  "SpawnLocation": "SpawnPads",
-  "SpawnPadSelection": "Random",          # or NearTeammates for team games
-  "DefaultClassIdentifier": {"class_type": "NoClass", "class_slot": 1},
-  "Teams": {"team_type": "FreeForAll", "team_index": 1},
-}, save_level=true)
-
+ducky_get_status   # epic_mcp_online must be true; else recites Epic setup steps
+# Census spawn pads + Island Settings via nested Epic unreal__* device tools
+# If P < N: place (N-P) more Player Spawn Pads via Epic device tools, then save
+# Set MaxPlayers / Matchmaking_MaxPlayersPerSession to N via Epic device tools
 # Optional: wire_player_spawners("MyPlayerManager")
 # Verify: pad count == MaxPlayers
 ```
 
-**Inspect gotcha:** param is `actor_path` (Outliner label works as the value) — never `label=`. Always pass `keys=[…]` for Island Settings — the full ToyOptions dump is huge.
+Epic Python toolsets speak **XYZ**. Prefer nested Epic device tools over Ducky `spawn_actor` for Player Spawn Pads. If Epic MCP is down, stop — do not use `find_devices` / `inspect_creative_device` / `set_creative_device_fields`.
 
 ## Core keys (session)
 

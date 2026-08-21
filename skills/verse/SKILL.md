@@ -5,7 +5,7 @@ description: "Writing Verse code — syntax, best practices, and finding APIs/as
 license: Ducky Source-Available License v1.0
 metadata:
   label: UEFN Verse
-  version: 32
+  version: 33
   managed_by: uefn-ducky
   author: UEFN-Ducky
   copyright: Copyright 2026 UEFN-Ducky
@@ -47,7 +47,7 @@ Pack names match `sys_architecture` (`player_core`, `economy`, `progression`, `t
 
 ## Digests (before you write)
 
-**HARD — digests are READ ONLY; UEFN auto-edits them.** Never write/edit/delete/rename any `*.digest.verse`. After new assets or Verse that should appear in digests: `workspace_compile_verse` (UEFN open) → then look inside with `search_verse_digest` / `get_verse_api`. Project Verse goes under `Content/Verse/**` only.
+**HARD — digests are READ ONLY; UEFN auto-edits them.** Never write/edit/delete/rename any `*.digest.verse`. After new assets or Verse that should appear in digests: prefer nested Epic Verse compile (`unreal__*`) when `epic_mcp_online`; `workspace_compile_verse` still works as the host Verse-build trigger. Then look inside with `search_verse_digest` / `get_verse_api`. Project Verse goes under `Content/Verse/**` only.
 
 UEFN generates digest files covering the whole surface. **Listener offline OK** — tools read digests from disk. Start with `list_verse_digests()` to see which files exist and what each is for:
 
@@ -71,7 +71,7 @@ Workflow: `list_verse_digests` / search → `get_verse_api` for the exact signat
 
 - **FIRST tool on a fix-errors turn:** `workspace_list_verse_errors()` — never `ping`, `get_project_info`, `ducky_get_errors`, `execute_python`, or listener tools. If a listener call does not return immediately it is broken; do not retry.
 - `workspace_list_verse_errors()` with **no args** after every edit (incremental; offline OK). Its list is complete **unless the result says `from_cache`** (stale — wait for the Verse build, then list again). Fix the files it names; don't re-scan to "make sure" and never pass `full=true` just to re-confirm (full rescan is slow). `rescan=false` re-reads without scanning.
-- `workspace_compile_verse` only after Problems is clean and UEFN is known open (not a substitute for listing errors).
+- `workspace_compile_verse` only after Problems is clean and UEFN is known open (not a substitute for listing errors). Prefer nested Epic Verse compile when `epic_mcp_online`.
 
 ## Syntax must-knows
 
@@ -159,7 +159,7 @@ Read the matching file before working in that area:
   Load when: Adding analytics/telemetry events, tracking funnels/milestones, or awarding accolades/XP for actions
 - `references/sys_time_tracking.md` — Session & playtime tracking — persistable login timestamps, epoch-seconds vs simulation clock, join/leave session lifecycle, offline-elapsed calculation, and formatted duration display
   Load when: Tracking playtime, first/last login, session duration, offline elapsed time, or real-world timestamps across sessions
-- `references/sys_inventory.md` — Per-player inventory — persistable item entry arrays, immutable add/remove, quantity checks, re-granting physical items on load, and per-entry persist vs reset flags (soft bags + Creative granters; custom firearms → scenegraph `custom_weapons`; custom items → scenegraph `custom_items`)
+- `references/sys_inventory.md` — Per-player inventory — persistable item entry arrays, immutable add/remove, quantity checks, re-granting physical items on load, and per-entry persist vs reset flags (soft bags + Creative granters; custom firearms → scenegraph `custom_weapons`; custom items → scenegraph `custom_items`; template abilities → scenegraph `template_abilities`)
   Load when: Building a per-player item inventory, owned-collection, stackable items, re-granting items on join, or persist vs session-reset item flags
 - `references/sys_hud_template.md` — Any-manager display template — *_canvas_builder, ShowHUD/RemoveHud, shop rows, inventory slots, progress bars; driven by any Services manager
   Load when: Creating per-player on-screen UI for any manager — wallet, XP, shop rows, inventory slots, tabs, progress bars — canvas_builder and ShowHUD
