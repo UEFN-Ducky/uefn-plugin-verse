@@ -2,17 +2,21 @@
 source_plugin_id: verse
 name: islandsettings
 description: "UEFN Island Settings — CORE gameplay session setup: MaxPlayers, starting class, teams, spawn rules. ALWAYS pair MaxPlayers with one Player Spawn Pad per slot. Use when setting up a game for N players, changing max players, starting class, matchmaking, or Device_ExperienceSettings."
-license: Ducky Source-Available License v1.0
+license: MIT
 metadata:
   label: UEFN Island Settings
-  version: 5
+  version: 7
   author: UEFN-Ducky
-  copyright: Copyright 2026 UEFN-Ducky
-  allow_redistribute: false
+  copyright: Copyright 2026 Mindful Path Company, LLC
+  allow_redistribute: true
   managed_by: uefn-ducky
 ---
 
 # UEFN Island Settings — CORE session setup
+
+**Epic UEFN MCP:** Settings → MCPs → **UEFN MCP (Epic)** (`unreal-mcp`). Bridge tools: `unreal__list_toolsets` → `unreal__describe_toolset` → `unreal__call_tool` (toolsets — not flat `unreal__create_entity`). Map: `skill_read_subskill("uefn", "epic_mcp")`. Ducky tools below stay for this skill's domain when Epic does not cover it.
+
+Island Settings + spawn pads: Epic `ValkyrieToolset.DeviceToolset` (`PlaceDevice`, `GetDeviceProperties`, `SetDeviceProperty`).
 
 **CRITICAL — editor mutations are SERIAL:** spawn pads / Creative field sets —
 one heavy MCP call → wait → next. Never parallel `spawn_actor` for N pads in

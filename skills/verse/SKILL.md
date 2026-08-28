@@ -2,17 +2,21 @@
 source_plugin_id: verse
 name: verse
 description: "Writing Verse code — syntax, best practices, and finding APIs/assets via digests"
-license: Ducky Source-Available License v1.0
+license: MIT
 metadata:
   label: UEFN Verse
-  version: 33
+  version: 39
   managed_by: uefn-ducky
   author: UEFN-Ducky
-  copyright: Copyright 2026 UEFN-Ducky
-  allow_redistribute: false
+  copyright: Copyright 2026 Mindful Path Company, LLC
+  allow_redistribute: true
 ---
 
 # Verse — writing code for UEFN
+
+**Epic UEFN MCP:** Settings → MCPs → **UEFN MCP (Epic)** (`unreal-mcp`). Bridge tools: `unreal__list_toolsets` → `unreal__describe_toolset` → `unreal__call_tool` (toolsets — not flat `unreal__create_entity`). Map: `skill_read_subskill("uefn", "epic_mcp")`. Ducky tools below stay for this skill's domain when Epic does not cover it.
+
+In-editor Verse build / file ops when Epic is online: `ValkyrieToolset.VerseToolset` (`BuildAll`, `ReadFile`, …). Offline disk edits stay on `workspace_*`.
 
 **CRITICAL — level place/wire is SERIAL (uefn tools):** when placing devices or
 wiring `@editable` refs, one heavy MCP call → wait → next. Never parallel
@@ -21,15 +25,15 @@ wiring `@editable` refs, one heavy MCP call → wait → next. Never parallel
 `skill_read_subskill("uefn", "batch_commands")` and `creative_devices`.
 
 
-**Never guess API names, types, or signatures — search the digests.** Every engine class, function, device, weapon, and every custom asset in the project is listed there. If a name is in no digest, it does not exist in this project — don't write it.
+**Never invent API names — but do NOT re-verify the skills.** Code shown in this pack (and any loaded subskill or template) is **pre-verified** against current digests: copy names and signatures as-is, no digest check needed. Search the digests only for names you are adding that no loaded skill shows; if such a name is in no digest, it does not exist in this project — don't write it. After writing, `workspace_list_verse_errors` is the verification gate — it catches any drift in seconds, so never spend calls pre-verifying symbol-by-symbol (`Distance`, `Sin`, `GetFortCharacter`, … are all real).
 
-**Folders before files (hard rule):** NEVER write new `.verse` files at `Content/Verse/` root. One gameplay system per folder. Prefer template packs (`verse_template_apply`) which create `Verse/Economy/`, `Verse/Shop/`, `Verse/PlayerCore/`, `Verse/Progression/`, etc. Hand-writing: `workspace_list_dir("Verse")` → reuse that system’s folder or write `Verse/<System>/<file>.verse` (`workspace_write_file` creates parent dirs). Only `module_declarations.verse` and tiny shared helpers belong at Verse root. Before inventing a parallel layout, load `modules`.
+**Folders before files (hard rule):** NEVER write new `.verse` files at `Content/Verse/` root. One gameplay system per folder. Prefer template packs (`verse_template_apply`) which create `Verse/Economy/`, `Verse/Shop/`, `Verse/PlayerCore/`, `Verse/NPCCore/`, `Verse/Progression/`, etc. Hand-writing: `workspace_list_dir("Verse")` → reuse that system’s folder or write `Verse/<System>/<file>.verse` (`workspace_write_file` creates parent dirs). Only `module_declarations.verse` and tiny shared helpers belong at Verse root. Before inventing a parallel layout, load `modules`.
 
 **Player managers (`game_player` + `Services`):** follow `sys_architecture` exactly — `player_manager` bus → `Init` (persist row) → manager `OnPlayerJoined` (config then HUD). Name roles Manager / Tracker / Controller / Service — not everything is a “system”. Never use `fortnite_` in type names. Never name things “wallet” or “*_system” — use `economy_manager`, `progression_manager`, `player_time_tracker`, `save_service`.
 
-**Persistence `weak_map` (HARD):** never remove keys once added (removing breaks saves); never delete persistable fields without migration. Replace values only via rebuild+`set`. Load `persistence` + `sys_persistence_migration` before any save-schema change. Session maps ≠ persist maps.
+**Persistence `weak_map` (HARD):** never remove keys once added (removing breaks saves); never delete persistable fields without migration. Replace values only via rebuild+`set`. Load `persistence` + `sys_persistence_migration` before any save-schema change. Session maps ≠ persist maps. Nest owned custom weapons on the **one** player table (`sys_owned_weapons`); never a 5th persist `weak_map`.
 
-**Any on-screen canvas (shop / inventory / HUD / modal / grid):** `sys_canvas_cookbook` (compositions + visibility checklist) → `sys_hud_template` (ShowHUD wiring) → interactive clicks: **`sys_custom_buttons`** (chrome-less whole-card/row `button`, hover, **`SetFocus` before AddWidget**) then `sys_ui_menus` (`.All` lifetime). Skills alone must invent UI that **shows visually**.
+**Any on-screen canvas (shop / inventory / HUD / modal / grid):** `sys_canvas_cookbook` (compositions + visibility checklist) → `sys_hud_template` (ShowHUD wiring) → interactive clicks: **`sys_custom_buttons`** (chrome-less whole-card/row `button`, hover, **`SetFocus` before AddWidget**) then `sys_ui_menus` (`.All` lifetime). Armory owned-weapon shop (Locked / Buy / Equip / upgrade) → `sys_owned_weapons`. Skills alone must invent UI that **shows visually**.
 
 **Epic Text Localization / PO / publish L10N readiness:** named `<localizes>` + `message` for gatherable copy — `skill_read_subskill("localization", "ui_ready")` (pipeline: `localization` pack).
 
@@ -43,7 +47,7 @@ When the **UEFN Verse** plugin is enabled, **check packs before writing** player
 2. `verse_template_get(id)` — read the Verse source.
 3. `verse_template_apply(id)` — creates a **named folder** under `Content/Verse` (e.g. `Verse/Economy/`) and writes the pack files there. Prefer this over inventing parallel files at Verse root.
 
-Pack names match `sys_architecture` (`player_core`, `economy`, `progression`, `time_tracker`, `shop`, `match_timer`, `tycoon`). Cross-pack links use `player_manager` `?option` slots (`GetCurrencyProvider`, `GetXPAwarder`, `GetPlaytimeProvider`) so packs stay standalone.
+Pack names match `sys_architecture` (`player_core`, `npc_core`, `economy`, `progression`, `time_tracker`, `shop`, `match_timer`, `tycoon`). NPC islands: `verse_template_apply("npc_core")` then customize (do not invent a parallel prey/hunter folder). `npc_ecosystem` is the optional cat+dog example only. Cross-pack player links use `player_manager` `?option` slots (`GetCurrencyProvider`, `GetXPAwarder`, `GetPlaytimeProvider`) so packs stay standalone.
 
 ## Digests (before you write)
 
@@ -65,7 +69,7 @@ UEFN generates digest files covering the whole surface. **Listener offline OK** 
 - Pass `digest_path=` the Assets digest to search only custom assets.
 - Content Browser weapon/item *assets* → `search_assets` (digests cover Verse API + Verse-visible ids).
 
-Workflow: `list_verse_digests` / search → `get_verse_api` for the exact signature → write with that **exact** name → `workspace_list_verse_errors`.
+Workflow (only for names no loaded skill shows): search → `get_verse_api` for the exact signature → write with that **exact** name → `workspace_list_verse_errors`. Batch independent digest lookups in one message; budget ~5 lookups per task, then WRITE the files — the error list drives any re-checks.
 
 ## Error checks
 
@@ -97,17 +101,18 @@ my_device := class(creative_device):
 | Wrong | Right |
 |-------|-------|
 | Dump `economy_shop.verse` / devices at `Verse/` root | `Verse/Economy/…`, `Verse/Shop/…`, or `verse_template_apply` |
-| Guess a device / asset / function name | `search_verse_digest` first; copy the exact signature |
+| Guess a device / asset / function name | Copy it from a loaded skill (pre-verified), else `search_verse_digest` once |
+| Digest-verify every symbol before writing (`Distance`, `Sin`, `GetFortCharacter`, …) | Skill code is pre-verified — write, then `workspace_list_verse_errors` |
 | `// comment` | `#` comment |
 | Read a whole `*.digest.verse` into chat | `search_verse_digest` (compact matches) |
 | Write / patch / delete any `*.digest.verse` | Never — UEFN auto-edits digests on Verse build; you only search/read after `workspace_compile_verse` |
 | Hunt compile errors via the game / listener / `ping` / `get_project_info` / `execute_python` / `ducky_get_errors` | `workspace_list_verse_errors` FIRST (host) |
 
-For anything non-trivial, load the matching reference below with `skill_read_subskill` — deep language topics (`classes`, `control_flow`, `async`, `effects`, `devices`, `datatypes`, `persistence`, `ui`, `modules`, `digests`) and `sys_*` recipes for whole game systems. **Start any new game system with `sys_architecture`** — the backbone the other `sys_*` recipes specialize.
+For anything non-trivial, load the 1–3 references below that best match the task with `skill_read_subskill`, then WRITE — the recipes are self-sufficient. Cross-links inside a reference ("see also" / "Details:") are optional deep-dives for when you are stuck, not prerequisites, and never re-load a reference you already read. **New player-driven game systems start with `sys_architecture`** — the backbone the other `sys_*` recipes specialize (not needed for self-contained systems like NPC behaviors).
 
 ## Reference files
 
-Read the matching file before working in that area:
+Load the closest 1–3 for the task:
 
 - `references/digests.md` — Where the Verse API and your custom assets live, and how to search them
   Load when: Looking up a device, weapon, type, function signature, or a custom asset before writing Verse
@@ -159,8 +164,10 @@ Read the matching file before working in that area:
   Load when: Adding analytics/telemetry events, tracking funnels/milestones, or awarding accolades/XP for actions
 - `references/sys_time_tracking.md` — Session & playtime tracking — persistable login timestamps, epoch-seconds vs simulation clock, join/leave session lifecycle, offline-elapsed calculation, and formatted duration display
   Load when: Tracking playtime, first/last login, session duration, offline elapsed time, or real-world timestamps across sessions
-- `references/sys_inventory.md` — Per-player inventory — persistable item entry arrays, immutable add/remove, quantity checks, re-granting physical items on load, and per-entry persist vs reset flags (soft bags + Creative granters; custom firearms → scenegraph `custom_weapons`; custom items → scenegraph `custom_items`; template abilities → scenegraph `template_abilities`)
+- `references/sys_inventory.md` — Per-player inventory — persistable item entry arrays, immutable add/remove, quantity checks, re-granting physical items on load, and per-entry persist vs reset flags (soft bags + Creative granters; Armory prefab → scenegraph `custom_weapons`; owned collectible + canvas shop → `sys_owned_weapons`; custom items → scenegraph `custom_items`; template abilities → scenegraph `template_abilities`)
   Load when: Building a per-player item inventory, owned-collection, stackable items, re-granting items on join, or persist vs session-reset item flags
+- `references/sys_owned_weapons.md` — Owned custom firearms — persist, collectible_object_device pickup, WaitForInventory, AddItemDistribute then GetParentInventory/PickUp/Equip, canvas shop, rejoin; Item Granter cannot grant EP_*
+  Load when: Custom player weapons that save, pick up via collectible_object_device, canvas-shop, upgrade, restore on rejoin, or pick a collectible and shoot
 - `references/sys_hud_template.md` — Any-manager display template — *_canvas_builder, ShowHUD/RemoveHud, shop rows, inventory slots, progress bars; driven by any Services manager
   Load when: Creating per-player on-screen UI for any manager — wallet, XP, shop rows, inventory slots, tabs, progress bars — canvas_builder and ShowHUD
 - `references/sys_input_devices.md` — Input devices — input_trigger_device Register/Unregister, Pressed/Released, held-key repeat, UI buttons vs Creative triggers
