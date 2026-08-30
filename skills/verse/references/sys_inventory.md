@@ -4,7 +4,7 @@ metadata:
   order: 33
   label: "Game systems — inventory & owned items"
   default_enabled: false
-  load_condition: "Building a per-player item inventory, owned-collection, stackable items, re-granting items on join, or persist vs session-reset item flags"
+  load_condition: "Building a per-player item inventory, owned-collection of soft ItemId bags, stackable items, re-granting Creative granter items on join, or persist vs session-reset item flags. Armory owned guns → sys_owned_weapons"
 ---
 
 ## Inventory & owned items
@@ -14,12 +14,12 @@ shared persistable table, plus a runtime manager and a placed device that
 hooks the **player-manager connected bus** — same programming flow as wallet /
 level (`sys_architecture`, `sys_player_data`, `sys_economy`). Names are generic.
 
-**Player custom firearms** (Armory Entity Prefabs, `fort_trace_weapon_component`,
-Verse grant/equip/clear) → `skill_read_subskill("scenegraph", "custom_weapons")`.
-**Custom non-weapon Scene Graph items** (Entity Prefab pickup / icon / mesh) →
+**Player custom firearms** — prefab/grant API →
+`skill_read_subskill("scenegraph", "custom_weapons")`. Owned collectible +
+canvas shop + persist → `skill_read_subskill("verse", "sys_owned_weapons")`.
+**Custom non-weapon Scene Graph items** →
 `skill_read_subskill("scenegraph", "custom_items")`. This file is soft persist
-bags + Creative Item Granter re-grants — not Scene Graph Armory weapons or
-custom item prefabs.
+bags + Creative Item Granter — not Armory guns.
 
 ### Layers (same five-part shape)
 

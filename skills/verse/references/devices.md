@@ -57,10 +57,13 @@ Group related references into a `struct<concrete>()` (see `classes`) so one
 `timer_device`, or a `team_devices` struct holding a team's granters and messages.
 
 > Wiring the *actual* placed references (which prop/device a field points to) is
-> done in UEFN or with MCP `wire_verse_device_ref` / `set_verse_editable` (**one
-> field per turn** — never parallel wire/spawn;
+> done with MCP `wire_verse_device_ref` / `wire_verse_device_array` /
+> `set_verse_editable` (**one field per turn** — never parallel wire/spawn;
 > `skill_read_subskill("uefn", "batch_commands")`) when the listener is
-> online — **not** by writing paths in source. The source only declares the field.
+> online — **not** by writing paths in source, and **not** by asking the user to
+> drag Details or paste T3D. Storage names, Script object, and wrapper outering:
+> `skill_read_subskill("uefn", "verse_editable_internals")`. The source only
+> declares the field.
 
 ### `OnBegin` — the entry point
 

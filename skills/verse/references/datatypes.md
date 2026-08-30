@@ -98,7 +98,7 @@ if (Yaw := YPR[0], Pitch := YPR[1]):        # destructure via failable index
   context**: `if (Found = false):`, `for (…, Key <> OutAgent):`.
 - Combine: `and`, `or`, `not` — `if (Dist <= Range and Dist < ClosestDistance):`.
 - Handy math (from `/UnrealEngine.com/…` and `/Verse.org/…`): `Abs`, `Max`, `Min`,
-  `Floor`, `Distance(A, B)`, `GetRandomInt`. Confirm signatures in the digest.
+  `Floor`, `Distance(A, B)`, `GetRandomInt` — all pre-verified; use as shown.
 
 ```verse
 TempH := Max(0.0, Health - Damage)

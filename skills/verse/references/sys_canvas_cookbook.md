@@ -212,7 +212,7 @@ if (GP := PlayerManager.GetGamePlayer(Agent)?):
         SyncShopUI()
 ```
 
-Confirm `HasCurrency` / button click payload names in the digest.
+`HasCurrency` / button click payload names are as shown — re-check only if the error list flags one.
 
 ## Inventory canvas (driven by InventoryManager)
 

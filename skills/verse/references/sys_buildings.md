@@ -64,4 +64,4 @@ Status / buy buttons: `sys_canvas_cookbook` + `sys_ui_menus` or passive HUD via
 
 - Cache origins before the first park underground or you lose the anchor.
 - Teleport reveal ≠ material swap; pick one visual strategy.
-- Confirm `TeleportTo` / prop APIs in the digest.
+- `TeleportTo` / prop APIs are as shown — re-check only if the error list flags one.

@@ -25,12 +25,12 @@ def _find(template_id: str) -> dict[str, Any] | None:
 
 def _register_template_tools(api) -> None:
     @api.tool(
-        intent=r"\b(verse\s*template|economy_manager|progression_manager|player_core|tycoon|shop_controller)\b"
+        intent=r"\b(verse\s*template|economy_manager|progression_manager|player_core|npc_core|tycoon|shop_controller)\b"
     )
     def verse_template_list() -> str:
         """List Verse system template packs from the UEFN Verse plugin (id, name, files, connects).
 
-        Call this BEFORE inventing player/economy/progression/tycoon/shop/timer Verse files.
+        Call this BEFORE inventing player/npc/economy/progression/tycoon/shop/timer Verse files.
         Prefer verse_template_apply / verse_template_get over writing parallel scaffolds.
         """
         out = []
@@ -56,7 +56,7 @@ def _register_template_tools(api) -> None:
             )
         return json.dumps({"ok": True, "templates": out}, indent=2)
 
-    @api.tool(intent=r"\b(verse\s*template|economy_manager|progression_manager|player_core)\b")
+    @api.tool(intent=r"\b(verse\s*template|economy_manager|progression_manager|player_core|npc_core)\b")
     def verse_template_get(template_id: str) -> str:
         """Return full Verse source for one template pack (paths + content).
 
@@ -99,7 +99,7 @@ def _register_template_tools(api) -> None:
         """Write a Verse template pack into the project (folder + .verse files).
 
         parent_relative defaults to Content/Verse. Multi-file packs create folder/
-        then each file. Prefer this over inventing economy/progression/player scaffolds.
+        then each file. Prefer this over inventing economy/progression/player/npc scaffolds.
         """
         row = _find(template_id)
         if not row:

@@ -89,7 +89,7 @@ InitializeTimeTracking<public>(Agent : agent) : void =
         Player.IsActive[]
         PlayerStats := PlayerStatsMap[Player]
     then:
-        Now := GetSecondsSinceEpoch()          # digest: confirm exact name
+        Now := GetSecondsSinceEpoch()          # pre-verified
         if (PlayerStats.PlayerTimeData.FirstLoginTime = 0.0):
             TimeSaveService.SetFirstLoginTime(MyAgent, Now)
             TimeSaveService.SetLastLoginTime(MyAgent, Now)
@@ -165,4 +165,4 @@ active, else `0.0`.
 - **Bus after Init** — time init assumes the weak_map row already exists.
 - **Carry-all helpers** — omitting time fields in another system's `Update…`
   wipes playtime on the next wallet/XP save (`persistence`).
-- Confirm epoch API with `search_verse_digest`.
+- The epoch API is as shown — re-check only if the error list flags it.

@@ -9,9 +9,12 @@ metadata:
 
 ## NPC AI — `npc_behavior` patterns
 
-Names below are **generic**. Confirm every API (`npc_behavior`, `GetNavigatable`,
-`PlayAndAwait`, `npc_spawner_device`, Scene Graph types) in the digests before
-writing. Pair this with the **animation** pack's `npc_characters` reference for
+The code below is **pre-verified** against current digests — copy names and
+signatures as-is (`npc_behavior`, `GetNavigatable`, `PlayAndAwait`,
+`npc_spawner_device`, `Distance`, focus/anim interfaces); do NOT re-check them
+one by one. Digest-check only APIs you add that are not shown here (e.g.
+foliage/grass queries), then write and let `workspace_list_verse_errors` catch
+drift. Pair this with the **animation** pack's `npc_characters` reference for
 character definitions and AnimPresets — Verse owns behavior; content owns mesh/anim.
 
 ### Hard constraints (read first)
@@ -19,7 +22,8 @@ character definitions and AnimPresets — Verse owns behavior; content owns mesh
 | Trap | Rule |
 |------|------|
 | `npc_behavior` calling `GetPlayspace()` | **Fails / unavailable.** Use `Behavior.GetEntity[]` → `GetPlayspaceForEntity[]` → `GetPlayers()`. |
-| Module-scope mutable singletons for AI state | Illegal under `<transacts>` in many contexts. Prefer helpers that take the behavior instance, or a placed `creative_device` the behavior can reference. |
+| Module-scope mutable singletons for AI state | Illegal under `<transacts>` in many contexts. Session `weak_map(session, []agent)` registries for NPC-to-NPC awareness are OK if you **fetch the arrays in a void context** then pass them into a `<transacts>` checker — see `skill_read_subskill("animation", "npc_ecosystem")`. Never this pattern on persist maps. |
+| Asking a human to hook NPCDef / AnimPreset / anim slots | **Forbidden.** `create_npc_character_definition`, `create_anim_preset`, `create_character_blueprint`, `set_npc_spawner_definition`. Reaction clips: duplicate into the Verse module folder and hardcode the ids. |
 | Behaviors calling `fort_character.Damage` | **Never.** One shared helpers module owns damage (`ApplyHitDamage` / melee / AOE / projectile). Behaviors only call those helpers after a real hit. |
 | `SpawnProp` walls vs SG projectile sweeps | `FindSweepHits` only sees **Scene Graph** colliders (`Queryable`). Creative props are invisible to SG queries — walls/cover must be SG entities if projectiles should block. |
 
@@ -65,7 +69,7 @@ melee_enemy_behavior<public> := class(npc_behavior):
 - `GetFocusInterface[]` → `MaintainFocus(LookAtPoint)` (async — race it)
 - `GetPlayAnimationController[]` → `PlayAndAwait(Clip)` for attack swings
 
-Confirm exact member names in the digest — they evolve.
+These member names are current — if a compile error flags one, re-check just that name with `get_verse_api`.
 
 ### Nearest-player helper (no wired manager required)
 
@@ -256,23 +260,24 @@ enemy_spawn_manager := class(creative_device):
             S.Spawn()
 ```
 
-Confirm event / `Spawn()` signatures in the digest. Each spawner in the level
-points at one `NPCCharacterDefinition` asset.
+Event / `Spawn()` signatures are as shown — re-check in the digest only if the
+error list flags one. Each spawner in the level points at one
+`NPCCharacterDefinition` asset.
 
 ---
 
 ## Checklist — new enemy type
 
-1. Content: mesh + restored anims + AnimPreset + `NPCCharacterDefinition` with `CharacterModifier_VerseBehavior` → this behavior class (`npc_characters`).
-2. Verse: new `npc_behavior` subclass (or reuse an archetype with different `@editable` defaults).
-3. Assign attack anim / props on the definition's Verse Behavior modifier slots.
-4. Place `npc_spawner_device` → wire into spawn manager.
+1. Content via **tools**: mesh + physics + AnimPreset + character BP + `NPCCharacterDefinition` (`npc_characters`). Never Details.
+2. Verse: `verse_template_apply("npc_core")` then customize class names/clips for this island. Multi-species patterns: `skill_read_subskill("animation", "npc_ecosystem")`. Apply `npc_ecosystem` only if they asked for that cat+dog example.
+3. Reaction/attack clips: duplicate into the behavior folder; reference by name. Do not fill NPCDef Details.
+4. Place `npc_spawner_device` → `set_npc_spawner_definition` → `wire_verse_device_ref` into spawn manager.
 5. `workspace_list_verse_errors` → fix until clean.
-6. PIE: confirm chase, hit prints (`MELEE HIT` / projectile tags), and elimination counting.
+6. PIE: confirm chase, hit prints, elimination counting.
 
 **MetaHuman enemies:** assemble with UEFN Export and finish mesh / physics /
 AnimPreset / spawn wiring via `skill_read_subskill("metahuman", "npc_spawn")`
 *before* writing `npc_behavior` — Verse owns the AI loop; the metahuman pack
 owns Creator → assemble → definition.
 
-Cross-links: `sys_spawning` (prop pools / teleport), `sys_input_devices` (shoot-down fire held), `async` (`race` / `Sleep`), `devices` (`@editable` / `OnBegin`), metahuman `npc_spawn`.
+Optional deep-dives (load only if stuck — this file is sufficient for standard NPC AI): `sys_spawning` (prop pools / teleport), `sys_input_devices` (shoot-down fire held), `async` (`race` / `Sleep`), `devices` (`@editable` / `OnBegin`), metahuman `npc_spawn`.

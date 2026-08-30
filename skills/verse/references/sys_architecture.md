@@ -36,6 +36,11 @@ The per-player bundle is `game_player.Services` (`game_player_services`) — not
 Do **not** use `fortnite_` in type names — those tokens collide with engine /
 locked APIs. Use `game_player`.
 
+NPC islands are **not** this player_manager backbone. Default:
+`verse_template_apply("npc_core")` → `Verse/NPCCore/` (session registries,
+prey/hunter FSMs, spawn controller). Standalone — no Player Core required.
+`npc_ecosystem` is the optional cat+dog example only.
+
 **Any canvas that must show on screen:** invent layouts with `sys_canvas_cookbook`,
 wire ShowHUD with `sys_hud_template`, interactive shops/popups with `sys_ui_menus`.
 

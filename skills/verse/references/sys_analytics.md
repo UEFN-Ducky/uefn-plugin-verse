@@ -11,8 +11,8 @@ metadata:
 
 Analytics record **what players do** (funnels, retention, economy sinks);
 accolades **reward** an action (XP/score popups). Both are devices you fire from
-gameplay. Confirm member names in the digest (`search_verse_digest("analytics")`,
-`search_verse_digest("accolade")`). Names below are generic.
+gameplay. Names below are generic — write first; if the error list flags a
+member, re-check it then (`search_verse_digest("analytics")` / `("accolade")`).
 
 ### The two devices
 

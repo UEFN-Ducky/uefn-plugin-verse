@@ -103,7 +103,7 @@ AwaitForEvent(Event : event(t), Callback(:t):void, Subscription : event_subscrip
             Subscription.CancelEvent.Await()
 ```
 
-Put helpers in `Verse/UMGWidget/widget_event_helpers.verse` — not at Verse root. Confirm `event(t).Await` / exact signatures with digests before shipping.
+Put helpers in `Verse/UMGWidget/widget_event_helpers.verse` — not at Verse root. `event(t).Await` signatures are as shown — the error list flags any drift.
 
 ### Related
 

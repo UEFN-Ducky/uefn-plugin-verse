@@ -76,4 +76,4 @@ instance.
 - Capacity: refuse enter when `Games` length >= max.
 - `.None` + input triggers — not UI buttons — for movement.
 - Unregister inputs even on crash paths / leave.
-- Confirm stasis / Hide / AddWidget cell APIs in the digest.
+- Stasis / Hide / AddWidget cell APIs are as shown — re-check only if the error list flags one.

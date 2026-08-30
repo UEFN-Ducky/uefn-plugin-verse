@@ -61,6 +61,11 @@ set_creative_device_fields(actor_path="<label>", fields={
 
 ## BR-style inventory + movement (common UEFN default)
 
+Required for custom Armory / owned-weapon hotbar
+(`skill_read_subskill("verse", "sys_owned_weapons")`). Without
+`CustomInventoryConfiguration`, Verse grant can succeed and the player still
+cannot shoot.
+
 ```
 set_creative_device_fields(actor_path="<label>", fields={
   "LocomotionPreset": "Current BR",

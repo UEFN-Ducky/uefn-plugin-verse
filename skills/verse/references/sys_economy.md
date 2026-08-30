@@ -4,13 +4,17 @@ metadata:
   order: 23
   label: "Game systems — currency, wallet & shops"
   default_enabled: false
-  load_condition: "Building currency/wallet, shops, purchases, item granting, or a scaled money display (K/M/B suffixes)"
+  load_condition: "Building currency/wallet, shops, purchases, item granting, or a scaled money display (K/M/B suffixes). Armory owned-weapon shop → sys_owned_weapons"
 ---
 
 ## Currency, wallet & shops
 
 Names below are generic — adapt them to your game. All device APIs
 (`button_device`, `item_granter_device`, `hud_message_device`) come from the digest.
+
+Button + `GrantItem` shops sell Creative granter bags. Owned custom-weapon shop
+→ `skill_read_subskill("verse", "sys_owned_weapons")`. This file spends wallet
+gold.
 
 ### The wallet manager
 

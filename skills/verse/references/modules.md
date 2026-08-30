@@ -27,6 +27,7 @@ Canonical template folders (use these names when they fit):
 | Folder | For |
 |--------|-----|
 | `Verse/PlayerCore/` | `player_manager`, `game_player`, persistence |
+| `Verse/NPCCore/` | prey/hunter registries, NPC spawn controller |
 | `Verse/Economy/` | currency / economy manager + device |
 | `Verse/Progression/` | XP / levels |
 | `Verse/Shop/` | shop device + canvas |

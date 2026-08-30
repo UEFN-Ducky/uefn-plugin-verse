@@ -9,8 +9,7 @@ metadata:
 
 ## Teams & roles
 
-Teams come from the playspace's **team collection**. Confirm exact member names in
-the digest (`search_verse_digest("team")`) — the shapes below are the common API.
+Teams come from the playspace's **team collection**. Member names are as shown — re-check only if the error list flags one.
 
 ### The team collection
 

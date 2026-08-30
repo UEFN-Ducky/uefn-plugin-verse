@@ -1,9 +1,9 @@
 {
   "id": "verse",
   "kind": "plugin",
-  "version": "1.0.35",
+  "version": "1.0.44",
   "label": "UEFN Verse",
-  "description": "Verse digests, device wiring, compile/errors, skill reader, UMG Widget Blueprint tools, and New-file system template packs (Player Core, Economy, Progression, Tycoon, UMG Widget, \u2026). Bundles verse + islandsettings skills. Serial editor ops (one MCP call per turn).",
+  "description": "Verse digests, device wiring, compile/errors, skill reader, UMG Widget Blueprint tools, and New-file system template packs (Player Core, NPC Core, Economy, Progression, Tycoon, UMG Widget, \u2026). Bundles verse + islandsettings skills. Serial editor ops (one MCP call per turn).",
   "min_app_version": "1.0.0",
   "default_enabled": true,
   "secret_keys": [],
@@ -123,6 +123,32 @@
           }
         ],
         "order": 10
+      },
+      {
+        "id": "npc_core",
+        "name": "NPC Core",
+        "icon": "\ud83e\uddd1",
+        "description": "Default NPC pack (like Player Core): session prey/hunter registries, prey FSM, hunter FSM, spawn controller. Compiles with no clips \u2014 duplicate react clips then Play(AS_\u2026). Standalone; no Player Core required.",
+        "folder": "NPCCore",
+        "files": [
+          {
+            "path": "npc_registry.verse",
+            "file": "templates/npc_core/npc_registry.verse"
+          },
+          {
+            "path": "prey_npc_behavior.verse",
+            "file": "templates/npc_core/prey_npc_behavior.verse"
+          },
+          {
+            "path": "hunter_npc_behavior.verse",
+            "file": "templates/npc_core/hunter_npc_behavior.verse"
+          },
+          {
+            "path": "npc_spawn_controller.verse",
+            "file": "templates/npc_core/npc_spawn_controller.verse"
+          }
+        ],
+        "order": 15
       },
       {
         "id": "economy",
@@ -264,6 +290,32 @@
           }
         ],
         "order": 70
+      },
+      {
+        "id": "npc_ecosystem",
+        "name": "NPC Ecosystem (optional cat+dog example)",
+        "icon": "\ud83d\udc31",
+        "description": "OPTIONAL cat+dog example only. Default NPC pack is npc_core → Verse/NPCCore/. Apply this pack only if the user asked for the exact cat+dog island, with parent_relative=Content/AI after duplicating react clips into that folder.",
+        "folder": "CatReacts",
+        "files": [
+          {
+            "path": "cat_ai_helpers.verse",
+            "file": "templates/npc_ecosystem/cat_ai_helpers.verse"
+          },
+          {
+            "path": "cat_npc_behavior.verse",
+            "file": "templates/npc_ecosystem/cat_npc_behavior.verse"
+          },
+          {
+            "path": "dog_npc_behavior.verse",
+            "file": "templates/npc_ecosystem/dog_npc_behavior.verse"
+          },
+          {
+            "path": "cat_spawn_controller.verse",
+            "file": "templates/npc_ecosystem/cat_spawn_controller.verse"
+          }
+        ],
+        "order": 80
       },
       {
         "id": "umg_widget",

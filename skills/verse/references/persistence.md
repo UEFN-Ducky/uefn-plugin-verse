@@ -58,7 +58,9 @@ Rules for a persistable class:
 - Keep a `Version : int` field so you can migrate old saves when the shape
   changes.
 - Nest persistables — `game_player_table` holds `player_wallet`, `player_level`,
-  etc., each its own `class<final><persistable>`.
+  etc., each its own `class<final><persistable>`. Owned custom weapons nest here
+  (`PlayerWeapons`) — never a second player `weak_map` for guns
+  (`sys_owned_weapons`). Island cap is **4 persist `weak_map`s**.
 
 **3. A manager** that initializes and updates entries:
 

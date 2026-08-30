@@ -90,4 +90,4 @@ Same idea: Pressed starts `spawn{ ContinuousLoop(Agent) }`; Released sets a
 
 - Forgetting `Unregister` leaks input to agents who left the minigame.
 - Subscribing once in `OnBegin` is enough; Register only enables that agent.
-- Confirm `Register` / `Unregister` / event names in the digest — do not invent.
+- `Register` / `Unregister` / event names are as shown — do not invent others; re-check only if the error list flags one.

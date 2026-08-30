@@ -105,7 +105,8 @@ Rebuild only when **row/slot count** changes.
 
 Leaves per offer: `ItemIcon`, `NameText`, `PriceText`, optional `BuyButton`.
 Layout: cookbook **vertical list of shop lines** inside a **panel**. Show with
-`.All`. On click:
+`.All`. Armory owned-weapon shop → `skill_read_subskill("verse", "sys_owned_weapons")`.
+This snippet is Creative `GrantItem` bags. On click:
 
 ```verse
 if (GP := PlayerManager.GetGamePlayer(Agent)?):
@@ -139,4 +140,4 @@ Swap content on click; keep `.All`.
 - Pass the manager’s leaf instances into the builder — not the builder’s defaults.
 - Wrong slot type → compile error (`ui`).
 - Raw `string` into `SetText` → use `Message`.
-- Confirm widget APIs with `search_verse_digest`.
+- Widget APIs are as shown — re-check with `search_verse_digest` only if the error list flags one.
