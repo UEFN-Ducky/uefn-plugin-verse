@@ -32,7 +32,7 @@ Matchmaking_MaxTeamCount / MaxTeamSize consistent with Teams + TeamSize
 ```
 Session setup:
 - [ ] Target player count N agreed
-- [ ] find_devices(Spawn / Player_Spawner) → pad count P
+- [ ] Count pads: Epic DeviceToolset query (or get_all_actors(label_filter="Spawn Pad", limit=500)) → pad count P
 - [ ] If P < N: place (N-P) pads, label Player (P+1)…N Spawn Pad
 - [ ] If P > N and unused pads are intentional: OK; else remove or raise N
 - [ ] Island Settings: MaxPlayers = N
@@ -41,7 +41,7 @@ Session setup:
 - [ ] Island Settings: DefaultClassIdentifier set (starting class)
 - [ ] Island Settings: Teams / TeamSize / friendly fire set
 - [ ] Optional: wire_player_spawners on Verse player manager
-- [ ] save_current_level / save_level=true
+- [ ] save_current_level once at the end (never save_level=true inside other calls)
 - [ ] Re-count: P == MaxPlayers
 ```
 
@@ -51,23 +51,26 @@ Session setup:
 DefaultClassIdentifier: {"class_type": "NoClass", "class_slot": 1}
 ```
 
-`class_type` / slot must match classes you actually defined on the island. Inspect first for allowed shapes. `RevertToDefaultClassAt` controls when players snap back (`GameEnd`, `RoundEnd`, `PlayerDeath`, `Never`).
+`class_type` / slot must match classes you actually defined on the island. Read with Epic `GetDeviceProperties` first for allowed shapes. `RevertToDefaultClassAt` controls when players snap back (`GameEnd`, `RoundEnd`, `PlayerDeath`, `Never`).
 
 ## Placing pads for N players
 
+**One Player Spawn Pad per MaxPlayers slot.** Epic `ValkyrieToolset.DeviceToolset` first:
+
 ```
-search_assets(search="Player_Spawner", limit=5)
-# spawn N times (or N-P more), ~200–400 uu apart — ONE spawn_actor per call;
+unreal__describe_toolset(toolset_name="ValkyrieToolset.DeviceToolset")   # exact argument names — never invent them
+unreal__call_tool(toolset_name="ValkyrieToolset.DeviceToolset", tool_name="ListDeviceAssets", arguments={})  # pick the Player Spawn Pad asset
+# place N pads (or N-P more), ~200–400 uu apart (XYZ) — ONE PlaceDevice per call;
 # wait for each result before the next (never parallel / same-turn multi)
-spawn_actor(
-  asset_path="…/BP_Creative_Player_Spawner_Prop.BP_Creative_Player_Spawner_Prop_C",
-  location=[x, y, z],
-  select=false,
-)
+unreal__call_tool(toolset_name="ValkyrieToolset.DeviceToolset", tool_name="PlaceDevice", arguments={…})
 set_actor_label(..., label="Player K Spawn Pad")   # K = 1…N
+save_current_level()   # once, after all pads
 ```
 
-Never change pad **scale**. Team games: set each pad's team via `inspect_creative_device` / `set_creative_device_fields` on that pad after placement.
+Offline fallback only (`epic_mcp_online` false or Epic errored twice — finish the task, never stop):
+`search_assets(search="Player_Spawner", limit=5)` → `spawn_actor(asset_path="…/BP_Creative_Player_Spawner_Prop.BP_Creative_Player_Spawner_Prop_C", location=[x, y, z], select=false, label="Player K Spawn Pad")` one per call → `save_current_level()` once.
+
+Never change pad **scale**. Team games: set each pad's team via Epic `GetDeviceProperties` / `SetDeviceProperty` on that pad after placement.
 
 ## Verse managers
 

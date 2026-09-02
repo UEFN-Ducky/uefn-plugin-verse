@@ -5,6 +5,7 @@ using { /Fortnite.com/Characters }
 using { /UnrealEngine.com/Temporary/SpatialMath }
 using { /Verse.org/Random }
 using { /Verse.org/Simulation }
+using { /Verse.org/Assets }
 
 # Autonomous cat. Clips are same-module assets in this folder — never @editable Details.
 

@@ -7,6 +7,11 @@ using { /UnrealEngine.com/Temporary/UI }
 using { /Verse.org/Colors/NamedColors }
 using { PlayerCore }
 
+# Per-player HUD leaves. A widget can only live in one canvas, so never share text_blocks across players.
+economy_hud_leaves := class:
+    AmountText : text_block
+    NameText : text_block
+
 economy_manager_device := class(creative_device):
     Message<localizes>(String : string) : message = "{String}"
 
@@ -14,11 +19,8 @@ economy_manager_device := class(creative_device):
     @editable CurrencyConfigs : []currency_config = array{}
 
     SharedManager : economy_manager = economy_manager{}
-    var PerPlayer <private> : [agent]economy_manager = map{}
     var AgentCanvases <private> : [agent]canvas = map{}
-
-    var AmountText : text_block = text_block{DefaultTextColor := NamedColors.White}
-    var NameText : text_block = text_block{DefaultTextColor := NamedColors.White}
+    var AgentLeaves <private> : [agent]economy_hud_leaves = map{}
     CanvasBuilder : economy_canvas_builder = economy_canvas_builder{}
 
     OnBegin<override>()<suspends> : void =
@@ -36,41 +38,41 @@ economy_manager_device := class(creative_device):
 
     OnPlayerJoined(GamePlayer : game_player) : void =
         Agent := GamePlayer.MyAgent
-        Mgr := economy_manager{}
-        Mgr.SetConfig(CurrencyConfigs)
-        set Mgr.MyAgent = option{Agent}
-        Mgr.EnsureRow(Agent)
-        if (set PerPlayer[Agent] = Mgr):
-            ShowHUD(Agent)
+        SharedManager.EnsureRow(Agent)
+        ShowHUD(Agent)
 
     OnPlayerLeft(GamePlayer : game_player) : void =
-        Agent := GamePlayer.MyAgent
-        RemoveHud(Agent)
-        var Next : [agent]economy_manager = map{}
-        for (Key -> Value : PerPlayer, Key <> Agent):
-            set Next = ConcatenateMaps(Next, map{Key => Value})
-        set PerPlayer = Next
+        RemoveHud(GamePlayer.MyAgent)
 
     ShowHUD(Agent : agent) : void =
-        CanvasBuilder.BindLeaves(AmountText, NameText)
-        Canvas := CanvasBuilder.CreateCanvas()
         if (AgentCanvases[Agent]):
             RemoveHud(Agent)
+        Leaves := economy_hud_leaves{
+            AmountText := text_block{DefaultTextColor := White},
+            NameText := text_block{DefaultTextColor := White}
+        }
+        CanvasBuilder.BindLeaves(Leaves.AmountText, Leaves.NameText)
+        Canvas := CanvasBuilder.CreateCanvas()
         if (PUI := GetPlayerUI[player[Agent]]):
             PUI.AddWidget(Canvas)
-            if (set AgentCanvases[Agent] = Canvas):
+            if (set AgentCanvases[Agent] = Canvas, set AgentLeaves[Agent] = Leaves):
                 RefreshHUD(Agent)
 
     RemoveHud(Agent : agent) : void =
         if (Canvas := AgentCanvases[Agent], PUI := GetPlayerUI[player[Agent]]):
             PUI.RemoveWidget(Canvas)
-        var Next : [agent]canvas = map{}
+        var NextCanvases : [agent]canvas = map{}
         for (Key -> Value : AgentCanvases, Key <> Agent):
-            set Next = ConcatenateMaps(Next, map{Key => Value})
-        set AgentCanvases = Next
+            if (set NextCanvases[Key] = Value) {}
+        set AgentCanvases = NextCanvases
+        var NextLeaves : [agent]economy_hud_leaves = map{}
+        for (Key -> Value : AgentLeaves, Key <> Agent):
+            if (set NextLeaves[Key] = Value) {}
+        set AgentLeaves = NextLeaves
 
-    RefreshHUD(Agent : agent) : void =
-        Amount := SharedManager.GetCurrency(Agent, 0)
-        Name := SharedManager.GetCurrencyName(0)
-        AmountText.SetText(Message(SharedManager.FormatAmount(Amount)))
-        NameText.SetText(Message(Name))
+    RefreshHUD<public>(Agent : agent) : void =
+        if (Leaves := AgentLeaves[Agent]):
+            Amount := SharedManager.GetCurrency(Agent, 0)
+            Name := SharedManager.GetCurrencyName(0)
+            Leaves.AmountText.SetText(Message(SharedManager.FormatAmount(Amount)))
+            Leaves.NameText.SetText(Message(Name))

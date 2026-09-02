@@ -195,7 +195,8 @@ set Mesh.Queryable = true
 set Mesh.Visible = true
 MoveComp := keyframed_movement_component{Entity := ArrowEnt}
 ArrowEnt.AddComponents(array{Xform, Mesh, MoveComp})
-Sim.AddEntities(array{ArrowEnt})
+if (Sim := GetSimulationEntity[]):
+    Sim.AddEntities(array{ArrowEnt})
 # SetGlobalTransform → FindSweepHits pre-sweep → SetKeyframes → Play → PrePhysics hit check → RemoveFromParent
 ```
 

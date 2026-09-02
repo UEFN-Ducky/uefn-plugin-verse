@@ -20,7 +20,7 @@ UnlockOrUpgrade(Agent : agent, BuildingIndex : int) : void =
         Cost := CostFor(BuildingIndex, NextLevel)
         if (GP.Services.EconomyManager.GetCurrency(CurrencyName) >= Cost):
             GP.Services.EconomyManager.RemoveCurrency(CurrencyName, Cost)
-            set PlayerBuildingLevel[Agent][BuildingIndex] = NextLevel
+            if (set PlayerBuildingLevel[Agent][BuildingIndex] = NextLevel) {}   # map/array set is failable
             ApplyReveal(BuildingIndex, NextLevel)
             NotifyDeliveryUnlock(BuildingIndex)   # optional nav hook
 ```

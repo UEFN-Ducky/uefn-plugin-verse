@@ -56,6 +56,12 @@ Every line under `if:` is failable and evaluated in order; the first failure jum
 to `else:`. `then:`/`else:` are optional (bare `if:` with only the block runs the
 body for side effects and swallows failure).
 
+**Effect rule for anything inside `if (…)` / `if:` / `for (…)` heads:** every call
+there must be rollback-safe. A helper declared with **no effect specifier** is
+`no_rollback` and is a compile error (E3512) in these positions — give it
+`<transacts>`, or bind its result to a local before the `if`. `<suspends>` calls
+are never allowed in a head. See `effects` and `compile_errors`.
+
 ### `for` — every shape used here
 
 ```verse
@@ -110,7 +116,7 @@ A `loop` with no `Sleep`/`Await` inside a frame will hang the game — always yi
 case (Phase):
     game_phase.Active => StartActive()
     game_phase.Ended  => ShowResults()
-    _ => DoNothing()          # _ is the default branch
+    _ => DoNothing()          # _ is the default branch (the only place `_` is legal — never as a binding name)
 ```
 
 Use `case` for enums and fixed value sets; use `if`/`else` chains for ranges and

@@ -9,7 +9,7 @@ metadata:
 
 # Island Settings — writable key categories
 
-Only keys that `inspect_creative_device` reports with a real `type` (not `readonly_override`) can be set via `set_creative_device_fields`. Confirm on the live device — Epic adds/renames options over time.
+Only keys that Epic `GetDeviceProperties` / `ListDeviceProperties` (`ValkyrieToolset.DeviceToolset`) reports as writable (not `readonly_override`) can be set via `SetDeviceProperty`. Confirm on the live device — Epic adds/renames options over time.
 
 ## Matchmaking & session (CORE)
 

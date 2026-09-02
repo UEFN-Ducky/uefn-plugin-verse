@@ -1,5 +1,6 @@
 # SETUP: Pure UI builder. economy_manager owns the text_block leaves and passes them in.
 using { /Verse.org/Simulation }
+using { /Fortnite.com/UI }
 using { /UnrealEngine.com/Temporary/UI }
 using { /UnrealEngine.com/Temporary/SpatialMath }
 using { /Verse.org/Colors }

@@ -104,8 +104,8 @@ if (CPlayer := Manager.GetGamePlayer(Agent)?):
 ### Scaled display (K / M / B)
 
 For idle/tycoon-scale numbers the wallet stores `Value : float` + `ScaleIndex` and
-formats with a suffix table (a base-amount converter, an index calculator, and a
-`Log10` helper). Keep the raw scaled value for math and only format for the HUD
+formats with a suffix table (a base-amount converter and an index calculator; the
+digest has `Log(B : float, X : float)`, so log10 is `Log(10.0, X)` — there is no `Log10`). Keep the raw scaled value for math and only format for the HUD
 `text_block`. Update the wallet UI after every change (`UpdateWalletUI()`).
 
 ### Gotchas

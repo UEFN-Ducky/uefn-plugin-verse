@@ -19,7 +19,7 @@ module/type names below are generic placeholders — name yours to fit your proj
 
 | Allowed at Verse root | Everything else |
 |----------------------|-----------------|
-| `module_declarations.verse` | One **system folder** per concern |
+| `module_declarations.verse` (optional; only for modules without a folder) | One **system folder** per concern |
 | Tiny shared `helpers.verse` (optional) | Devices, managers, HUD builders, shops, … |
 
 Canonical template folders (use these names when they fit):
@@ -40,7 +40,7 @@ Workflow for **new** code:
 1. `workspace_list_dir("Verse")` — see what folders already exist.
 2. Prefer `verse_template_list` → `verse_template_apply(id)` (creates the pack folder).
 3. Hand-write: `workspace_write_file("Verse/<System>/<file>.verse", …)` — parents are created automatically.
-4. Update `module_declarations.verse` if you added a new module folder.
+4. A new folder is a new module automatically — nothing to declare.
 5. Load this file (`modules`) whenever you organize across folders.
 
 Wrong: `Verse/economy_shop.verse`, `Verse/shop_hud_device.verse`, `Verse/game_session.verse`  
@@ -86,27 +86,31 @@ Rules of thumb:
 | `/Verse.org/Random` | `GetRandomInt`, random selection |
 | `/Verse.org/Colors` (+ `/NamedColors`) | `color`, named colors |
 
-### Declaring the module tree
+### Folders ARE modules — do not declare them twice
 
-Modules mirror the folder layout. Declare the whole hierarchy in one file
-(e.g. `module_declarations.verse` at Verse root), nesting with indentation:
+Every folder under `Content/Verse` is **implicitly** a module named after the
+folder, and a `.verse` file's code belongs to the module of the folder it sits in
+(`Verse/PlayerCore/*.verse` → `using { PlayerCore }`;
+`Verse/GameDevices/Gameplay/*.verse` → `using { GameDevices.Gameplay }`). This is
+how every shipped template pack works: no `:= module` line anywhere, just folders.
+
+**Do not** also write `PlayerCore <public> := module:` in `module_declarations.verse`
+for a folder that exists — that is a duplicate definition. Reserve explicit
+`Name := module:` blocks for **sub-modules inside one file** (grouping helpers) or
+for a module that has no folder:
 
 ```verse
-PlayerDevices <public> := module:
-    Services <public> := module:
-        PlayerProgressionManager <public> := module:
-        PlayerEconomyManager <public> := module:
-
-GameDevices <public> := module:
-    Gameplay <public> := module:
-        UI <public> := module:
+# inside a single file, optional grouping
+Helpers<public> := module:
+    Clamp01(X : float)<computes> : float = Max(0.0, Min(1.0, X))
 ```
 
-- A `.verse` file's code belongs to the module for the folder it sits in
-  (`Verse/GameDevices/Gameplay/*.verse` → `GameDevices.Gameplay`).
-- Mark modules `<public>` so other modules can `using` them.
-- Reference a nested module by dotted path in `using`:
+- Only `<public>` members cross folder/module boundaries — mark them explicitly.
+- Reference a nested folder by dotted path in `using`:
   `using { GameDevices.Gameplay.UI }`.
+- Assets-digest modules (materials, meshes, prefabs) follow the same rule but only
+  the **top-level** Content folder is importable; nested asset folders are
+  `internal` (E3593) — move the asset up or import the top-level module.
 
 ### Cross-file references
 

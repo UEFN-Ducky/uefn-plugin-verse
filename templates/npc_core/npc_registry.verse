@@ -41,25 +41,25 @@ NPCFleePointFrom<public>(SelfPos : vector3, ThreatPos : vector3, FleeDistance : 
         Z := SelfPos.Z
     }
 
-GetPreyAgents<public>() : []agent =
+GetPreyAgents<public>()<transacts> : []agent =
     if (Active := ActivePreyAgents[GetSession()]):
         Active
     else:
         array{}
 
-GetHunterAgents<public>() : []agent =
+GetHunterAgents<public>()<transacts> : []agent =
     if (Active := ActiveHunterAgents[GetSession()]):
         Active
     else:
         array{}
 
-GetDownedAgents<public>() : []agent =
+GetDownedAgents<public>()<transacts> : []agent =
     if (Active := DownedAgents[GetSession()]):
         Active
     else:
         array{}
 
-GetDownedUntilTimes<public>() : []float =
+GetDownedUntilTimes<public>()<transacts> : []float =
     if (Active := DownedUntilTimes[GetSession()]):
         Active
     else:
@@ -107,7 +107,7 @@ IsDownedInLists<public>(Agent : agent, Now : float, Agents : []agent, Untils : [
             set Found = true
     Found
 
-IsPreyDownedAt<public>(Agent : agent, Now : float) : logic =
+IsPreyDownedAt<public>(Agent : agent, Now : float)<transacts> : logic =
     IsDownedInLists(Agent, Now, GetDownedAgents(), GetDownedUntilTimes())
 
 RegisterPreyAgent<public>(Agent : agent) : void =
@@ -143,7 +143,7 @@ UnregisterHunterAgent<public>(Agent : agent) : void =
         set Next += array{Existing}
     if (set ActiveHunterAgents[Session] = Next) {}
 
-FindNearestPlayer<public>(Behavior : npc_behavior, FortChar : fort_character, DetectionRange : float) : ?fort_character =
+FindNearestPlayer<public>(Behavior : npc_behavior, FortChar : fort_character, DetectionRange : float)<transacts> : ?fort_character =
     var Best : ?fort_character = false
     var BestDist : float = DetectionRange
     if (Ent := Behavior.GetEntity[], PS := Ent.GetPlayspaceForEntity[]):
@@ -159,7 +159,7 @@ FindNearestPlayer<public>(Behavior : npc_behavior, FortChar : fort_character, De
                 set BestDist = D
     Best
 
-FindNearestPreyPeer<public>(SelfAgent : agent, FortChar : fort_character, DetectionRange : float) : ?fort_character =
+FindNearestPreyPeer<public>(SelfAgent : agent, FortChar : fort_character, DetectionRange : float)<transacts> : ?fort_character =
     var Best : ?fort_character = false
     var BestDist : float = DetectionRange
     SelfPos := FortChar.GetTransform().Translation
@@ -174,7 +174,7 @@ FindNearestPreyPeer<public>(SelfAgent : agent, FortChar : fort_character, Detect
                 set BestDist = D
     Best
 
-FindNearestHunter<public>(FortChar : fort_character, DetectionRange : float) : ?fort_character =
+FindNearestHunter<public>(FortChar : fort_character, DetectionRange : float)<transacts> : ?fort_character =
     var Best : ?fort_character = false
     var BestDist : float = DetectionRange
     SelfPos := FortChar.GetTransform().Translation
@@ -186,7 +186,7 @@ FindNearestHunter<public>(FortChar : fort_character, DetectionRange : float) : ?
                 set BestDist = D
     Best
 
-FindNearestPrey<public>(SelfAgent : agent, FortChar : fort_character, DetectionRange : float, Now : float) : ?fort_character =
+FindNearestPrey<public>(SelfAgent : agent, FortChar : fort_character, DetectionRange : float, Now : float)<transacts> : ?fort_character =
     var Best : ?fort_character = false
     var BestDist : float = DetectionRange
     SelfPos := FortChar.GetTransform().Translation
@@ -201,7 +201,7 @@ FindNearestPrey<public>(SelfAgent : agent, FortChar : fort_character, DetectionR
                     set BestDist = D
     Best
 
-FindNearestPreyExcluding<public>(SelfAgent : agent, FortChar : fort_character, DetectionRange : float, Exclude : fort_character, Now : float) : ?fort_character =
+FindNearestPreyExcluding<public>(SelfAgent : agent, FortChar : fort_character, DetectionRange : float, Exclude : fort_character, Now : float)<transacts> : ?fort_character =
     var Best : ?fort_character = false
     var BestDist : float = DetectionRange
     SelfPos := FortChar.GetTransform().Translation

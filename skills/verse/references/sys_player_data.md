@@ -98,7 +98,7 @@ OnPlayerRemoved<private>(OutAgent : agent) : void =
             RemoveEvent(Leaving)                        # notify systems first
         var TempAllPlayers : [agent]game_player = map{}
         for (Key -> Value : AllPlayers, Key <> OutAgent):
-            set TempAllPlayers = ConcatenateMaps(TempAllPlayers, map{Key => Value})
+            if (set TempAllPlayers[Key] = Value) {}          # rebuild without the key (ConcatenateMaps(A, B) also works)
         set AllPlayers = TempAllPlayers
 ```
 

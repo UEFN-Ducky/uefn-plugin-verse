@@ -69,7 +69,8 @@ OnLeftPressed(Agent : agent) : void =
     set MovingLeft = true
     TryMoveLeft(Agent)                    # immediate step
 
-OnLeftReleased(Agent : agent) : void =
+OnLeftReleased(Args : tuple(agent, float)) : void =   # ReleasedEvent payload is (agent, held seconds)
+    Agent := Args(0)
     set MovingLeft = false
 
 # inside your Sleep game loop:

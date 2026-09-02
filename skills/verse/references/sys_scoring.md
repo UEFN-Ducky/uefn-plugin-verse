@@ -30,7 +30,7 @@ player_stats := class<final><persistable>:
 
 # copy the table, swapping only the stats block
 UpdatePlayerStats(OldTable : game_player_table, NewStats : player_stats)<transacts> : game_player_table =
-    game_player_table{ Version := OldTable.Version, Stats := NewStats, /* …carry the rest */ }
+    game_player_table{ Version := OldTable.Version, Stats := NewStats }   # …carry every other field the same way (Verse has no /* */ comments)
 
 stats_save_service := class():
     AddKill(Agent : ?agent) : void =

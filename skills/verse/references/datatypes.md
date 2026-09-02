@@ -51,7 +51,7 @@ set Count += 1            # compound: += -= *= /= also work
 |------|------|---------|--------|
 | Array | `[]t` | `array{}`, `array{A, B}` | `Arr[Index]` — **failable** |
 | Map | `[k]v` | `map{}` | `Map[Key]` — **failable** |
-| Tuple | `tuple(a, b)` | `(A, B)` | `T(0)` or `T[0]` |
+| Tuple | `tuple(a, b)` | `(A, B)` | `T(0)` — parentheses, not failable (`T[0]` is for arrays) |
 | Option | `?t` | `false`, `option{X}` | `X?` — **failable** |
 
 ```verse
@@ -82,23 +82,34 @@ then store the result. Maps update with a failable `set`:
 
 ### Tuples
 
-Multiple values without a named type; index positionally:
+Multiple values without a named type; index positionally with **parentheses**:
 
 ```verse
-YPR := CurrentRotation.GetYawPitchRollDegrees()
-if (Yaw := YPR[0], Pitch := YPR[1]):        # destructure via failable index
-    set LastYaw = Yaw
+Args : tuple(agent, float) = …               # e.g. input_trigger_device.ReleasedEvent payload
+Agent := Args(0)
+HeldSeconds := Args(1)
 ```
+
+Note: `/UnrealEngine.com/Temporary/SpatialMath` `GetYawPitchRollDegrees()` returns
+an **array** `[]float` (index with failable `YPR[0]` inside an `if`), while the
+`/Verse.org/SpatialMath` overload returns `tuple(float, float, float)` (`YPR(0)`).
+Check which one your `using` brings in.
 
 ### Arithmetic & comparison
 
-- `+ - * /` on numbers; `/` on `int` is integer division — cast to `float` first
-  for fractions (`TotalTime / 3600.0`).
+- `+ - * /` on numbers. **`/` on two `int`s is failable and yields `rational`**,
+  not `int` — it only compiles inside a failure context and cannot be passed where
+  an `int` is expected. Convert to float first (`X * 1.0`) and use `Floor[]`:
+  `if (Mins := Floor[(Total * 1.0) / 60.0])`. `int` and `float` never mix in one
+  expression.
 - Compare: `< <= > >=`, and `=` / `<>` (equal / not-equal) **in a failure
   context**: `if (Found = false):`, `for (…, Key <> OutAgent):`.
 - Combine: `and`, `or`, `not` — `if (Dist <= Range and Dist < ClosestDistance):`.
-- Handy math (from `/UnrealEngine.com/…` and `/Verse.org/…`): `Abs`, `Max`, `Min`,
-  `Floor`, `Distance(A, B)`, `GetRandomInt` — all pre-verified; use as shown.
+- Handy math (compile-verified): `Abs`, `Max`, `Min`, `Clamp`, `Floor[]`, `Round[]`,
+  `Int[]`, `Sqrt`, `Sin`, `Lerp`, `Distance(A, B)`, `GetRandomInt`. `Abs` and
+  `ConcatenateMaps` are compiler intrinsics that the digests do not list but that
+  compile fine. Never name your own bindings after these functions (`Distance := …`
+  is E3588).
 
 ```verse
 TempH := Max(0.0, Health - Damage)
@@ -113,7 +124,11 @@ time formatter, or currency scaling):
 ```verse
 "{MinutesString}:{SecondsString}"
 var HoursString : string = if (TempHours < 10) { "0{TempHours}" } else { "{TempHours}" }
+FlagText := if (Flag?) then "on" else "off"     # there is no ToString(logic); branch instead
 ```
+
+Array literals are `array{1, 2, 3}`. The `array:` block form builds a **tuple per
+line**, which is E3509 when assigned to `[]int`.
 
 `SomeString.Length` gives character count. For on-screen text use a `<localizes>`
 `message` helper, not a raw `string` (see the `devices` reference).

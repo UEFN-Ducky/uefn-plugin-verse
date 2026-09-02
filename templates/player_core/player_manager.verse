@@ -8,17 +8,19 @@ using { /Fortnite.com/Characters }
 using { /Verse.org/Random }
 
 # --- Cross-pack connection interfaces (stubs; packs override via subclass / register concrete) ---
+# Effects matter: getters are <transacts> so callers may use them inside if (...) heads;
+# a function with no effect specifier is no_rollback and cannot be called there (E3512).
 currency_provider <public> := class:
     AddCurrency<public>(Agent : agent, CurrencyIndex : int, Amount : float) : void = {}
-    RemoveCurrency<public>(Agent : agent, CurrencyIndex : int, Amount : float)<decides> : void = false
-    GetCurrency<public>(Agent : agent, CurrencyIndex : int) : float = 0.0
-    GetCurrencyName<public>(CurrencyIndex : int) : string = ""
+    RemoveCurrency<public>(Agent : agent, CurrencyIndex : int, Amount : float)<decides><transacts> : void = false
+    GetCurrency<public>(Agent : agent, CurrencyIndex : int)<transacts> : float = 0.0
+    GetCurrencyName<public>(CurrencyIndex : int)<transacts> : string = ""
 
 xp_awarder <public> := class:
     AddXP<public>(Agent : agent, Amount : int) : void = {}
 
 playtime_provider <public> := class:
-    GetOfflineSeconds<public>(Agent : agent) : float = 0.0
+    GetOfflineSeconds<public>(Agent : agent)<transacts> : float = 0.0
     MarkSessionStart<public>(Agent : agent) : void = {}
 
 # --- Event bus types ---
@@ -36,7 +38,7 @@ player_manager <public> := class(creative_device):
 
     # Optional cross-pack slots — filled by feature pack devices on OnBegin
     var Currency <private> : ?currency_provider = false
-    var Progression <private> : ?xp_awarder = false
+    var ProgressionSlot <private> : ?xp_awarder = false
     var Playtime <private> : ?playtime_provider = false
 
     OnBegin<override>()<suspends> : void =
@@ -50,13 +52,13 @@ player_manager <public> := class(creative_device):
         set Currency = option{Provider}
 
     RegisterXPAwarder<public>(Awarder : xp_awarder) : void =
-        set Progression = option{Awarder}
+        set ProgressionSlot = option{Awarder}
 
     RegisterPlaytimeProvider<public>(Provider : playtime_provider) : void =
         set Playtime = option{Provider}
 
     GetCurrencyProvider<public>()<transacts> : ?currency_provider = Currency
-    GetXPAwarder<public>()<transacts> : ?xp_awarder = Progression
+    GetXPAwarder<public>()<transacts> : ?xp_awarder = ProgressionSlot
     GetPlaytimeProvider<public>()<transacts> : ?playtime_provider = Playtime
 
     AddAllPlayersAfterDelay<private>()<suspends> : void =
@@ -87,7 +89,7 @@ player_manager <public> := class(creative_device):
                 RemoveEvent(Leaving)
             var TempAllPlayers : [agent]game_player = map{}
             for (Key -> Value : AllPlayers, Key <> OutAgent):
-                set TempAllPlayers = ConcatenateMaps(TempAllPlayers, map{Key => Value})
+                if (set TempAllPlayers[Key] = Value) {}
             set AllPlayers = TempAllPlayers
 
     OnEliminated<private>(Result : elimination_result) : void =
@@ -123,7 +125,7 @@ player_manager <public> := class(creative_device):
         else:
             return false
 
-    GetRandomPlayerSpawner<public>() : ?player_spawner_device =
+    GetRandomPlayerSpawner<public>()<transacts> : ?player_spawner_device =
         if (AllPlayerSpawners.Length > 0):
             if (RandomSpawner := AllPlayerSpawners[GetRandomInt(0, AllPlayerSpawners.Length - 1)]):
                 return option{RandomSpawner}

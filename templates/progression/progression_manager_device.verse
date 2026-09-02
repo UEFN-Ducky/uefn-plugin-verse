@@ -4,8 +4,16 @@ using { /Verse.org/Simulation }
 using { /Fortnite.com/Devices }
 using { /Fortnite.com/UI }
 using { /UnrealEngine.com/Temporary/UI }
+using { /UnrealEngine.com/Temporary/SpatialMath }
+using { /Verse.org/Colors }
 using { /Verse.org/Colors/NamedColors }
 using { PlayerCore }
+
+# Per-player HUD leaves. A widget can only live in one canvas, so never share widgets across players.
+progression_hud_leaves := class:
+    LevelName : text_block
+    LevelPercent : text_block
+    LevelProgressBar : color_block
 
 progression_manager_device := class(creative_device):
     Message<localizes>(String : string) : message = "{String}"
@@ -17,12 +25,8 @@ progression_manager_device := class(creative_device):
     @editable CurrencyRewardAmount : float = 10.0
 
     SharedAwarder : progression_manager = progression_manager{}
-    var PerPlayer <private> : [agent]progression_manager = map{}
     var AgentCanvases <private> : [agent]canvas = map{}
-
-    var LevelName : text_block = text_block{DefaultTextColor := NamedColors.White}
-    var LevelPercent : text_block = text_block{DefaultTextColor := NamedColors.White}
-    var LevelProgressBar : color_block = color_block{DefaultColor := color{R := 1.0, G := 0.84, B := 0.0}}
+    var AgentLeaves <private> : [agent]progression_hud_leaves = map{}
     CanvasBuilder : progression_canvas_builder = progression_canvas_builder{}
 
     OnBegin<override>()<suspends> : void =
@@ -41,20 +45,11 @@ progression_manager_device := class(creative_device):
 
     OnPlayerJoined(GamePlayer : game_player) : void =
         Agent := GamePlayer.MyAgent
-        Mgr := progression_manager{}
-        Mgr.SetConfig(Levels)
-        set Mgr.MyAgent = option{Agent}
-        Mgr.EnsureRow(Agent)
-        if (set PerPlayer[Agent] = Mgr):
-            ShowHUD(Agent)
+        SharedAwarder.EnsureRow(Agent)
+        ShowHUD(Agent)
 
     OnPlayerLeft(GamePlayer : game_player) : void =
-        Agent := GamePlayer.MyAgent
-        RemoveHud(Agent)
-        var Next : [agent]progression_manager = map{}
-        for (Key -> Value : PerPlayer, Key <> Agent):
-            set Next = ConcatenateMaps(Next, map{Key => Value})
-        set PerPlayer = Next
+        RemoveHud(GamePlayer.MyAgent)
 
     OnElimination(EliminatedPlayer : agent, EliminatingPlayer : ?agent) : void =
         if (Killer := EliminatingPlayer?):
@@ -65,25 +60,36 @@ progression_manager_device := class(creative_device):
             RefreshHUD(Killer)
 
     ShowHUD(Agent : agent) : void =
-        CanvasBuilder.BindLeaves(LevelName, LevelPercent, LevelProgressBar)
-        Canvas := CanvasBuilder.CreateCanvas()
         if (AgentCanvases[Agent]):
             RemoveHud(Agent)
+        Leaves := progression_hud_leaves{
+            LevelName := text_block{DefaultTextColor := White},
+            LevelPercent := text_block{DefaultTextColor := White},
+            LevelProgressBar := color_block{DefaultColor := color{R := 1.0, G := 0.84, B := 0.0}}
+        }
+        CanvasBuilder.BindLeaves(Leaves.LevelName, Leaves.LevelPercent, Leaves.LevelProgressBar)
+        Canvas := CanvasBuilder.CreateCanvas()
         if (PUI := GetPlayerUI[player[Agent]]):
             PUI.AddWidget(Canvas)
-            if (set AgentCanvases[Agent] = Canvas):
+            if (set AgentCanvases[Agent] = Canvas, set AgentLeaves[Agent] = Leaves):
                 RefreshHUD(Agent)
 
     RemoveHud(Agent : agent) : void =
         if (Canvas := AgentCanvases[Agent], PUI := GetPlayerUI[player[Agent]]):
             PUI.RemoveWidget(Canvas)
-        var Next : [agent]canvas = map{}
+        var NextCanvases : [agent]canvas = map{}
         for (Key -> Value : AgentCanvases, Key <> Agent):
-            set Next = ConcatenateMaps(Next, map{Key => Value})
-        set AgentCanvases = Next
+            if (set NextCanvases[Key] = Value) {}
+        set AgentCanvases = NextCanvases
+        var NextLeaves : [agent]progression_hud_leaves = map{}
+        for (Key -> Value : AgentLeaves, Key <> Agent):
+            if (set NextLeaves[Key] = Value) {}
+        set AgentLeaves = NextLeaves
 
-    RefreshHUD(Agent : agent) : void =
-        Pct := SharedAwarder.ProgressPercent(Agent)
-        CanvasBuilder.UpdateProgressBar(Pct)
-        LevelName.SetText(Message(SharedAwarder.LevelNameFor(Agent)))
-        LevelPercent.SetText(Message("{Pct}%"))
+    RefreshHUD<public>(Agent : agent) : void =
+        if (Leaves := AgentLeaves[Agent]):
+            Pct := SharedAwarder.ProgressPercent(Agent)
+            CanvasBuilder.BindLeaves(Leaves.LevelName, Leaves.LevelPercent, Leaves.LevelProgressBar)
+            CanvasBuilder.UpdateProgressBar(Pct)
+            Leaves.LevelName.SetText(Message(SharedAwarder.LevelNameFor(Agent)))
+            Leaves.LevelPercent.SetText(Message("{Pct}%"))

@@ -4,7 +4,7 @@ metadata:
   order: 3
   label: "Scoped / readonly keys"
   default_enabled: false
-  load_condition: "Island Settings key is readonly_override, CreativeMutator_*, FortPlayerSettingsComponentBase, or set_creative_device_fields failed on a scoped property"
+  load_condition: "Island Settings key is readonly_override, CreativeMutator_*, FortPlayerSettingsComponentBase, or Epic SetDeviceProperty failed on a scoped property"
 ---
 
 # Scoped Island Settings keys (readonly via MCP today)
@@ -16,7 +16,7 @@ PropertyScope="CreativeMutator_WeaponSettings", PropertyName="Enabled"
 → inspect key: CreativeMutator_WeaponSettings:Enabled
 ```
 
-`inspect_creative_device` surfaces these as:
+Property reads (Epic `GetDeviceProperties`, or Ducky `get_actor_properties`) surface these as:
 
 ```json
 {
@@ -26,7 +26,7 @@ PropertyScope="CreativeMutator_WeaponSettings", PropertyName="Enabled"
 }
 ```
 
-They are **readable as override strings** but **not writable** through `actor.set_editor_property` (what `set_creative_device_fields` uses).
+They are **readable as override strings** but **not writable** through `actor.set_editor_property` (what the Python-backed property setters use).
 
 ## Families that usually hit this
 
@@ -40,7 +40,7 @@ They are **readable as override strings** but **not writable** through `actor.se
 
 1. Prefer an **unscoped** writable twin when it exists (`bGliderRedeployable`, `VoiceChat`, `MaxPlayers`, …).
 2. For true scoped-only options → set them in the UEFN **Details** panel on Island Settings (or ask for a future MCP override writer).
-3. Do **not** loop `set_creative_device_fields` / `execute_python` retries on `readonly_override` keys.
+3. Do **not** loop Epic `SetDeviceProperty` / `execute_python` retries on `readonly_override` keys.
 
 ## Side components (also on the actor)
 
@@ -51,4 +51,4 @@ Voice, music, sidekicks, temporary teams live on **instance components**, not al
 - `BP_FortUserOptionsComponent_Sidekicks_C`
 - `BP_UserOptionComponent_TemporaryTeams_C`
 
-Treat those as out of scope for `set_creative_device_fields` unless inspect exposes a plain writable key.
+Treat those as out of scope for `SetDeviceProperty` unless `GetDeviceProperties` exposes a plain writable key.

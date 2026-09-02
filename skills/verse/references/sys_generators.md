@@ -104,9 +104,9 @@ ProcessOfflineOnJoin(GP : game_player) : void =
     Elapsed := Min(Max(0.0, ElapsedRaw), MaxOfflineSeconds)
     if (Whole := Floor[RatePerSecond * Elapsed]):
         if (Whole > 0):
-            OfflinePopup.ShowCollect(GP.GetAgent(), Whole)  # grants on click
+            OfflinePopup.ShowCollect(GP.MyAgent, Whole)  # grants on click
     # stamp AFTER calc (and after popup show is OK; grant uses stored Whole)
-    GP.Services.TimeTracker.TimeSaveService.SetLastLoginTime(option{GP.GetAgent()}, Now)
+    GP.Services.TimeTracker.TimeSaveService.SetLastLoginTime(option{GP.MyAgent}, Now)
 ```
 
 | Clock | Use |

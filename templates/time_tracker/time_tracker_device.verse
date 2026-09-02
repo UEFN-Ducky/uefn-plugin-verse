@@ -27,8 +27,7 @@ time_tracker_device := class(creative_device):
         set Tracker.MyAgent = option{Agent}
         Tracker.MarkSessionStart(Agent)
         SharedTracker.MarkSessionStart(Agent)
-        if (set PerPlayer[Agent] = Tracker):
-            {}
+        if (set PerPlayer[Agent] = Tracker) {}
 
     OnPlayerLeft(GamePlayer : game_player) : void =
         Agent := GamePlayer.MyAgent
@@ -37,5 +36,5 @@ time_tracker_device := class(creative_device):
         SharedTracker.EndSession(Agent)
         var Next : [agent]player_time_tracker = map{}
         for (Key -> Value : PerPlayer, Key <> Agent):
-            set Next = ConcatenateMaps(Next, map{Key => Value})
+            if (set Next[Key] = Value) {}
         set PerPlayer = Next

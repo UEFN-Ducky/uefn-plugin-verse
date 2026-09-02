@@ -10,7 +10,7 @@ def _templates() -> list[dict[str, Any]]:
     from backend.uefn_plugins.host import get_contributions
 
     rows = get_contributions().get("verse_templates") or []
-    return [r for r in rows if isinstance(r, dict) and r.get("plugin_id") == "verse"]
+    return [r for r in rows if isinstance(r, dict)]
 
 
 def _find(template_id: str) -> dict[str, Any] | None:
@@ -28,7 +28,7 @@ def _register_template_tools(api) -> None:
         intent=r"\b(verse\s*template|economy_manager|progression_manager|player_core|npc_core|tycoon|shop_controller)\b"
     )
     def verse_template_list() -> str:
-        """List Verse system template packs from the UEFN Verse plugin (id, name, files, connects).
+        """List Verse New-file template packs from every installed plugin (id, name, files, connects).
 
         Call this BEFORE inventing player/npc/economy/progression/tycoon/shop/timer Verse files.
         Prefer verse_template_apply / verse_template_get over writing parallel scaffolds.
@@ -338,6 +338,7 @@ def register(api) -> None:
     import backend.tools.verse.verse_editable  # noqa: F401
     import backend.tools.verse.verse_diagnostics  # noqa: F401
     import backend.tools.verse.skill_tool  # noqa: F401
+    import backend.tools.verse.template_verify  # noqa: F401
 
     _register_template_tools(api)
     _register_umg_tools(api)

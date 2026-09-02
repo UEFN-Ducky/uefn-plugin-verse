@@ -35,8 +35,7 @@ building_unlock_manager := class(creative_device):
     OnBegin<override>()<suspends> : void =
         for (BIndex -> Building : Buildings):
             if (First := Building.Tiers[0]):
-                if (set AnchorTransforms[BIndex] = First.LevelProp.GetTransform()):
-                    {}
+                if (set AnchorTransforms[BIndex] = First.LevelProp.GetTransform()) {}
             ParkInactiveTiers(BIndex, -1)
             Wrapper := building_button_wrapper{Manager := Self, BuildingIndex := BIndex}
             Building.Button.InteractedWithEvent.Subscribe(Wrapper.OnPressed)
@@ -65,7 +64,7 @@ building_unlock_manager := class(creative_device):
             ErrorHudMessage.SetText(Message("Max tier reached"))
             ErrorHudMessage.Show(Agent)
 
-    GetLevel(Agent : agent, BuildingIndex : int) : int =
+    GetLevel(Agent : agent, BuildingIndex : int)<transacts> : int =
         if (Levels := PlayerLevels[Agent], L := Levels[BuildingIndex]):
             return L
         return -1
@@ -75,8 +74,7 @@ building_unlock_manager := class(creative_device):
         if (Existing := PlayerLevels[Agent]):
             set Levels = Existing
         if (set Levels[BuildingIndex] = Level):
-            if (set PlayerLevels[Agent] = Levels):
-                {}
+            if (set PlayerLevels[Agent] = Levels) {}
 
     ApplyReveal(BuildingIndex : int, ActiveTier : int) : void =
         ParkInactiveTiers(BuildingIndex, ActiveTier)
@@ -85,13 +83,11 @@ building_unlock_manager := class(creative_device):
         if (Building := Buildings[BuildingIndex], Anchor := AnchorTransforms[BuildingIndex]):
             for (TIndex -> Tier : Building.Tiers):
                 if (TIndex = ActiveTier):
-                    if (Tier.LevelProp.TeleportTo[Anchor.Translation, Anchor.Rotation]):
-                        {}
+                    if (Tier.LevelProp.TeleportTo[Anchor.Translation, Anchor.Rotation]) {}
                 else:
                     Underground := vector3{
                         X := Anchor.Translation.X,
                         Y := Anchor.Translation.Y,
                         Z := Anchor.Translation.Z + Building.UndergroundOffset
                     }
-                    if (Tier.LevelProp.TeleportTo[Underground, Anchor.Rotation]):
-                        {}
+                    if (Tier.LevelProp.TeleportTo[Underground, Anchor.Rotation]) {}

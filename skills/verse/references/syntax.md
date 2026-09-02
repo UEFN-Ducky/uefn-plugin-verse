@@ -31,9 +31,24 @@ This is the one-page quick reference. For depth, load the topic file: **`classes
 - `option`: empty `false`, or a value; unwrap with `X?` (fails if empty). Build with `option{X}`.
 
 ### Effects (on a function, in `<>`)
-`<suspends>` async · `<decides>` can fail (must be called in a failure context) ·
-`<transacts>` rollback-safe · `<computes>` pure. Access: `<public> <private> <internal>
-<protected>`; also `<override> <final> <native> <constructor>`.
+`<suspends>` async · `<decides>` can fail (call with `[]`, pair with `<transacts>`) ·
+`<transacts>` rollback-safe (the default choice for getters/helpers) · `<reads>`
+world/time reads · `<computes>` pure · `<converges>` pure + terminates (field
+initialisers). **No specifier = `no_rollback`**: such a function cannot be called
+inside `if (…)`, `if:`, `for` filters, `[]` or a `<decides>` body (E3512). Access:
+`<public> <private> <internal> <protected>`; also `<override> <final> <native>
+<constructor>`. Details: `effects`; error catalogue: `compile_errors`.
+
+### Hard syntax rules the compiler enforces
+- Signature and `=` on **one line** (splitting parameters across lines is E3104).
+- `_` is reserved (only legal as the `case` default) — never a binding name.
+- Never name a binding `Distance`, `Dot`, `Cross`, `Normalize`, `Lerp`, `Floor`, `Min`, `Max`, `Print`, `Sleep` (ambiguity E3588).
+- Tuples index with `T(0)`; arrays/maps with failable `A[0]`.
+- `int / int` is failable and yields `rational`; convert with `* 1.0` and `Floor[]`.
+- Array literal is `array{…}`; `array:` block form makes tuples.
+- Field initialisers are literals/archetypes only — never a call (E3582).
+- An empty body is `if (set M[K] = V) {}` on **one line**; `if (…):` followed by `{}` on the next line is parse error 3100 "Expected expression, got {".
+- A field or local may not share a name with a module (folder) in the project: `var Progression : ?xp_awarder` next to a `Verse/Progression/` folder is E3532 ambiguous.
 
 ### Control flow (blocks are `:` + indent, or `{ …; … }`)
 ```verse
@@ -75,6 +90,7 @@ healer := interface:
 - `@editable Field : trigger_device = trigger_device{}` exposes a Details-panel device ref (wire it in UEFN, or with `wire_verse_device_ref` when online).
 
 ### Concurrency (inside a `<suspends>` context)
-- `spawn { AsyncFn() }` — fire-and-forget a `<suspends>` call.
-- `sync { A(); B() }` (run all, wait for the last) · `race { A(); B() }` (first to finish wins) · `rush`, `branch`.
+- `branch { F() }` — background task **cancelled when the scope exits** (default inside `<suspends>` code).
+- `spawn { F() }` — independent task that outlives the caller; the only option from a sync handler.
+- `sync:` run all, wait for all (tuple of results) · `race:` first wins, others **cancelled** · `rush:` first wins, others **keep running**.
 - `Sleep(Seconds : float)<suspends>` waits. Subscribe to events: `Device.SomeEvent.Subscribe(Handler)` — event and handler shapes come from the digest.

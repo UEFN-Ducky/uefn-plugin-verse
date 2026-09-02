@@ -60,7 +60,7 @@ Rules for a persistable class:
 - Nest persistables — `game_player_table` holds `player_wallet`, `player_level`,
   etc., each its own `class<final><persistable>`. Owned custom weapons nest here
   (`PlayerWeapons`) — never a second player `weak_map` for guns
-  (`sys_owned_weapons`). Island cap is **4 persist `weak_map`s**.
+  (`sys_owned_weapons`). Island cap is **4 persist `weak_map`s** (compiler error 3502 on the fifth — verified on a live build; `compile_errors`).
 
 **3. A manager** that initializes and updates entries:
 

@@ -21,7 +21,8 @@ match_timer_controller := class(creative_device):
     var Elapsed <private> : float = 0.0
     var FinishedSubs <private> : []timer_finished = array{}
     var AgentCanvases <private> : [agent]canvas = map{}
-    var TimeText : text_block = text_block{DefaultTextColor := NamedColors.White}
+    # One text_block per player — a widget can only live in one canvas at a time.
+    var AgentTimeText <private> : [agent]text_block = map{}
 
     OnBegin<override>()<suspends> : void =
         PlayerManager.SubscribePlayerConnected(OnPlayerJoined)
@@ -82,34 +83,43 @@ match_timer_controller := class(creative_device):
         else:
             Elapsed
 
-    FormatTime(Seconds : float) : string =
+    # int / int yields rational and is failable — divide the float and Floor[] instead.
+    FormatTime(Seconds : float)<transacts> : string =
         var Total : int = 0
         if (F := Floor[Seconds]):
             set Total = F
-        Mins := Total / 60
+        var Mins : int = 0
+        if (M := Floor[Seconds / 60.0]):
+            set Mins = M
         Secs := Total - Mins * 60
         MinStr := if (Mins < 10) then "0{Mins}" else "{Mins}"
         SecStr := if (Secs < 10) then "0{Secs}" else "{Secs}"
         "{MinStr}:{SecStr}"
 
     ShowHUD(Agent : agent) : void =
-        SelectedCanvasType.BindLeaves(TimeText)
-        Canvas := SelectedCanvasType.CreateCanvas()
         if (AgentCanvases[Agent]):
             RemoveHud(Agent)
+        TimeText := text_block{DefaultTextColor := White}
+        SelectedCanvasType.BindLeaves(TimeText)
+        Canvas := SelectedCanvasType.CreateCanvas()
         if (PUI := GetPlayerUI[player[Agent]]):
             PUI.AddWidget(Canvas)
-            if (set AgentCanvases[Agent] = Canvas):
+            if (set AgentCanvases[Agent] = Canvas, set AgentTimeText[Agent] = TimeText):
                 TimeText.SetText(Message(FormatTime(DisplaySeconds())))
 
     RemoveHud(Agent : agent) : void =
         if (Canvas := AgentCanvases[Agent], PUI := GetPlayerUI[player[Agent]]):
             PUI.RemoveWidget(Canvas)
-        var Next : [agent]canvas = map{}
+        var NextCanvases : [agent]canvas = map{}
         for (Key -> Value : AgentCanvases, Key <> Agent):
-            set Next = ConcatenateMaps(Next, map{Key => Value})
-        set AgentCanvases = Next
+            if (set NextCanvases[Key] = Value) {}
+        set AgentCanvases = NextCanvases
+        var NextText : [agent]text_block = map{}
+        for (Key -> Value : AgentTimeText, Key <> Agent):
+            if (set NextText[Key] = Value) {}
+        set AgentTimeText = NextText
 
     RefreshAll() : void =
         Text := FormatTime(DisplaySeconds())
-        TimeText.SetText(Message(Text))
+        for (Agent -> TimeText : AgentTimeText):
+            TimeText.SetText(Message(Text))

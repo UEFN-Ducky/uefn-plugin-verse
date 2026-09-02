@@ -1,7 +1,7 @@
 ---
 source_plugin_id: verse
 name: islandsettings
-description: "UEFN Island Settings — CORE gameplay session setup: MaxPlayers, starting class, teams, spawn rules. ALWAYS pair MaxPlayers with one Player Spawn Pad per slot. Use when setting up a game for N players, changing max players, starting class, matchmaking, or Device_ExperienceSettings."
+description: "UEFN Island Settings — CORE gameplay session setup: MaxPlayers, starting class, teams, spawn rules. ALWAYS pair MaxPlayers with one Player Spawn Pad per slot. Use when setting up a game for N players, changing max players, starting class, matchmaking, or Device_ExperienceSettings. (Island Settings toy options; the Verse team API lives in verse/sys_teams)"
 license: MIT
 metadata:
   label: UEFN Island Settings
@@ -14,7 +14,7 @@ metadata:
 
 # UEFN Island Settings — CORE session setup
 
-**Epic UEFN MCP:** Settings → MCPs → **UEFN MCP (Epic)** (`unreal-mcp`). Bridge tools: `unreal__list_toolsets` → `unreal__describe_toolset` → `unreal__call_tool` (toolsets — not flat `unreal__create_entity`). Map: `skill_read_subskill("uefn", "epic_mcp")`. Ducky tools below stay for this skill's domain when Epic does not cover it.
+**Epic UEFN MCP:** Settings → MCPs → **UEFN MCP (Epic)** (`unreal-mcp`). Bridge tools: `unreal__list_toolsets` → `unreal__describe_toolset` → `unreal__call_tool` (toolsets — no flat `unreal__<tool>` names). Map: `skill_read_subskill("uefn", "epic_mcp")`. Ducky tools below stay for this skill's domain when Epic does not cover it.
 
 Island Settings + spawn pads: Epic `ValkyrieToolset.DeviceToolset` (`PlaceDevice`, `GetDeviceProperties`, `SetDeviceProperty`).
 
@@ -69,7 +69,7 @@ If a Verse player-manager has `AllPlayerSpawners`, wire after placement: `wire_p
 | Job | Tool |
 |-----|------|
 | Find Island Settings / spawn pads | nested Epic `unreal__*` Creative device tools |
-| Read / write Island Settings | nested Epic `unreal__*` (not `inspect_creative_device`) |
+| Read / write Island Settings | Epic `ValkyrieToolset.DeviceToolset` `GetDeviceProperties` / `SetDeviceProperty` (argument names from `unreal__describe_toolset` — never invent them) |
 | Wire pads → manager | `wire_player_spawners("<manager_label>")` |
 
 ## Session setup golden path (N players)
@@ -83,7 +83,7 @@ ducky_get_status   # epic_mcp_online must be true; else recites Epic setup steps
 # Verify: pad count == MaxPlayers
 ```
 
-Epic Python toolsets speak **XYZ**. Prefer nested Epic device tools over Ducky `spawn_actor` for Player Spawn Pads. If Epic MCP is down, stop — do not use `find_devices` / `inspect_creative_device` / `set_creative_device_fields`.
+Epic Python toolsets speak **XYZ**. Prefer Epic `PlaceDevice` over Ducky `spawn_actor` for Player Spawn Pads. If `epic_mcp_online` is false or an Epic call errors twice, degrade and finish the task: count pads with `get_all_actors(label_filter="Spawn Pad", limit=500)`, place pads with `spawn_actor(asset_path="…BP_Creative_Player_Spawner_Prop_C", location=…, label="Player K Spawn Pad")`, one `save_current_level` at the end — never "offline → stop". The old Ducky Creative-device find/inspect/set tools were pruned and no longer exist.
 
 ## Core keys (session)
 

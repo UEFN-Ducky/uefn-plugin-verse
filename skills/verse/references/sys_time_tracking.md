@@ -53,8 +53,7 @@ if:
     OldTable := PlayerStatsMap[Player]
 then:
     NewTimeData := player_time_data{ … }
-    if (set PlayerStatsMap[Player] = UpdatePlayerTimeData(OldTable, NewTimeData)):
-        {}
+    if (set PlayerStatsMap[Player] = UpdatePlayerTimeData(OldTable, NewTimeData)) {}
 ```
 
 ### Per-player manager
@@ -139,7 +138,7 @@ player_time_tracker_device := class(creative_device):
         PlayerManager.SubscribePlayerRemoved(OnPlayerLeft)
 
     OnPlayerJoined(GamePlayer : game_player) : void =
-        GamePlayer.Services.TimeTracker.InitializeTimeTracking(GamePlayer.GetAgent())
+        GamePlayer.Services.TimeTracker.InitializeTimeTracking(GamePlayer.MyAgent)   # game_player exposes MyAgent (no GetAgent())
 
     OnPlayerLeft(GamePlayer : game_player) : void =
         GamePlayer.Services.TimeTracker.EndSession()

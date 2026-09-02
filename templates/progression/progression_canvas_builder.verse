@@ -1,5 +1,6 @@
 # SETUP: Pure UI builder for XP bar + level name.
 using { /Verse.org/Simulation }
+using { /Fortnite.com/UI }
 using { /UnrealEngine.com/Temporary/UI }
 using { /UnrealEngine.com/Temporary/SpatialMath }
 using { /Verse.org/Colors }

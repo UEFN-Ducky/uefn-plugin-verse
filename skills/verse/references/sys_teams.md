@@ -51,8 +51,8 @@ if (Target := TeamCollection.GetTeams()[TeamIndex]):
         # assigned
 ```
 
-For designer-driven role assignment, a `team_selector` / `class_and_team_selector`
-device is often simpler — expose it as `@editable` and call its change method.
+For designer-driven role assignment, a `class_and_team_selector_device` (there is
+no `team_selector` device) is often simpler — expose it as `@editable` and call its change method.
 
 ### Per-team counts & iteration
 
@@ -98,8 +98,8 @@ individual stats. Check a win by comparing counts/scores after each scoring even
 or on a timer tick:
 
 ```verse
-if (A := Counts[TeamA], B := Counts[TeamB], A = 0):
-    EndRound(WinningSide := TeamB)
+if (A := Counts[TeamAId], B := Counts[TeamBId], A = 0):   # Counts : [team]int, keyed by the team value, not by []agent
+    EndRound(WinningSide := TeamBId)
 ```
 
 ### Gotchas

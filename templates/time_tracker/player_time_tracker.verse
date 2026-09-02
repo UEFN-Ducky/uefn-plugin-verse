@@ -19,7 +19,8 @@ MakeTimeTable(Old : time_tracker_table, NewData : player_time_data)<transacts> :
     time_tracker_table{Version := Old.Version, TimeData := NewData}
 
 player_time_tracker <public> := class<unique>(playtime_provider):
-    var SessionStartSim <public> : float = 0.0
+    # Per-agent session start (one shared tracker serves every player).
+    var SessionStartSim <public> : [agent]float = map{}
     var MyAgent <public> : ?agent = false
 
     EnsureRow(Agent : agent) : void =
@@ -29,12 +30,11 @@ player_time_tracker <public> := class<unique>(playtime_provider):
         then:
             if (Existing := TimeTrackerMap[Player]):
             else:
-                if (set TimeTrackerMap[Player] = time_tracker_table{}):
-                    {}
+                if (set TimeTrackerMap[Player] = time_tracker_table{}) {}
 
     MarkSessionStart<override>(Agent : agent) : void =
         EnsureRow(Agent)
-        set SessionStartSim = GetSimulationElapsedTime()
+        if (set SessionStartSim[Agent] = GetSimulationElapsedTime()) {}
         if:
             Player := player[Agent]
             Player.IsActive[]
@@ -47,8 +47,7 @@ player_time_tracker <public> := class<unique>(playtime_provider):
                 LastLogoutEpoch := OldTable.TimeData.LastLogoutEpoch,
                 TotalPlaySeconds := OldTable.TimeData.TotalPlaySeconds
             }
-            if (set TimeTrackerMap[Player] = MakeTimeTable(OldTable, NewData)):
-                {}
+            if (set TimeTrackerMap[Player] = MakeTimeTable(OldTable, NewData)) {}
 
     EndSession<public>(Agent : agent) : void =
         if:
@@ -57,7 +56,9 @@ player_time_tracker <public> := class<unique>(playtime_provider):
             OldTable := TimeTrackerMap[Player]
         then:
             NowSim := GetSimulationElapsedTime()
-            Delta := NowSim - SessionStartSim
+            var Delta : float = 0.0
+            if (Start := SessionStartSim[Agent]):
+                set Delta = NowSim - Start
             if (Delta < 0.0):
                 set Delta = 0.0
             NewData := player_time_data{
@@ -65,10 +66,9 @@ player_time_tracker <public> := class<unique>(playtime_provider):
                 LastLogoutEpoch := GetSecondsSinceEpoch(),
                 TotalPlaySeconds := OldTable.TimeData.TotalPlaySeconds + Delta
             }
-            if (set TimeTrackerMap[Player] = MakeTimeTable(OldTable, NewData)):
-                {}
+            if (set TimeTrackerMap[Player] = MakeTimeTable(OldTable, NewData)) {}
 
-    GetOfflineSeconds<override>(Agent : agent) : float =
+    GetOfflineSeconds<override>(Agent : agent)<transacts> : float =
         if:
             Player := player[Agent]
             Player.IsActive[]

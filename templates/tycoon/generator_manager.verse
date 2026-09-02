@@ -66,13 +66,11 @@ generator_manager := class(creative_device):
         for (GIndex -> Gen : Generators):
             Level := GetLevel(Agent, GIndex)
             if (Tier := Gen.Tiers[Level]):
-                Prev := 0.0
+                var Prev : float = 0.0
                 if (P := AgentAcc[GIndex]):
                     set Prev = P
-                if (set AgentAcc[GIndex] = Prev + Tier.RatePerSecond * Delta):
-                    {}
-        if (set Accrued[Agent] = AgentAcc):
-            {}
+                if (set AgentAcc[GIndex] = Prev + Tier.RatePerSecond * Delta) {}
+        if (set Accrued[Agent] = AgentAcc) {}
 
     ApplyOfflineBonus(Agent : agent) : void =
         if (Clock := PlayerManager.GetPlaytimeProvider()?):
@@ -86,8 +84,9 @@ generator_manager := class(creative_device):
                 if (Gen := Generators[GenIndex], Tier := Gen.Tiers[GetLevel(Agent, GenIndex)]):
                     if (Wallet := PlayerManager.GetCurrencyProvider()?):
                         Wallet.AddCurrency(Agent, Tier.CurrencyIndex, Whole * 1.0)
-                        if (set AgentAcc[GenIndex] = Amount - (Whole * 1.0)):
-                            if (set Accrued[Agent] = AgentAcc):
+                        var NextAcc : [int]float = AgentAcc      # bindings from an if head are immutable; copy before set
+                        if (set NextAcc[GenIndex] = Amount - (Whole * 1.0)):
+                            if (set Accrued[Agent] = NextAcc):
                                 SuccessHudMessage.SetText(Message("Collected {Whole}"))
                                 SuccessHudMessage.Show(Agent)
                     else:
@@ -116,7 +115,8 @@ generator_manager := class(creative_device):
             ErrorHudMessage.SetText(Message("Max tier"))
             ErrorHudMessage.Show(Agent)
 
-    GetLevel(Agent : agent, GenIndex : int) : int =
+    # <transacts>: used inside if (...) heads (Tiers[GetLevel(...)]) — a no-effect helper would be E3512 there.
+    GetLevel(Agent : agent, GenIndex : int)<transacts> : int =
         if (AgentLevels := Levels[Agent], L := AgentLevels[GenIndex]):
             return L
         return 0
@@ -126,5 +126,4 @@ generator_manager := class(creative_device):
         if (Existing := Levels[Agent]):
             set AgentLevels = Existing
         if (set AgentLevels[GenIndex] = Level):
-            if (set Levels[Agent] = AgentLevels):
-                {}
+            if (set Levels[Agent] = AgentLevels) {}

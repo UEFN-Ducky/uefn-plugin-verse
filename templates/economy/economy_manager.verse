@@ -40,8 +40,7 @@ economy_manager <public> := class<unique>(currency_provider):
         then:
             if (Existing := EconomyMap[Player]):
             else:
-                if (set EconomyMap[Player] = economy_table{}):
-                    {}
+                if (set EconomyMap[Player] = economy_table{}) {}
 
     AddCurrency<override>(Agent : agent, CurrencyIndex : int, Amount : float) : void =
         EnsureRow(Agent)
@@ -67,11 +66,11 @@ economy_manager <public> := class<unique>(currency_provider):
                     set Updated += array{Entry}
             if (Found = false):
                 set Updated += array{currency_data{CurrencyName := Name, Value := Amount, ScaleIndex := 0}}
-            if (set EconomyMap[Player] = MakeEconomyTable(OldTable, Updated)):
-                {}
+            if (set EconomyMap[Player] = MakeEconomyTable(OldTable, Updated)) {}
 
-    RemoveCurrency<override>(Agent : agent, CurrencyIndex : int, Amount : float)<decides> : void =
-        EnsureRow(Agent)
+    # <decides> body is a failure context: no no_rollback helpers (EnsureRow) inside it.
+    # Callers must EnsureRow / AddCurrency first; a missing row simply fails the removal.
+    RemoveCurrency<override>(Agent : agent, CurrencyIndex : int, Amount : float)<decides><transacts> : void =
         if:
             Player := player[Agent]
             Player.IsActive[]
@@ -92,12 +91,11 @@ economy_manager <public> := class<unique>(currency_provider):
                     }}
                 else:
                     set Updated += array{Entry}
-            if (set EconomyMap[Player] = MakeEconomyTable(OldTable, Updated)):
-                {}
+            if (set EconomyMap[Player] = MakeEconomyTable(OldTable, Updated)) {}
         else:
             false
 
-    GetCurrency<override>(Agent : agent, CurrencyIndex : int) : float =
+    GetCurrency<override>(Agent : agent, CurrencyIndex : int)<transacts> : float =
         if:
             Player := player[Agent]
             Player.IsActive[]
@@ -111,12 +109,12 @@ economy_manager <public> := class<unique>(currency_provider):
             return 0.0
         return 0.0
 
-    GetCurrencyName<override>(CurrencyIndex : int) : string =
+    GetCurrencyName<override>(CurrencyIndex : int)<transacts> : string =
         if (Cfg := CurrencyConfigs[CurrencyIndex]):
             return Cfg.CurrencyName
         return ""
 
-    FormatAmount<public>(Amount : float) : string =
+    FormatAmount<public>(Amount : float)<transacts> : string =
         if (Amount >= 1000000000.0):
             return "{Amount / 1000000000.0}B"
         else if (Amount >= 1000000.0):

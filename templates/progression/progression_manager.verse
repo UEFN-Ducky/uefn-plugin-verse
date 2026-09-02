@@ -35,10 +35,9 @@ progression_manager <public> := class<unique>(xp_awarder):
         then:
             if (Existing := ProgressionMap[Player]):
             else:
-                if (set ProgressionMap[Player] = progression_table{}):
-                    {}
+                if (set ProgressionMap[Player] = progression_table{}) {}
 
-    GetTotalXP(Agent : agent) : int =
+    GetTotalXP(Agent : agent)<transacts> : int =
         if:
             Player := player[Agent]
             Player.IsActive[]
@@ -47,7 +46,7 @@ progression_manager <public> := class<unique>(xp_awarder):
             return Table.Level.TotalLevelXP
         return 0
 
-    GetCurrentLevelNumber<public>(XP : int) : int =
+    GetCurrentLevelNumber<public>(XP : int)<transacts> : int =
         if (LevelData.Length <= 0):
             return 0
         for (Index := 0..LevelData.Length - 2):
@@ -71,7 +70,7 @@ progression_manager <public> := class<unique>(xp_awarder):
                 if (NewIndex > LastRecordedLevel):
                     set LastRecordedLevel = NewIndex
 
-    ProgressPercent<public>(Agent : agent) : float =
+    ProgressPercent<public>(Agent : agent)<transacts> : float =
         XP := GetTotalXP(Agent)
         Index := GetCurrentLevelNumber(XP)
         if (LevelData.Length <= 0):
@@ -85,7 +84,7 @@ progression_manager <public> := class<unique>(xp_awarder):
             return ((XP - Cur.ThresholdXP) * 1.0) / Span * 100.0
         return 0.0
 
-    LevelNameFor<public>(Agent : agent) : string =
+    LevelNameFor<public>(Agent : agent)<transacts> : string =
         Index := GetCurrentLevelNumber(GetTotalXP(Agent))
         if (Row := LevelData[Index]):
             return Row.LevelName

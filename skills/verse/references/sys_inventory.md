@@ -79,8 +79,7 @@ AddItem(Agent : ?agent, ItemId : string, Amount : int) : void =
         if (Found = false):
             set Updated += array{inventory_entry{ ItemId := ItemId, Quantity := Amount }}
         NewInv := player_inventory{ Entries := Updated }
-        if (set PlayerStatsMap[Player] = UpdateInventory(OldTable, NewInv)):
-            {}
+        if (set PlayerStatsMap[Player] = UpdateInventory(OldTable, NewInv)) {}
 ```
 
 `UpdateInventory` must copy **every** other nested field on the shared table.

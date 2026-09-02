@@ -1,11 +1,11 @@
 ---
 source_plugin_id: verse
 name: verse
-description: "Writing Verse code — syntax, best practices, and finding APIs/assets via digests"
+description: "Writing Verse source — syntax, effects (no_rollback/transacts/decides), structured concurrency, compile-error fixes, system recipes, and finding APIs via digests. Source only: placed-device wiring and level ops → uefn skill; Scene Graph entities/prefabs → scenegraph skill."
 license: MIT
 metadata:
   label: UEFN Verse
-  version: 39
+  version: 40
   managed_by: uefn-ducky
   author: UEFN-Ducky
   copyright: Copyright 2026 Mindful Path Company, LLC
@@ -25,7 +25,11 @@ wiring `@editable` refs, one heavy MCP call → wait → next. Never parallel
 `skill_read_subskill("uefn", "batch_commands")` and `creative_devices`.
 
 
-**Never invent API names — but do NOT re-verify the skills.** Code shown in this pack (and any loaded subskill or template) is **pre-verified** against current digests: copy names and signatures as-is, no digest check needed. Search the digests only for names you are adding that no loaded skill shows; if such a name is in no digest, it does not exist in this project — don't write it. After writing, `workspace_list_verse_errors` is the verification gate — it catches any drift in seconds, so never spend calls pre-verifying symbol-by-symbol (`Distance`, `Sin`, `GetFortCharacter`, … are all real).
+**Never invent API names.** Copy names and signatures from a loaded skill or template as-is; for any name no loaded skill shows, `search_verse_digest` once — if it is in no digest it is almost certainly invented (`Log10`, `MoveToLocation`, `team_selector`, `timer_device.Reset` do not exist). Exception: core intrinsics `Abs`, `ConcatenateMaps`, `Max`, `Min` are not listed in the digests yet compile — the build's "Unknown identifier" is the final word. Epic doc samples also omit `using` lines; add them. Budget ~5 lookups per task, then write.
+
+**Effects decide whether your code compiles (HARD):** a function with **no effect specifier is `no_rollback`** and cannot be called inside `if (…)`, `if:`, `for` filters, `[]`, or a `<decides>` body. Give every getter/helper `<transacts>`; pair `<decides>` with `<transacts>`; field initialisers are literals only; `int / int` is failable and `rational`; never name a binding `Distance`. These four rules were 72 % of all real compile errors. Details: `effects`; fixes by error code: `compile_errors`.
+
+**Concurrency:** inside `<suspends>` code use `branch` (cancelled with the scope), `race` (first wins, rest cancelled), `sync` (all), `rush` (first wins, rest continue); `spawn` only from sync handlers or for device-lifetime loops. Details: `async`.
 
 **Folders before files (hard rule):** NEVER write new `.verse` files at `Content/Verse/` root. One gameplay system per folder. Prefer template packs (`verse_template_apply`) which create `Verse/Economy/`, `Verse/Shop/`, `Verse/PlayerCore/`, `Verse/NPCCore/`, `Verse/Progression/`, etc. Hand-writing: `workspace_list_dir("Verse")` → reuse that system’s folder or write `Verse/<System>/<file>.verse` (`workspace_write_file` creates parent dirs). Only `module_declarations.verse` and tiny shared helpers belong at Verse root. Before inventing a parallel layout, load `modules`.
 
@@ -46,6 +50,8 @@ When the **UEFN Verse** plugin is enabled, **check packs before writing** player
 1. `verse_template_list()` — see ids, folders, file paths, and which `?option` slots each pack registers/consumes.
 2. `verse_template_get(id)` — read the Verse source.
 3. `verse_template_apply(id)` — creates a **named folder** under `Content/Verse` (e.g. `Verse/Economy/`) and writes the pack files there. Prefer this over inventing parallel files at Verse root.
+
+Every pack was built in UEFN with zero errors (Sep 2026); `verse_template_verify()` re-runs that build for all installed templates when UEFN is open (stages, compiles, removes). Note the island cap: Player Core + Economy + Progression + Time Tracker use all **four** allowed persistent `weak_map`s — a fifth anywhere is error 3502.
 
 Pack names match `sys_architecture` (`player_core`, `npc_core`, `economy`, `progression`, `time_tracker`, `shop`, `match_timer`, `tycoon`). NPC islands: `verse_template_apply("npc_core")` then customize (do not invent a parallel prey/hunter folder). `npc_ecosystem` is the optional cat+dog example only. Cross-pack player links use `player_manager` `?option` slots (`GetCurrencyProvider`, `GetXPAwarder`, `GetPlaytimeProvider`) so packs stay standalone.
 
@@ -74,16 +80,19 @@ Workflow (only for names no loaded skill shows): search → `get_verse_api` for 
 ## Error checks
 
 - **FIRST tool on a fix-errors turn:** `workspace_list_verse_errors()` — never `ping`, `get_project_info`, `ducky_get_errors`, `execute_python`, or listener tools. If a listener call does not return immediately it is broken; do not retry.
-- `workspace_list_verse_errors()` with **no args** after every edit (incremental; offline OK). Its list is complete **unless the result says `from_cache`** (stale — wait for the Verse build, then list again). Fix the files it names; don't re-scan to "make sure" and never pass `full=true` just to re-confirm (full rescan is slow). `rescan=false` re-reads without scanning.
-- `workspace_compile_verse` only after Problems is clean and UEFN is known open (not a substitute for listing errors). Prefer nested Epic Verse compile when `epic_mcp_online`.
+- `workspace_list_verse_errors()` with **no args** after every edit (incremental; offline OK). Fix the files it names; don't re-scan to "make sure" and never pass `full=true` just to re-confirm. `rescan=false` re-reads without scanning.
+- **The LSP scan is not a build.** It cannot see effect errors (3512 no_rollback, 3582 divergent initialiser), module-access errors (3593) or ambiguous identifiers (3588/3532) — 72 % of real failures. A clean Problems panel means "syntax OK", nothing more.
+- **`workspace_compile_verse` is mandatory** once Problems is clean and before any `wire_verse_device_ref` / `wire_verse_device_array` / `set_verse_editable` / `set_npc_definition_behavior` / `workspace_push_verse_changes`. Wiring before a build fails with "STALE REFLECTION" because fields have no compiled hash. Prefer nested Epic `VerseToolset` BuildAll when `epic_mcp_online`.
+- Any `Script error NNNN` → load `compile_errors`, jump to the code, apply the fix at the reported line, rebuild.
 
 ## Syntax must-knows
 
 - **Comments:** `#` line, `<# … #>` block. **Never** `//`.
 - **Bindings:** `X := value` defines (immutable); `var X : t = value` is mutable — reassign with `set X = value`.
 - **Types are lowercase:** `int float logic string void`; booleans are `logic`. Containers: `[]t` array, `[k]v` map, `?t` option, `tuple(...)`.
-- **Effects in `<>`:** `<suspends>` (async), `<decides>` (can fail — call inside a failure context), `<transacts>`, `<computes>`. Access: `<public> <private> <internal> <protected>`, plus `<override> <final> <native>`.
-- **Failure context:** failable expressions live inside `if (…)`, `for (…)`, or `[]`. `if (V := Map[Key]) { }`; unwrap an option with `X?`.
+- **Effects in `<>`:** `<suspends>` (async), `<decides>` (can fail — call with `[]`, pair with `<transacts>`), `<transacts>` (rollback-safe; use for every getter/helper), `<computes>` (pure), `<converges>` (field initialisers). **No specifier = `no_rollback`** → not callable in any failure context. Access: `<public> <private> <internal> <protected>`, plus `<override> <final> <native>`.
+- **Failure context:** failable expressions live inside `if (…)`, `if:`, `for (…)`, or `[]`. `if (V := Map[Key]) { }`; unwrap an option with `X?`. A `<transacts>` body is **not** a failure context.
+- **One-line signatures**, `_` reserved, tuples `T(0)`, `int / int` is `rational`, `array{}` not `array:`, no `ToString(logic)`, a `{}` body goes on the same line as its `if (…)` (a lone `{}` on the next line is parse error 3100) — see `syntax`.
 - **A placed device** is a `creative_device` subclass with `@editable` fields and `OnBegin`:
 
 ```verse
@@ -101,8 +110,11 @@ my_device := class(creative_device):
 | Wrong | Right |
 |-------|-------|
 | Dump `economy_shop.verse` / devices at `Verse/` root | `Verse/Economy/…`, `Verse/Shop/…`, or `verse_template_apply` |
-| Guess a device / asset / function name | Copy it from a loaded skill (pre-verified), else `search_verse_digest` once |
-| Digest-verify every symbol before writing (`Distance`, `Sin`, `GetFortCharacter`, …) | Skill code is pre-verified — write, then `workspace_list_verse_errors` |
+| Guess a device / asset / function name | Copy it from a loaded skill, else `search_verse_digest` once |
+| Helper with no effect called inside `if (…)` | `<transacts>` on the helper, or bind to a local first |
+| Wire `@editable` refs right after writing Verse | `workspace_compile_verse` first, then wire |
+| Treat a clean `workspace_list_verse_errors` as "it compiles" | It is syntax-only; the build finds effect/module errors |
+| `spawn` a per-round loop inside `<suspends>` code | `branch` (dies with the scope) or `race` against the end event |
 | `// comment` | `#` comment |
 | Read a whole `*.digest.verse` into chat | `search_verse_digest` (compact matches) |
 | Write / patch / delete any `*.digest.verse` | Never — UEFN auto-edits digests on Verse build; you only search/read after `workspace_compile_verse` |
@@ -116,16 +128,18 @@ Load the closest 1–3 for the task:
 
 - `references/digests.md` — Where the Verse API and your custom assets live, and how to search them
   Load when: Looking up a device, weapon, type, function signature, or a custom asset before writing Verse
-- `references/syntax.md` — Verse language reference — types, effects, control flow, classes, concurrency
+- `references/syntax.md` — Verse language reference — types, effects, control flow, classes, concurrency, hard syntax rules
   Load when: Writing non-trivial Verse — control flow, classes/structs, options/failure, or concurrency
+- `references/compile_errors.md` — Compiler error catalogue: Script error code → real cause → compiling fix (3512, 3582, 3593, 3588, 3104, 3506, 3509, 3524, 3511, 3514, 3100, 9002) plus tool-side "STALE REFLECTION"
+  Load when: workspace_compile_verse or the UEFN build reported a Script error, or workspace_list_verse_errors names a file
 - `references/classes.md` — How to declare classes, structs, enums, interfaces — every specifier, members, methods, subclassing, parametric types
   Load when: Creating or subclassing a class/struct/enum/interface, or unsure which class specifier (<concrete>/<unique>/<final>/<persistable>) to use
 - `references/control_flow.md` — Control flow — if / else, the if:/then:/else: block form, all for-loop shapes, loop/break, case, and how failure drives branching
   Load when: Writing branching or iteration — if/for/loop/case, ranges, map iteration, filters, or break/return
-- `references/async.md` — Async vs synchronous Verse — what <suspends> means, spawn/race/sync, Sleep/Await, event subscriptions, and the rules for calling async code
-  Load when: Anything time-based or event-driven — loops with Sleep, spawn, race, Await, waiting on events, or 'is this function async?'
-- `references/effects.md` — Effect specifiers (<suspends> <decides> <transacts> <computes> <localizes> …), the failure model, <decides> functions called with [], and option handling
-  Load when: Choosing effect specifiers for a function, calling a failable [] function, or handling options (?t, X?, option{})
+- `references/async.md` — Async vs synchronous Verse — <suspends>, structured concurrency (sync / race / rush / branch vs spawn), Sleep/Await, event subscriptions and payload types
+  Load when: Anything time-based or event-driven — loops with Sleep, branch, spawn, race, sync, rush, Await, waiting on events, or 'is this function async?'
+- `references/effects.md` — Effect specifiers (<transacts> <decides> <computes> <converges> <reads> <suspends>), what NO specifier means (no_rollback), who may call whom, the failure model, <decides> chaining, options
+  Load when: Choosing effect specifiers, a compile error mentioning no_rollback / transacts / divergent, calling a failable [] function, or handling options
 - `references/devices.md` — creative_device pattern — @editable fields, OnBegin, subscribing to device/player events, agents vs players, GetPlayspace, and the wrapper helpers
   Load when: Writing a placed device — @editable wiring, OnBegin, subscribing to triggers/buttons/player events, or working with agent/player/fort_character
 - `references/datatypes.md` — Data — scalars, arrays/maps/tuples/options, bindings & mutation, arithmetic, string/number formatting, and collection operations (Length, iteration, +=)
@@ -154,6 +168,8 @@ Load the closest 1–3 for the task:
   Load when: Spawning enemies/props/waves, runtime delivery props, moving objects along paths, tracking NPC eliminations, or teleporting players reliably
 - `references/sys_persistence_migration.md` — Evolving saved data safely — the Version field, why defaulted persistable fields are backward-compatible, and one-time migration on load
   Load when: Changing the shape of already-saved player data — adding/removing persistable fields, or migrating old saves to a new schema
+- `references/sys_damage_health.md` — Character damage, healing, health/shield and elimination — healthful/damageable/healable/shieldable on fort_character, DamagedEvent/EliminatedEvent payloads and who-hit-whom, respawn via player_spawner_device
+  Load when: Applying or reacting to damage/healing, reading/setting health or shield, detecting eliminations and the eliminator, or respawning players
 - `references/sys_teams.md` — Teams — the team collection API, reading/assigning a player's team, per-team counts and iteration, and role/team-based game logic
   Load when: Building team-based or role-based logic — assigning teams, counting per team, team scoring, or per-team behavior
 - `references/sys_generators.md` — Idle / tycoon systems — passive resource generators, upgrade tiers, collect-on-tick loops, and offline/away earnings orchestration with TimeTracker

@@ -4,6 +4,7 @@ using { /Fortnite.com/Playspaces }
 using { /UnrealEngine.com/Temporary/SpatialMath }
 using { /Verse.org/Random }
 using { /Verse.org/Simulation }
+using { /Verse.org/Assets }
 using { /Verse.org/Verse }
 
 # Shared helpers + session registries. Duplicate react clips into THIS folder
@@ -42,25 +43,25 @@ CatFleePointFrom<public>(SelfPos : vector3, ThreatPos : vector3, FleeDistance : 
         Z := SelfPos.Z
     }
 
-CatGetActiveAgents<public>() : []agent =
+CatGetActiveAgents<public>()<transacts> : []agent =
     if (Active := ActiveCatAgents[GetSession()]):
         Active
     else:
         array{}
 
-DogGetActiveAgents<public>() : []agent =
+DogGetActiveAgents<public>()<transacts> : []agent =
     if (Active := ActiveDogAgents[GetSession()]):
         Active
     else:
         array{}
 
-GetDownedAgents() : []agent =
+GetDownedAgents()<transacts> : []agent =
     if (Active := CatDownedAgents[GetSession()]):
         Active
     else:
         array{}
 
-GetDownedUntilTimes() : []float =
+GetDownedUntilTimes()<transacts> : []float =
     if (Active := CatDownedUntilTimes[GetSession()]):
         Active
     else:
@@ -109,7 +110,7 @@ IsCatDownedInLists<public>(Agent : agent, Now : float, Agents : []agent, Untils 
             set Found = true
     Found
 
-IsCatDownedAt<public>(Agent : agent, Now : float) : logic =
+IsCatDownedAt<public>(Agent : agent, Now : float)<transacts> : logic =
     IsCatDownedInLists(Agent, Now, GetDownedAgents(), GetDownedUntilTimes())
 
 RegisterCatAgent<public>(Agent : agent) : void =
@@ -145,7 +146,7 @@ UnregisterDogAgent<public>(Agent : agent) : void =
         set Next += array{Existing}
     if (set ActiveDogAgents[Session] = Next) {}
 
-CatFindNearestPlayer<public>(Behavior : npc_behavior, FortChar : fort_character, DetectionRange : float) : ?fort_character =
+CatFindNearestPlayer<public>(Behavior : npc_behavior, FortChar : fort_character, DetectionRange : float)<transacts> : ?fort_character =
     var Best : ?fort_character = false
     var BestDist : float = DetectionRange
     if (Ent := Behavior.GetEntity[], PS := Ent.GetPlayspaceForEntity[]):
@@ -161,7 +162,7 @@ CatFindNearestPlayer<public>(Behavior : npc_behavior, FortChar : fort_character,
                 set BestDist = D
     Best
 
-CatFindNearestPeer<public>(SelfAgent : agent, FortChar : fort_character, DetectionRange : float) : ?fort_character =
+CatFindNearestPeer<public>(SelfAgent : agent, FortChar : fort_character, DetectionRange : float)<transacts> : ?fort_character =
     var Best : ?fort_character = false
     var BestDist : float = DetectionRange
     SelfPos := FortChar.GetTransform().Translation
@@ -177,7 +178,7 @@ CatFindNearestPeer<public>(SelfAgent : agent, FortChar : fort_character, Detecti
                 set BestDist = D
     Best
 
-CatFindNearestDog<public>(FortChar : fort_character, DetectionRange : float) : ?fort_character =
+CatFindNearestDog<public>(FortChar : fort_character, DetectionRange : float)<transacts> : ?fort_character =
     var Best : ?fort_character = false
     var BestDist : float = DetectionRange
     SelfPos := FortChar.GetTransform().Translation
@@ -191,7 +192,7 @@ CatFindNearestDog<public>(FortChar : fort_character, DetectionRange : float) : ?
                 set BestDist = D
     Best
 
-DogFindNearestCat<public>(SelfAgent : agent, FortChar : fort_character, DetectionRange : float, Now : float) : ?fort_character =
+DogFindNearestCat<public>(SelfAgent : agent, FortChar : fort_character, DetectionRange : float, Now : float)<transacts> : ?fort_character =
     var Best : ?fort_character = false
     var BestDist : float = DetectionRange
     SelfPos := FortChar.GetTransform().Translation
@@ -209,7 +210,7 @@ DogFindNearestCat<public>(SelfAgent : agent, FortChar : fort_character, Detectio
                     set BestDist = D
     Best
 
-DogFindNearestCatExcluding<public>(SelfAgent : agent, FortChar : fort_character, DetectionRange : float, Exclude : fort_character, Now : float) : ?fort_character =
+DogFindNearestCatExcluding<public>(SelfAgent : agent, FortChar : fort_character, DetectionRange : float, Exclude : fort_character, Now : float)<transacts> : ?fort_character =
     var Best : ?fort_character = false
     var BestDist : float = DetectionRange
     SelfPos := FortChar.GetTransform().Translation

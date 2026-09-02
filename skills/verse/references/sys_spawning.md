@@ -52,8 +52,8 @@ MovementLoop<private>()<suspends> : void =
             break
 ```
 
-`MoveTo` / `MoveToLocation` on `creative_prop` are async positioning calls — look
-the exact signature up in the digest. For continuous spin, `spawn` a per-prop loop
+`MoveTo(Position, Rotation, OverTime)<suspends>` on `creative_prop` is the async
+positioning call (there is no `MoveToLocation`) — confirm the overload in the digest. For continuous spin, `spawn` a per-prop loop
 that nudges the rotation each tick.
 
 ### Damage & death
@@ -141,7 +141,7 @@ SpawnAndDeliver(Agent : agent)<suspends> : void =
     if (not HasFreeStorage(Agent)?):
         return
     ReserveStorageSlot(Agent)
-    if (Prop := SpawnProp[PropAsset, StartTransform]?):   # digest: exact API
+    if (Prop := SpawnProp(PropAsset, StartTransform)(0)?):   # returns tuple(?creative_prop, spawn_prop_result); not failable
         MoveAlongPath(Prop)                               # MoveTo / nav points
         if (GP := PlayerManager.GetGamePlayer(Agent)?):
             GP.Services.EconomyManager.AddCurrency("Coins", Payout)

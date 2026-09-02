@@ -19,4 +19,4 @@ hud_canvas_example := class(creative_device):
                 canvas_slot:
                     Widget := text_block:
                         DefaultText := StringToMessage("Hello UI")
-                        DefaultTextColor := NamedColors.White
+                        DefaultTextColor := White   # bare name: the NamedColors submodule is imported above

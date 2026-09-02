@@ -93,7 +93,7 @@ Player leaves
   OnPlayerRemoved(Agent)
     if (CP := AllPlayers[Agent]):
       fire Remove subscribers with CP     # systems flush first (e.g. EndSession)
-      rebuild AllPlayers without Agent    # ConcatenateMaps filter — no in-place delete
+      rebuild AllPlayers without Agent    # for (K -> V : Map, K <> Agent): if (set New[K] = V) {} — no in-place delete
 ```
 
 **Race rule:** a system device may start before the manager has registered anyone.
