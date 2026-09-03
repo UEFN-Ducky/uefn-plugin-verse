@@ -9,6 +9,10 @@ metadata:
 
 ## Damage, health, shields & elimination
 
+> **Snippets here are fragments.** The `using` block in this file's first code
+> block applies to all of them — copy those imports (or start from the matching
+> `verse_template_apply` pack) when pasting into a real `.verse` file.
+
 `fort_character` is an **interface** that composes the gameplay interfaces below
 (digest: `fort_character := interface<unique>(positional, healable, healthful,
 damageable, shieldable, game_action_instigator, game_action_causer)`). Get one
@@ -67,6 +71,8 @@ Subscribe once per character (on join), keep the `cancelable`, and cancel on
 leave — every `.Subscribe` returns one.
 
 ```verse
+using { /Fortnite.com/Devices }
+using { /Fortnite.com/Characters }
 damage_tracker_device := class(creative_device):
     var Subs <private> : [agent][]cancelable = map{}
 
@@ -116,6 +122,7 @@ Players respawn through placed `player_spawner_device`s. `SpawnedEvent` carries
 the **agent** (not `player`):
 
 ```verse
+using { /Fortnite.com/Characters }
 @editable Spawners : []player_spawner_device = array{}
 
 OnBegin<override>()<suspends> : void =

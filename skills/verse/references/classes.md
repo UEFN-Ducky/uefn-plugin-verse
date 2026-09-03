@@ -9,6 +9,10 @@ metadata:
 
 ## Classes, structs, enums, interfaces
 
+> **Snippets here are fragments.** The `using` block in this file's first code
+> block applies to all of them — copy those imports (or start from the matching
+> `verse_template_apply` pack) when pasting into a real `.verse` file.
+
 Everything here matches the project's own `Verse/**` files — the shapes below
 compile. **API type names still come from the digests**, only the *syntax* is here.
 
@@ -157,6 +161,7 @@ wrapper_agent(t : type) := class():
 ### Subclassing a device — the canonical entry point
 
 ```verse
+using { /Fortnite.com/Devices }
 my_device := class(creative_device):
     @editable Trigger : trigger_device = trigger_device{}
     OnBegin<override>()<suspends>:void =
@@ -168,3 +173,7 @@ my_device := class(creative_device):
 
 See the `devices` reference for `@editable`, events, and agents/players; the
 `async` reference for what `<suspends>` unlocks.
+
+### `concrete_subtype` fields (validator enforced from v42.10)
+
+`@editable Kinds : []concrete_subtype(entity) = array{}` lets a designer pick classes to instantiate with `Kind{}`. From v42.10 the editor validates that **every class placed in such a field is itself `<concrete>`** (all fields have defaults). A non-concrete class there fails validation when you republish, even though already-published islands keep working. Make your own prefab/item classes `class<concrete>` (or `<final><concrete>`) before exposing them this way; stock `/Fortnite.com/Weapons` and `/Fortnite.com/Items` classes already are.

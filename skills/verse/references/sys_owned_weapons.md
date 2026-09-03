@@ -143,6 +143,7 @@ The Collectible mesh is **look only**. It does **not** put an Armory gun in
 inventory. Wire `@editable Collectible` and subscribe `CollectedEvent`:
 
 ```verse
+using { /Fortnite.com/Devices }
 weapon_collectible_pickup_device := class(creative_device):
     @editable Collectible : collectible_object_device = collectible_object_device{}
 

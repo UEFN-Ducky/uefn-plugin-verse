@@ -88,7 +88,7 @@ InitializeTimeTracking<public>(Agent : agent) : void =
         Player.IsActive[]
         PlayerStats := PlayerStatsMap[Player]
     then:
-        Now := GetSecondsSinceEpoch()          # pre-verified
+        Now := GetSecondsSinceEpoch()          # digest-verified
         if (PlayerStats.PlayerTimeData.FirstLoginTime = 0.0):
             TimeSaveService.SetFirstLoginTime(MyAgent, Now)
             TimeSaveService.SetLastLoginTime(MyAgent, Now)
@@ -130,6 +130,7 @@ Same as wallet / level: concrete `@editable` manager ref; pass handlers by name
 into Subscribe; handler signature matches the bus type.
 
 ```verse
+using { /Fortnite.com/Devices }
 player_time_tracker_device := class(creative_device):
     @editable PlayerManager : player_manager = player_manager{}
 

@@ -9,6 +9,10 @@ metadata:
 
 ## UI menus & modals — UIMenuController
 
+> **Snippets here are fragments.** The `using` block in this file's first code
+> block applies to all of them — copy those imports (or start from the matching
+> `verse_template_apply` pack) when pasting into a real `.verse` file.
+
 Interactive screens **capture** player input. Layouts come from
 `sys_canvas_cookbook` (modal, shop list, tabs). Show/hide wiring mirrors
 `sys_hud_template` but uses `ui_input_mode.All`.

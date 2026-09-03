@@ -9,6 +9,10 @@ metadata:
 
 ## Building UI — canvas & widgets
 
+> **Snippets here are fragments.** The `using` block in this file's first code
+> block applies to all of them — copy those imports (or start from the matching
+> `verse_template_apply` pack) when pasting into a real `.verse` file.
+
 Verse UI is a **tree of widgets in slots**. You build a `canvas`, add it to a
 player's screen with `AddWidget`, and update `text_block`/`texture_block` fields
 at runtime. Isolate construction in a `*_canvas_builder` class — keep layout there
@@ -59,6 +63,7 @@ Every slot carries a `Widget := <child>` plus alignment/padding.
 Store the leaves as fields so logic can update them later:
 
 ```verse
+using { /Fortnite.com/UI }
 top_hud_canvas_builder <public> := class():
     var TimerText : text_block = text_block{}
     var HUDBackground : texture_block = texture_block{

@@ -92,3 +92,40 @@ Same idea: Pressed starts `spawn{ ContinuousLoop(Agent) }`; Released sets a
 - Forgetting `Unregister` leaks input to agents who left the minigame.
 - Subscribing once in `OnBegin` is enough; Register only enables that agent.
 - `Register` / `Unregister` / event names are as shown — do not invent others; re-check only if the error list flags one.
+
+### Verse input mappings (Enhanced Input) — v42.10 additions (digest-verified)
+
+Besides `input_trigger_device`, every player exposes `player_input`
+(`GetPlayerInput[Player]`, `/Verse.org/Input`). The Fortnite character mappings live in
+`/Fortnite.com/Input/Character`:
+
+| Mapping | Actions | Status |
+|---------|---------|--------|
+| `TraversalMapping` | `Crouch`, `Sprint`, `Jump` : `input_action(logic)`; **`Move` : `input_action(vector3)`** (v42.10) | `Move` is Experimental |
+| `RangedWeaponMapping` | `Reload`, `WeaponPrimary`, `WeaponSecondary` : `input_action(logic)` | released |
+| **`InteractMapping`** (v42.10) | **`Interact` : `input_action(logic)`** | Experimental |
+
+Experimental actions block publishing. Subscribe exactly like the Virtual Pointer skill:
+
+```verse
+using { /Verse.org/Input }
+using { /Fortnite.com/Input/Character }
+using { /Verse.org/SpatialMath }
+
+WatchMovement(Player : player) : void =
+    if (PlayerInput := GetPlayerInput[Player]):
+        PlayerInput.AddInputMapping(TraversalMapping)
+        PlayerInput.GetInputEvents(Move).TriggerActivationEvent.Subscribe(OnMove)
+        PlayerInput.AddInputMapping(InteractMapping)
+        PlayerInput.GetInputEvents(Interact).BeginDetectEvent.Subscribe(OnInteract)
+
+OnMove(Arg : tuple(player, vector3)) : void =
+    Dir := Arg(1)              # stick / WASD direction in the mapping's space
+    Print("move {Dir.Forward},{Dir.Left}")
+
+OnInteract(Arg : tuple(player, logic)) : void =
+    Print("interact pressed")
+```
+
+Keep the returned `cancelable`s and `RemoveInputMapping` on leave (see `virtualpointer`
+skill for the full per-player subscription pattern and event payload table).

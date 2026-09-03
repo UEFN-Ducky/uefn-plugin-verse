@@ -96,6 +96,7 @@ Workflow (only for names no loaded skill shows): search → `get_verse_api` for 
 - **A placed device** is a `creative_device` subclass with `@editable` fields and `OnBegin`:
 
 ```verse
+using { /Fortnite.com/Devices }
 my_device := class(creative_device):
     @editable Trigger : trigger_device = trigger_device{}
     OnBegin<override>()<suspends>:void =
@@ -170,6 +171,8 @@ Load the closest 1–3 for the task:
   Load when: Changing the shape of already-saved player data — adding/removing persistable fields, or migrating old saves to a new schema
 - `references/sys_damage_health.md` — Character damage, healing, health/shield and elimination — healthful/damageable/healable/shieldable on fort_character, DamagedEvent/EliminatedEvent payloads and who-hit-whom, respawn via player_spawner_device
   Load when: Applying or reacting to damage/healing, reading/setting health or shield, detecting eliminations and the eliminator, or respawning players
+- `references/sys_party.md` — Party-aware gameplay (Social Synergy API, v42.10): GetLocalParty, party size, same-party checks, join/leave events, party-only doors, difficulty scaled to party size
+  Load when: Anything about parties, friends who joined together, party bonuses, party-only access, or scaling difficulty to group size
 - `references/sys_teams.md` — Teams — the team collection API, reading/assigning a player's team, per-team counts and iteration, and role/team-based game logic
   Load when: Building team-based or role-based logic — assigning teams, counting per team, team scoring, or per-team behavior
 - `references/sys_generators.md` — Idle / tycoon systems — passive resource generators, upgrade tiers, collect-on-tick loops, and offline/away earnings orchestration with TimeTracker

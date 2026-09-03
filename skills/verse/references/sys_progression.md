@@ -9,6 +9,10 @@ metadata:
 
 ## XP & level progression
 
+> **Snippets here are fragments.** The `using` block in this file's first code
+> block applies to all of them — copy those imports (or start from the matching
+> `verse_template_apply` pack) when pasting into a real `.verse` file.
+
 Names below are generic — adapt them to your game.
 
 ### The three data shapes
@@ -103,6 +107,7 @@ Exact pattern — concrete manager ref, Subscribe by function name, catch alread
 joined, then config → HUD on the manager:
 
 ```verse
+using { /Fortnite.com/Devices }
 progression_manager_device := class(creative_device):
     @editable PlayerManager : player_manager = player_manager{}
     @editable LevelUpEffect : visual_effect_powerup_device = visual_effect_powerup_device{}

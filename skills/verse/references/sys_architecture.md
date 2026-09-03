@@ -114,6 +114,7 @@ the bus will deliver `OnPlayerJoined` later.
 ### 1. Registry + typed bus (on the manager)
 
 ```verse
+using { /Fortnite.com/Devices }
 player_connected_to_game <public> := type{_(GamePlayer : game_player):void}
 player_removed_from_game <public> := type{_(GamePlayer : game_player):void}
 
@@ -198,6 +199,7 @@ Non-optional `@editable` ref to the manager (default constructed), subscribe the
 function by name, then catch already-joined players:
 
 ```verse
+using { /Fortnite.com/Devices }
 your_manager_device := class(creative_device):
     @editable PlayerManager : player_manager = player_manager{}
     @editable ConfigRows : []your_config = array{}     # class<concrete> rows

@@ -9,6 +9,10 @@ metadata:
 
 ## Custom buttons & controller UI
 
+> **Snippets here are fragments.** The `using` block in this file's first code
+> block applies to all of them — copy those imports (or start from the matching
+> `verse_template_apply` pack) when pasting into a real `.verse` file.
+
 **Default for any interactive Verse canvas with custom chrome** (painted cards,
 list rows, modals, tabs). Layout still comes from `sys_canvas_cookbook`;
 open/close lifetime from `sys_ui_menus` — but the **clickable widget type is

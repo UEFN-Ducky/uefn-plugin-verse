@@ -139,6 +139,27 @@ You wrote `set` on an immutable binding: `Prev := 0.0` then `set Prev = P`, or a
 name bound in an `if (X := Map[K])` head. Declare it `var Prev : float = 0.0`, or
 copy the bound value into a `var` before mutating.
 
+### "Invalid access of internal function … from control scope" (verified)
+
+An Epic API marked `<epic_internal>` cannot be called from creator code, even
+though the digest lists it. Confirmed case on 42.10:
+`TickEvents.PrePhysics.Subscribe(...)` — `execution_listenable` is
+`class<epic_internal>`, so per-frame work must use `OnSimulate` + `loop` +
+`Sleep(0.0)` with a measured `GetSimulationElapsedTime` delta (scenegraph
+`verse_authoring`). Check for `<epic_internal>` in the digest declaration before
+building on any type; the same applies to `party_member_info`.
+
+### Comparisons are failable (3512 variant)
+
+`<`, `<=`, `>`, `>=` on floats carry `<decides>` — `OnGround := Pos.Up <= 1.0`
+outside a failure context is E3512. Write it as a `var logic` set inside an `if`:
+
+```verse
+var OnGround : logic = false
+if (Pos.Up <= GroundHeight + 1.0):
+    set OnGround = true
+```
+
 ### 3511 — "uses parentheses to call a function that has the 'decides' effect"
 
 `<decides>` functions are called with `[]`: `if (Team := Collection.GetTeam[Agent])`.

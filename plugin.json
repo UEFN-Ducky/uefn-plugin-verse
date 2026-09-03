@@ -1,7 +1,7 @@
 {
   "id": "verse",
   "kind": "plugin",
-  "version": "1.0.45",
+  "version": "1.0.50",
   "label": "UEFN Verse",
   "description": "Verse digests, device wiring, compile/errors, skill reader, UMG Widget Blueprint tools, and New-file system template packs (Player Core, NPC Core, Economy, Progression, Tycoon, UMG Widget, …). Bundles verse + islandsettings skills. Serial editor ops (one MCP call per turn).",
   "min_app_version": "1.0.0",
@@ -336,6 +336,24 @@
           }
         ],
         "order": 65
+      },
+      {
+        "id": "custom_movement",
+        "name": "Custom Entity Movement (Experimental)",
+        "icon": "🚶",
+        "description": "Fully custom player locomotion on a Scene Graph entity: 42.10 Move input action, editable speed/accel/friction/gravity/jump, OnSimulate delta loop (TickEvents.Subscribe is Epic-internal), Scene Graph orbit camera via fort_orbit_camera_modifier on the camera's modifier stack (AddModifier = parens) plus camera_director_component.AddCamera[...] (brackets), stock character parked in stasis. Experimental: cannot publish.",
+        "folder": "CustomMovement",
+        "files": [
+          {
+            "path": "player_movement_component.verse",
+            "file": "templates/custom_movement/player_movement_component.verse"
+          },
+          {
+            "path": "custom_movement_controller.verse",
+            "file": "templates/custom_movement/custom_movement_controller.verse"
+          }
+        ],
+        "order": 83
       }
     ],
     "walkthrough": {

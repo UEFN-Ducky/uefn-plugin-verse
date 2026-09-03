@@ -61,6 +61,7 @@ The shop pattern: subscribe buttons → look up the buyer's wallet → check fun
 remove currency + grant item → HUD feedback + analytics:
 
 ```verse
+using { /Fortnite.com/Devices }
 buy_with_currency := class(creative_device):
     @editable MyPlayerManager : player_manager = player_manager{}
     @editable Buttons : []button_device = array{}

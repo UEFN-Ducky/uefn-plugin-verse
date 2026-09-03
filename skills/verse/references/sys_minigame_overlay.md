@@ -9,6 +9,10 @@ metadata:
 
 ## Overlay minigame — MinigameController
 
+> **Snippets here are fragments.** The `using` block in this file's first code
+> block applies to all of them — copy those imports (or start from the matching
+> `verse_template_apply` pack) when pasting into a real `.verse` file.
+
 A full-screen (or panel) game that runs **on the UI** while the character is
 frozen in the world. Layout cells: `sys_canvas_cookbook` dynamic board. Input:
 `sys_input_devices`. Names are generic.

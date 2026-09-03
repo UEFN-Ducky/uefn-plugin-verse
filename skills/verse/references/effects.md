@@ -72,10 +72,14 @@ compile as `<transacts>` (they call default functions or do `spawn`).
 ### Field initialisers must converge (E3582)
 
 ```verse
+using { /Fortnite.com/Devices }
+using { /Verse.org/SpatialMath }
 my_device := class(creative_device):
     var Rows : []int = BuildRows()           # E3582 — divergent call
     var Rows : []int = array{}               # OK; fill in OnBegin
-    Origin : vector3 = vector3{X := 0.0, Y := 0.0, Z := 0.0}   # archetype OK
+    Origin : vector3 = vector3{Forward := 0.0, Left := 0.0, Up := 0.0}   # archetype OK
+    # /Verse.org/SpatialMath vector3 is Forward/Left/Up. The X/Y/Z vector3 lives in
+    # /UnrealEngine.com/Temporary/SpatialMath — never mix the field names with the import.
 ```
 
 Only literals, archetypes (`array{}`, `map{}`, `option{}`, `vector3{…}`, `foo{}`)

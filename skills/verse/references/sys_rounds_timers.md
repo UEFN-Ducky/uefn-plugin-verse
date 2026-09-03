@@ -19,6 +19,7 @@ which sets up its phase, starts a timer, and the timer's finished-event calls th
 next phase. `OnBegin` bootstraps; loops run in `spawn`:
 
 ```verse
+using { /Fortnite.com/Devices }
 match_controller := class(creative_device):
     var RoundStarted : logic = false
     var EndingStarted : logic = false
@@ -60,6 +61,7 @@ A reusable countdown/count-up device with `@editable` config, per-player HUD, an
 **typed event bus** (same pattern as `sys_player_data`):
 
 ```verse
+using { /Fortnite.com/Devices }
 timer_started  <public> := type{_(CurrentTime : float):void}
 timer_finished <public> := type{_(FinalTime : float):void}
 

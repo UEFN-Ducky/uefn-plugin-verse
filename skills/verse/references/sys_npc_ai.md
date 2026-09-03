@@ -9,6 +9,10 @@ metadata:
 
 ## NPC AI — `npc_behavior` patterns
 
+> **Snippets here are fragments.** The `using` block in this file's first code
+> block applies to all of them — copy those imports (or start from the matching
+> `verse_template_apply` pack) when pasting into a real `.verse` file.
+
 The code below is **pre-verified** against current digests — copy names and
 signatures as-is (`npc_behavior`, `GetNavigatable`, `PlayAndAwait`,
 `npc_spawner_device`, `Distance`, focus/anim interfaces); do NOT re-check them
@@ -35,6 +39,8 @@ Every enemy type is a `class(npc_behavior)` with `@editable` tuning and an
 `OnBegin` loop. Guard the interfaces once, then tick until the character dies:
 
 ```verse
+using { /Verse.org/Assets }
+using { /Fortnite.com/Characters }
 melee_enemy_behavior<public> := class(npc_behavior):
     @editable AttackAnim:?animation_sequence = false
     @editable HitRange:float = 220.0
@@ -236,6 +242,7 @@ Wire one `npc_spawner_device` per character definition (see animation
 `npc_characters`). The manager counts alive and spawns waves:
 
 ```verse
+using { /Fortnite.com/Devices }
 enemy_spawn_manager := class(creative_device):
     @editable SpawnerA:?npc_spawner_device = false
     # … more optional spawners …

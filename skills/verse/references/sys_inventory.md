@@ -127,6 +127,7 @@ GrantItemsForEntry(Config : item_config, Agent : agent, Amount : int) : void =
 ### Placed device wiring (exact pattern — mirror wallet/level)
 
 ```verse
+using { /Fortnite.com/Devices }
 inventory_manager_device := class(creative_device):
     @editable PlayerManager : player_manager = player_manager{}
     @editable ItemConfigs : []item_config = array{}
