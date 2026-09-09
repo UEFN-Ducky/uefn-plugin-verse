@@ -7,6 +7,8 @@ metadata:
   load_condition: "Wiring View Bindings or a viewmodel on a User Widget, ToText conversions, or showing textures/materials from bindings"
 ---
 
+**Tool order (HARD):** 1) Official UEFN MCP first (`ducky_get_status` → `epic_mcp_online` → nested `unreal__*`). 2) Ducky listener second. 3) `execute_python` LAST — never a placement path, even if Epic and listener failed. Map: `skill_read_subskill("uefn", "epic_mcp")`.
+
 ## UMG View Bindings & viewmodel
 
 **View Bindings** connect a data source (Verse field on the User Widget, or a viewmodel) to a widget property (text, brush, visibility, material param, etc.). This is how Verse fields actually paint the UI — `set MyWidget.Progress = 0.5` only updates the bar if Progress is bound.
