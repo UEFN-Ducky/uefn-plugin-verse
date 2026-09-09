@@ -184,7 +184,7 @@ under `Content/` and the project must have been built once so the digest lists i
 
 | Message | Cause | Fix |
 |---------|-------|-----|
-| "STALE REFLECTION — field has no compiled hash" | You wired an `@editable` before the Verse VM had hashes | Host already compiles + reloads + retries **once**. Do **not** call `wire_*` again. Wait for the build (`WinError 10054` = started), then `get_verse_editables`; still no hash → re-place the device |
+| "STALE REFLECTION — field has no compiled hash" | You wired an `@editable` before the Verse VM had hashes | Host already compiles + reloads + retries **once**. Do **not** call `wire_*` again. Wait for the build (`WinError 10054` = started), then `get_verse_editables` on the **same** device and wire once. Never place a second copy of the device — a duplicate has the same stale class; the existing instance gets the hashes when the build lands |
 | "Verse behavior not found … Build Verse Code first" | `set_npc_definition_behavior` before the class existed | build, then retry |
 | "Verse struct … not found under _Verse. Recompile Verse" | array field of a new struct, not built | build, then retry |
 | "wire_verse_device_array … one target per call" | older app; pass one target per call, or upgrade | – |
