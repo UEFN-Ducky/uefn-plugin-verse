@@ -7,6 +7,8 @@ metadata:
   load_condition: "Applying a preset or recipe to Island Settings (FFA, co-op, BR inventory, playtest, no building)"
 ---
 
+**Tool order (HARD):** 1) Official UEFN MCP first (`ducky_get_status` → `epic_mcp_online` → nested `unreal__*`). 2) Ducky listener second. 3) `execute_python` LAST — never a placement path, even if Epic and listener failed. Map: `skill_read_subskill("uefn", "epic_mcp")`.
+
 # Island Settings recipes
 
 Read with Epic `GetDeviceProperties` first; only set keys that are writable. Adjust numbers for the island.

@@ -7,6 +7,8 @@ metadata:
   load_condition: "Handling UMG button clicks / hover via Verse field events, or awaiting widget events from Verse"
 ---
 
+**Tool order (HARD):** 1) Official UEFN MCP first (`ducky_get_status` → `epic_mcp_online` → nested `unreal__*`). 2) Ducky listener second. 3) `execute_python` LAST — never a placement path, even if Epic and listener failed. Map: `skill_read_subskill("uefn", "epic_mcp")`.
+
 ## UMG Verse field events (39.40+)
 
 Starting with **39.40**, UMG Verse fields can be **events**. Bind a Button's **On Clicked** (or similar) to a Verse `event()` field in the widget, then `Subscribe` from your `creative_device`. This replaces the obsolete myth that "Verse cannot get a named button from a UMG widget."

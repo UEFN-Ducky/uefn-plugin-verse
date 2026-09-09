@@ -7,6 +7,8 @@ metadata:
   load_condition: "Setting up a game for N players, changing MaxPlayers, starting class, spawn pads, or core Island Settings session rules"
 ---
 
+**Tool order (HARD):** 1) Official UEFN MCP first (`ducky_get_status` → `epic_mcp_online` → nested `unreal__*`). 2) Ducky listener second. 3) `execute_python` LAST — never a placement path, even if Epic and listener failed. Map: `skill_read_subskill("uefn", "epic_mcp")`.
+
 # Session setup — Island Settings + spawn pads
 
 This is **core gameplay setup**. Island Settings decides who can play and how they enter; spawn pads are the physical slots.

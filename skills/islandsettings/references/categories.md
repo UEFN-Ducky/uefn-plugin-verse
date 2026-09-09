@@ -7,6 +7,8 @@ metadata:
   load_condition: "Picking which Island Settings / Experience Settings keys to change (max players, teams, spawn, movement, ammo, HUD)"
 ---
 
+**Tool order (HARD):** 1) Official UEFN MCP first (`ducky_get_status` → `epic_mcp_online` → nested `unreal__*`). 2) Ducky listener second. 3) `execute_python` LAST — never a placement path, even if Epic and listener failed. Map: `skill_read_subskill("uefn", "epic_mcp")`.
+
 # Island Settings — writable key categories
 
 Only keys that Epic `GetDeviceProperties` / `ListDeviceProperties` (`ValkyrieToolset.DeviceToolset`) reports as writable (not `readonly_override`) can be set via `SetDeviceProperty`. Confirm on the live device — Epic adds/renames options over time.

@@ -7,6 +7,8 @@ metadata:
   load_condition: "Driving a UMG User Widget from Verse with Verse fields — Progress, message, material, texture, logic — or following the Epic 38.00 Verse fields tutorial"
 ---
 
+**Tool order (HARD):** 1) Official UEFN MCP first (`ducky_get_status` → `epic_mcp_online` → nested `unreal__*`). 2) Ducky listener second. 3) `execute_python` LAST — never a placement path, even if Epic and listener failed. Map: `skill_read_subskill("uefn", "epic_mcp")`.
+
 ## UMG Verse fields (38.00+)
 
 Starting with **Fortnite / UEFN 38.00**, you can define **Verse fields** directly on a UMG User Widget. They appear in the Variables panel, bind to widget properties via **View Bindings**, and reflect into the **Assets digest** so Verse can `set MyWidget.Field = value`.

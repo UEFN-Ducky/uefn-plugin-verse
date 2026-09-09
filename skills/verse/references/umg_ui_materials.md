@@ -7,6 +7,8 @@ metadata:
   load_condition: "Using UI materials/textures on a User Widget, Verse material fields, progress-bar materials, or migrating from the UI Feature Template"
 ---
 
+**Tool order (HARD):** 1) Official UEFN MCP first (`ducky_get_status` → `epic_mcp_online` → nested `unreal__*`). 2) Ducky listener second. 3) `execute_python` LAST — never a placement path, even if Epic and listener failed. Map: `skill_read_subskill("uefn", "epic_mcp")`.
+
 ## UMG UI materials & textures
 
 Epic's Verse-fields tutorials build styling from materials under **Fortnite → UI → Material**. Create **Material Instances** (`MI_*`), expose them as Verse fields on the User Widget, and swap them from Verse with `set MyWidget.ProgressBarMaterial = Style1Material`.

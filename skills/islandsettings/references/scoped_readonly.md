@@ -7,6 +7,8 @@ metadata:
   load_condition: "Island Settings key is readonly_override, CreativeMutator_*, FortPlayerSettingsComponentBase, or Epic SetDeviceProperty failed on a scoped property"
 ---
 
+**Tool order (HARD):** 1) Official UEFN MCP first (`ducky_get_status` → `epic_mcp_online` → nested `unreal__*`). 2) Ducky listener second. 3) `execute_python` LAST — never a placement path, even if Epic and listener failed. Map: `skill_read_subskill("uefn", "epic_mcp")`.
+
 # Scoped Island Settings keys (readonly via MCP today)
 
 `ToyOptionsComponent` stores many overrides as **scoped** names:

@@ -7,6 +7,8 @@ metadata:
   load_condition: "workspace_compile_verse or the UEFN build reported a Script error NNNN, or workspace_list_verse_errors names a file — load this before editing"
 ---
 
+**Tool order (HARD):** 1) Official UEFN MCP first (`ducky_get_status` → `epic_mcp_online` → nested `unreal__*`). 2) Ducky listener second. 3) `execute_python` LAST — never a placement path, even if Epic and listener failed. Map: `skill_read_subskill("uefn", "epic_mcp")`.
+
 ## Compile errors — code → cause → fix
 
 Read the code number, jump to it, apply the fix at the reported line. Counts are
@@ -182,7 +184,7 @@ under `Content/` and the project must have been built once so the digest lists i
 
 | Message | Cause | Fix |
 |---------|-------|-----|
-| "STALE REFLECTION — field has no compiled hash" | You wired an `@editable` before building | `workspace_compile_verse` → `reload_listener` → retry once |
+| "STALE REFLECTION — field has no compiled hash" | You wired an `@editable` before the Verse VM had hashes | Host already compiles + reloads + retries **once**. Do **not** call `wire_*` again. Wait for the build (`WinError 10054` = started), then `get_verse_editables`; still no hash → re-place the device |
 | "Verse behavior not found … Build Verse Code first" | `set_npc_definition_behavior` before the class existed | build, then retry |
 | "Verse struct … not found under _Verse. Recompile Verse" | array field of a new struct, not built | build, then retry |
 | "wire_verse_device_array … one target per call" | older app; pass one target per call, or upgrade | – |

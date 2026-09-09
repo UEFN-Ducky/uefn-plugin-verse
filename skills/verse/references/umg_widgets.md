@@ -7,6 +7,8 @@ metadata:
   load_condition: "Creating or driving a UMG User Widget / Widget Blueprint from Verse — designer UI, Verse fields, or when deciding UMG vs canvas"
 ---
 
+**Tool order (HARD):** 1) Official UEFN MCP first (`ducky_get_status` → `epic_mcp_online` → nested `unreal__*`). 2) Ducky listener second. 3) `execute_python` LAST — never a placement path, even if Epic and listener failed. Map: `skill_read_subskill("uefn", "epic_mcp")`.
+
 ## UMG User Widgets — proper Verse usage
 
 UMG (User Widget / Widget Blueprint) is the **designer-authored** UI path. You build the layout in the UMG editor, then drive it from Verse with **Verse fields** (38.00+) and **Verse field events** (39.40+). Do not invent a fake `MyUMGWidget := class:` placeholder — the widget type comes from the Assets digest after you create the asset.

@@ -5,7 +5,7 @@ description: "Writing Verse source — syntax, effects (no_rollback/transacts/de
 license: MIT
 metadata:
   label: UEFN Verse
-  version: 40
+  version: 42
   managed_by: uefn-ducky
   author: UEFN-Ducky
   copyright: Copyright 2026 Mindful Path Company, LLC
@@ -14,7 +14,9 @@ metadata:
 
 # Verse — writing code for UEFN
 
-**Epic UEFN MCP:** Settings → MCPs → **UEFN MCP (Epic)** (`unreal-mcp`). Bridge tools: `unreal__list_toolsets` → `unreal__describe_toolset` → `unreal__call_tool` (toolsets — not flat `unreal__create_entity`). Map: `skill_read_subskill("uefn", "epic_mcp")`. Ducky tools below stay for this skill's domain when Epic does not cover it.
+**Tool order (HARD):** 1) Official UEFN MCP first — `ducky_get_status`; when `epic_mcp_online` use nested `unreal__*` (`unreal__list_toolsets` → `unreal__describe_toolset` → `unreal__call_tool`; 5+ ops → ProgrammaticToolset `execute_tool_script`). 2) Ducky listener second (Epic-offline gaps + Ducky-only tools listed in this skill). 3) `execute_python` LAST — never a placement/layout path, even if Epic and listener already failed. Never spawn, move, or assign materials. Map: `skill_read_subskill("uefn", "epic_mcp")`.
+
+Verse *source* on disk still starts with `workspace_list_verse_errors` / `workspace_*`. This tool order is for compile, place, UMG, and devices.
 
 In-editor Verse build / file ops when Epic is online: `ValkyrieToolset.VerseToolset` (`BuildAll`, `ReadFile`, …). Offline disk edits stay on `workspace_*`.
 
@@ -82,7 +84,7 @@ Workflow (only for names no loaded skill shows): search → `get_verse_api` for 
 - **FIRST tool on a fix-errors turn:** `workspace_list_verse_errors()` — never `ping`, `get_project_info`, `ducky_get_errors`, `execute_python`, or listener tools. If a listener call does not return immediately it is broken; do not retry.
 - `workspace_list_verse_errors()` with **no args** after every edit (incremental; offline OK). Fix the files it names; don't re-scan to "make sure" and never pass `full=true` just to re-confirm. `rescan=false` re-reads without scanning.
 - **The LSP scan is not a build.** It cannot see effect errors (3512 no_rollback, 3582 divergent initialiser), module-access errors (3593) or ambiguous identifiers (3588/3532) — 72 % of real failures. A clean Problems panel means "syntax OK", nothing more.
-- **`workspace_compile_verse` is mandatory** once Problems is clean and before any `wire_verse_device_ref` / `wire_verse_device_array` / `set_verse_editable` / `set_npc_definition_behavior` / `workspace_push_verse_changes`. Wiring before a build fails with "STALE REFLECTION" because fields have no compiled hash. Prefer nested Epic `VerseToolset` BuildAll when `epic_mcp_online`.
+- **`workspace_compile_verse` is mandatory** once Problems is clean and before any `wire_verse_device_ref` / `wire_verse_device_array` / `set_verse_editable` / `set_npc_definition_behavior` / `workspace_push_verse_changes`. Wiring before a build fails with "STALE REFLECTION" because fields have no compiled hash. Prefer nested Epic `VerseToolset` BuildAll when `epic_mcp_online`. If a wire still returns STALE REFLECTION, **stop** — the host already retried once; wait for the build, re-inspect, do not hammer.
 - Any `Script error NNNN` → load `compile_errors`, jump to the code, apply the fix at the reported line, rebuild.
 
 ## Syntax must-knows

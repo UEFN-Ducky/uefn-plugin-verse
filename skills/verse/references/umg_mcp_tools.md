@@ -7,14 +7,23 @@ metadata:
   load_condition: "Using umg_* MCP tools to create or edit Widget Blueprints, inspect Verse fields on a UW_*, or scaffold a widget tree"
 ---
 
+**Tool order (HARD):** 1) Official UEFN MCP first (`ducky_get_status` → `epic_mcp_online` → nested `unreal__*`). 2) Ducky listener second. 3) `execute_python` LAST — never a placement path, even if Epic and listener failed. Map: `skill_read_subskill("uefn", "epic_mcp")`.
+
 ## UMG MCP tools workflow
 
-Listener-backed tools gated by the **verse** Store plugin. Always start with the probe.
+**Probe first:** `ducky_get_status` → when `epic_mcp_online` use nested `unreal__*`
+`UMGToolSet.UMGToolSet` / `MVVMToolset.MVVMToolset` / `VerseFieldsToolset.VerseFieldsToolset`
+(describe then call). Listener `umg_*` is second. Never `execute_python`
+`ToolsetRegistry.get_all_toolset_json_schemas()` (hard-crash).
+
+Listener-backed tools gated by the **verse** Store plugin.
 
 ### Probe first
 
 ```
-umg_capabilities()
+ducky_get_status
+# epic_mcp_online → unreal__describe_toolset({ "toolset_name": "UMGToolSet.UMGToolSet" })
+umg_capabilities()   # listener second
 ```
 
 Returns class presence (`WidgetBlueprint`, `UMGToolSet`, `MVVMEditorSubsystem`, …), known UMGToolSet tool names, and notes. **Never** call from `execute_python`:
