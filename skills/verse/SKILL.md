@@ -5,7 +5,7 @@ description: "Writing Verse source — syntax, effects (no_rollback/transacts/de
 license: MIT
 metadata:
   label: UEFN Verse
-  version: 42
+  version: 43
   managed_by: uefn-ducky
   author: UEFN-Ducky
   copyright: Copyright 2026 Mindful Path Company, LLC
