@@ -184,10 +184,10 @@ under `Content/` and the project must have been built once so the digest lists i
 
 | Message | Cause | Fix |
 |---------|-------|-----|
-| "STALE REFLECTION — field has no compiled hash" | You wired an `@editable` before the Verse VM had hashes | Host already compiles + reloads + retries **once**. Do **not** call `wire_*` again. Wait for the build (`WinError 10054` = started), then `get_verse_editables` on the **same** device and wire once. Never place a second copy of the device — a duplicate has the same stale class; the existing instance gets the hashes when the build lands |
+| "STALE REFLECTION — field has no compiled hash" | Live Script has no readable `__verse_0x…` hash after resolve (build not landed, or a real miss) | Host already compiles + reloads + retries **once**. Do **not** hammer `wire_*`. Check compile output (`WinError 10054` = started), then `get_verse_editables` on the **same** device and wire once. Never place `_v2`. First array item: `wire_verse_device_array(..., target_paths=[one])`. Rewrite: `replace=true` + full list. `skill_read_subskill("uefn", "verse_devices")` |
 | "Verse behavior not found … Build Verse Code first" | `set_npc_definition_behavior` before the class existed | build, then retry |
 | "Verse struct … not found under _Verse. Recompile Verse" | array field of a new struct, not built | build, then retry |
-| "wire_verse_device_array … one target per call" | older app; pass one target per call, or upgrade | – |
+| "wire_verse_device_array … one target per call" | older app | Pass every target in one `target_paths=[...]` call |
 
 ### After fixing
 

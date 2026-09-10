@@ -5,7 +5,7 @@ description: "Writing Verse source — syntax, effects (no_rollback/transacts/de
 license: MIT
 metadata:
   label: UEFN Verse
-  version: 43
+  version: 44
   managed_by: uefn-ducky
   author: UEFN-Ducky
   copyright: Copyright 2026 Mindful Path Company, LLC
@@ -22,7 +22,9 @@ In-editor Verse build / file ops when Epic is online: `ValkyrieToolset.VerseTool
 
 **CRITICAL — level place/wire is SERIAL (uefn tools):** when placing devices or
 wiring `@editable` refs, one heavy MCP call → wait → next. Never parallel
-`spawn_actor` / `wire_verse_*` / `save_current_level`. SFX fields use Creative
+`spawn_actor` / `wire_verse_*` / `save_current_level`. First array item and
+rewrites stay on the **same** Verse device — never `_v2`:
+`skill_read_subskill("uefn", "verse_devices")`. SFX fields use Creative
 **Audio Player** (`audio_player_device`). Details:
 `skill_read_subskill("uefn", "batch_commands")` and `creative_devices`.
 
