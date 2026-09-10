@@ -5,7 +5,7 @@ description: "UEFN Island Settings — CORE gameplay session setup: MaxPlayers, 
 license: MIT
 metadata:
   label: UEFN Island Settings
-  version: 8
+  version: 9
   author: UEFN-Ducky
   copyright: Copyright 2026 Mindful Path Company, LLC
   allow_redistribute: true
@@ -60,7 +60,7 @@ Setting max players alone is incomplete. Players beyond the pad count cannot joi
 
 Pad asset (append `_C`): search `Player_Spawner` → typically  
 `/Game/Creative/Devices/PlayerSpawner/BP_Creative_Player_Spawner_Prop.BP_Creative_Player_Spawner_Prop_C`  
-Label them `Player 1 Spawn Pad` … `Player N Spawn Pad`. Never scale pads — move/rotate only.
+Label them `Player 1 Spawn Pad` … `Player N Spawn Pad`. Never scale pads or Island Settings — actor scale breaks Fortnite devices. Move/rotate only. Resize other devices via Details Width/Height/zone (`SetDeviceProperty`).
 
 If a Verse player-manager has `AllPlayerSpawners`, wire after placement: `wire_player_spawners("<manager>")`.
 
@@ -103,7 +103,7 @@ Epic Python toolsets speak **XYZ**. Prefer Epic `PlaceDevice` over Ducky `spawn_
 2. **Pad count == MaxPlayers** when using SpawnPads. Check every time you change either.
 3. **Inspect before write.** Skip `readonly_override` keys (see `scoped_readonly`).
 4. **One Island Settings device** — configure the existing one; do not spawn a duplicate.
-5. **Never scale** Island Settings or spawn pads.
+5. **Never scale** Island Settings or spawn pads (or any Fortnite Creative device). Location/rotation OK. Size = Details properties via `SetDeviceProperty`.
 
 ## Load when needed
 
