@@ -5,7 +5,7 @@ description: "Writing Verse source — syntax, effects (no_rollback/transacts/de
 license: MIT
 metadata:
   label: UEFN Verse
-  version: 44
+  version: 45
   managed_by: uefn-ducky
   author: UEFN-Ducky
   copyright: Copyright 2026 Mindful Path Company, LLC
@@ -35,6 +35,8 @@ rewrites stay on the **same** Verse device — never `_v2`:
 
 **Concurrency:** inside `<suspends>` code use `branch` (cancelled with the scope), `race` (first wins, rest cancelled), `sync` (all), `rush` (first wins, rest continue); `spawn` only from sync handlers or for device-lifetime loops. Details: `async`.
 
+**Separate systems (HARD):** currency, XP/levels, player registry, playtime, inventory are **their own packs** for every island — tycoon, FPS, RPG, shop, arena, same. `workspace_list_dir("Verse")` first. Missing folder → `verse_template_apply` that pack (`player_core`, `economy`, `progression`, `time_tracker`, `shop`). Game modes (`tycoon`, match, arena) **consume** `player_manager` `?option` slots (`GetCurrencyProvider`, `GetXPAwarder`, `GetPlaytimeProvider`). They never own a wallet, `currency_config`, XP table, or second `player_manager`. Never invent `tycoon_currency` / `base_wallet` / XP inside `Verse/Tycoon/`. Details: `sys_architecture`.
+
 **Folders before files (hard rule):** NEVER write new `.verse` files at `Content/Verse/` root. One gameplay system per folder. Prefer template packs (`verse_template_apply`) which create `Verse/Economy/`, `Verse/Shop/`, `Verse/PlayerCore/`, `Verse/NPCCore/`, `Verse/Progression/`, etc. Hand-writing: `workspace_list_dir("Verse")` → reuse that system’s folder or write `Verse/<System>/<file>.verse` (`workspace_write_file` creates parent dirs). Only `module_declarations.verse` and tiny shared helpers belong at Verse root. Before inventing a parallel layout, load `modules`.
 
 **Player managers (`game_player` + `Services`):** follow `sys_architecture` exactly — `player_manager` bus → `Init` (persist row) → manager `OnPlayerJoined` (config then HUD). Name roles Manager / Tracker / Controller / Service — not everything is a “system”. Never use `fortnite_` in type names. Never name things “wallet” or “*_system” — use `economy_manager`, `progression_manager`, `player_time_tracker`, `save_service`.
@@ -49,11 +51,12 @@ rewrites stay on the **same** Verse device — never `_v2`:
 
 ## Verse templates (before you invent a system)
 
-When the **UEFN Verse** plugin is enabled, **check packs before writing** player/economy/progression/tycoon/shop/timer scaffolds:
+When the **UEFN Verse** plugin is enabled, **check packs before writing** player/economy/progression/tycoon/shop/timer scaffolds. Currency and XP are **always** those packs — never a mode-local copy.
 
-1. `verse_template_list()` — see ids, folders, file paths, and which `?option` slots each pack registers/consumes.
-2. `verse_template_get(id)` — read the Verse source.
-3. `verse_template_apply(id)` — creates a **named folder** under `Content/Verse` (e.g. `Verse/Economy/`) and writes the pack files there. Prefer this over inventing parallel files at Verse root.
+1. `workspace_list_dir("Verse")` — reuse `PlayerCore` / `Economy` / `Progression` if they exist.
+2. `verse_template_list()` — see ids, folders, file paths, and which `?option` slots each pack registers/consumes.
+3. Missing pack → `verse_template_apply(id)` (`player_core`, `economy`, `progression` before `tycoon` / `shop`). Creates a **named folder** under `Content/Verse`. Prefer this over inventing parallel files at Verse root.
+4. `verse_template_get(id)` — read the Verse source when you need to customize.
 
 Every pack was built in UEFN with zero errors (Sep 2026); `verse_template_verify()` re-runs that build for all installed templates when UEFN is open (stages, compiles, removes). Note the island cap: Player Core + Economy + Progression + Time Tracker use all **four** allowed persistent `weak_map`s — a fifth anywhere is error 3502.
 

@@ -1,5 +1,5 @@
-# SETUP: Place after Player Core. Passive accrual loop + collect button.
-# Pays via ?currency_provider. Offline bonus via ?playtime_provider when Time Tracker is present.
+# SETUP: Place after Player Core + Economy. NEVER own a wallet here.
+# Pays via PlayerManager.GetCurrencyProvider(). Offline via ?playtime_provider.
 using { /Verse.org/Simulation }
 using { /Fortnite.com/Devices }
 using { PlayerCore }

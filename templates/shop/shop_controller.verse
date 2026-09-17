@@ -1,4 +1,5 @@
-# SETUP: Place after Player Core. Buys via PlayerManager.GetCurrencyProvider()? + item_granter.
+# SETUP: Place after Player Core + Economy. NEVER own a wallet here.
+# Buys via PlayerManager.GetCurrencyProvider()? + item_granter.
 # Standalone without Economy: purchase button no-ops (lookup fails).
 using { /Verse.org/Simulation }
 using { /Fortnite.com/Devices }
