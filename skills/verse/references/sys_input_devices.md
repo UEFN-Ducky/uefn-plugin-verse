@@ -129,3 +129,16 @@ OnInteract(Arg : tuple(player, logic)) : void =
 
 Keep the returned `cancelable`s and `RemoveInputMapping` on leave (see `virtualpointer`
 skill for the full per-player subscription pattern and event payload table).
+
+### Mobile / owning-client input (v42.20)
+
+`input_trigger_device` **Standard Action** now fires on mobile (it was broken).
+
+`player_input.PreferredInputMethod` (`input_method`: `KeyboardAndMouse` /
+`Gamepad` / `Touch`) and `player_input.AvailableInputDevices`
+(`Gamepad` / `Keyboard` / `Mouse` / `Touch` : `logic`) are **per owning
+client**, not the session host. Read them from `GetPlayerInput[Player]` on that
+player — do not assume the host's devices. `Touch` on `available_input_devices`
+is a platform capability and does not change during a session; `Keyboard` and
+`Mouse` always carry the same value (engine groups them). Do not invent
+`IsSpeaking`-style aliases — these are the digest names.

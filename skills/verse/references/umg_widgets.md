@@ -30,6 +30,10 @@ Both end the same way: `GetPlayerUI[Player].AddWidget(...)`.
 
 **Via MCP tools:** `umg_capabilities` → `get_project_info()` for `content_root` → `create_widget_blueprint(asset_name="UW_StyleHud", folder="/MyProject/UI")` (or omit `folder` / pass `""` so the listener auto-pins) → scaffold with `add_widget_to_tree` → polish with `open_asset_in_uefn`. Details: `umg_mcp_tools`.
 
+**Preview in editor (v42.20):** interact with the widget in the UMG designer —
+do not Launch Session just to check animation / button text. Multiple in-world
+instances of the same `UW_*` class now all show Verse-bound values.
+
 ### Never guess the Verse type — use the Assets digest
 
 After the widget exists and Verse digests refresh:

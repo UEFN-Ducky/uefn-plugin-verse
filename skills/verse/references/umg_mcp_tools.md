@@ -58,6 +58,13 @@ Also: `uefn_editor_python_hints(topic="umg")`.
 5. After digest refresh: `list_verse_types(digest="assets", name_filter="UW_")` → write Verse (`umg_widgets` / `umg_verse_fields` / `umg_verse_field_events`)
 6. Template: `verse_template_apply("umg_widget")` for the device + event helpers
 
+### In-editor preview (v42.20)
+
+Preview and interact with widgets **in the UMG editor** — do not Launch Session
+just to see an animation play or button text update. Multiple in-world UMG
+instances of the same class now all show Verse-bound values (pre-42.20 only
+the first instance did).
+
 ### Scriptable vs designer-only
 
 | Scriptable (tools) | Designer (open_asset_in_uefn) |

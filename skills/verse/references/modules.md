@@ -83,6 +83,8 @@ Rules of thumb:
 | `/Fortnite.com/Characters` | `fort_character`, elimination/damage events |
 | `/Fortnite.com/UI` + `/UnrealEngine.com/Temporary/UI` | canvas & widgets |
 | `/UnrealEngine.com/Temporary/SpatialMath` | `vector3`, `rotation`, `Distance` |
+| `/UnrealEngine.com/Marketplace` | entitlements, `MakePriceVBucks`, `BuyOffer`, `GrantEntitlement` (v42.20 — **not** island Coins; `/Fortnite.com/Marketplace` is deprecated aliases) |
+| `/Verse.org/Chat` | `voice_channel`, `AddChatChannel` on the simulation entity (v42.20) |
 | `/Verse.org/Random` | `GetRandomInt`, random selection |
 | `/Verse.org/Colors` (+ `/NamedColors`) | `color`, named colors |
 

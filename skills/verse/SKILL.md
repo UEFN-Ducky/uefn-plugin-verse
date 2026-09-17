@@ -5,7 +5,7 @@ description: "Writing Verse source — syntax, effects (no_rollback/transacts/de
 license: MIT
 metadata:
   label: UEFN Verse
-  version: 45
+  version: 46
   managed_by: uefn-ducky
   author: UEFN-Ducky
   copyright: Copyright 2026 Mindful Path Company, LLC
@@ -36,6 +36,8 @@ rewrites stay on the **same** Verse device — never `_v2`:
 **Concurrency:** inside `<suspends>` code use `branch` (cancelled with the scope), `race` (first wins, rest cancelled), `sync` (all), `rush` (first wins, rest continue); `spawn` only from sync handlers or for device-lifetime loops. Details: `async`.
 
 **Separate systems (HARD):** currency, XP/levels, player registry, playtime, inventory are **their own packs** for every island — tycoon, FPS, RPG, shop, arena, same. `workspace_list_dir("Verse")` first. Missing folder → `verse_template_apply` that pack (`player_core`, `economy`, `progression`, `time_tracker`, `shop`). Game modes (`tycoon`, match, arena) **consume** `player_manager` `?option` slots (`GetCurrencyProvider`, `GetXPAwarder`, `GetPlaytimeProvider`). They never own a wallet, `currency_config`, XP table, or second `player_manager`. Never invent `tycoon_currency` / `base_wallet` / XP inside `Verse/Tycoon/`. Details: `sys_architecture`.
+
+**42.20 Chat / Unarmed / Marketplace (HARD):** squad voice = `/Verse.org/Chat` `voice_channel` + `AddChatChannel` on `GetSimulationEntity[]` — never invent `IsSpeaking` (it is `IsMemberSpeaking`) or a custom radio. Punch / FPS melee = grant `Unarmed_Creative_V1_Common{}` + place `gameplay_camera_first_person_device` via Epic `PlaceDevice`. Entitlements = `using { /UnrealEngine.com/Marketplace }` (`MakePriceVBucks`, `BuyOffer`, `GrantEntitlement`); `/Fortnite.com/Marketplace` is deprecated aliases. Island Coins stay `economy` / `GetCurrencyProvider`. Details: `sys_chat_channels`, `sys_marketplace`, scenegraph `itemization`.
 
 **Folders before files (hard rule):** NEVER write new `.verse` files at `Content/Verse/` root. One gameplay system per folder. Prefer template packs (`verse_template_apply`) which create `Verse/Economy/`, `Verse/Shop/`, `Verse/PlayerCore/`, `Verse/NPCCore/`, `Verse/Progression/`, etc. Hand-writing: `workspace_list_dir("Verse")` → reuse that system’s folder or write `Verse/<System>/<file>.verse` (`workspace_write_file` creates parent dirs). Only `module_declarations.verse` and tiny shared helpers belong at Verse root. Before inventing a parallel layout, load `modules`.
 
@@ -180,6 +182,10 @@ Load the closest 1–3 for the task:
   Load when: Applying or reacting to damage/healing, reading/setting health or shield, detecting eliminations and the eliminator, or respawning players
 - `references/sys_party.md` — Party-aware gameplay (Social Synergy API, v42.10): GetLocalParty, party size, same-party checks, join/leave events, party-only doors, difficulty scaled to party size
   Load when: Anything about parties, friends who joined together, party bonuses, party-only access, or scaling difficulty to group size
+- `references/sys_chat_channels.md` — Channel API (v42.20) — `/Verse.org/Chat` `voice_channel`, AddChatChannel on GetSimulationEntity, mute/cut comms, IsMemberSpeaking + Begin/EndBroadcastEvent
+  Load when: Voice chat channels, squad comms, muting a team, cutting comms, detecting who is speaking, or custom Game Voice Chat
+- `references/sys_marketplace.md` — In-island entitlements / V-Bucks offers (v42.20) — `using { /UnrealEngine.com/Marketplace }`, not island Coins
+  Load when: Selling entitlements, BuyOffer / GrantEntitlement, V-Bucks prices, or migrating off /Fortnite.com/Marketplace
 - `references/sys_teams.md` — Teams — the team collection API, reading/assigning a player's team, per-team counts and iteration, and role/team-based game logic
   Load when: Building team-based or role-based logic — assigning teams, counting per team, team scoring, or per-team behavior
 - `references/sys_generators.md` — Idle / tycoon systems — passive resource generators, upgrade tiers, collect-on-tick loops, and offline/away earnings orchestration with TimeTracker

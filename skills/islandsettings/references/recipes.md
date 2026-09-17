@@ -133,3 +133,14 @@ save_current_level()   # once, after the whole recipe
 ```
 
 After any recipe: re-read the keys you set with Epic `GetDeviceProperties`; if a key comes back `readonly_override`, stop and tell the user. Confirm Player Spawn Pad count (Epic DeviceToolset query, or `get_all_actors(label_filter="Spawn Pad", limit=500)`) == `MaxPlayers`.
+
+## Player Movement Device caps (v42.20)
+
+Speed / sprint / accel are **Player Movement Device** ToyOptions, not Island
+Settings keys. `GetDeviceProperties` → `SetDeviceProperty` — **never scale**
+the device. New maxima (above old caps = at-own-risk): Sprint Maximum Speed
+**11,000** (was 2,000); Tactical Sprint Speed Multiplier **20** (was 5);
+Maximum Acceleration **10,000** (was 1,000). `ListDeviceAssets` for the Content
+Drawer **Player Movement Device** `*_C`. Verse `movement_modulator_device` is
+the speed modulator — do not assume it is that device until the asset name
+matches. Details: `skill_read_subskill("uefn", "creative_devices")`.
