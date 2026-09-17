@@ -1,5 +1,5 @@
-# SETUP: Place after Player Core. Pay-to-unlock tiers via ?currency_provider.
-# Wire BuildingConfigs (props + costs). Without Economy pack, unlock no-ops.
+# SETUP: Place after Player Core + Economy. NEVER own a wallet here.
+# Pay-to-unlock via PlayerManager.GetCurrencyProvider(). Without Economy, unlock no-ops.
 using { /Verse.org/Simulation }
 using { /Fortnite.com/Devices }
 using { /UnrealEngine.com/Temporary/SpatialMath }

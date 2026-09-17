@@ -9,7 +9,8 @@ metadata:
 
 ## Building unlock & reveal — BuildingUnlockManager
 
-Tycoon-style plots: pay with `economy_manager`, swap visible prop tiers, optional
+Tycoon-style plots: pay with `PlayerManager.GetCurrencyProvider()` (the island
+`economy` pack — never a tycoon-local wallet). Swap visible prop tiers; optional
 hook into delivery spawners. Names are generic. Generators/rates: `sys_generators`.
 
 ### Unlock / upgrade flow

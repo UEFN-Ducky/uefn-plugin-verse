@@ -3,11 +3,18 @@ description: "The backbone for building ANY player-driven game system — manage
 metadata:
   order: 20
   label: "Game systems — architecture backbone"
-  default_enabled: false
-  load_condition: "Designing or extending any game system (score, economy, progression, stats…) — how player_manager, game_player, Services and persistence fit together"
+  default_enabled: true
+  load_condition: "Designing or extending any game system (score, economy, progression, stats…) — how player_manager, game_player, Services and persistence fit together. Always on: one economy / one progression / one player_core per island."
 ---
 
 ## Game systems — the architecture backbone
+
+**Consume, don't own (HARD):** one `player_core`, one `economy`, one `progression`
+per island — used by **every** mode (tycoon, shooter, RPG, shop). A tycoon
+(or any game-mode folder) must **not** implement currency, XP, or a second
+player registry. Apply the missing pack, then `@editable PlayerManager` +
+`GetCurrencyProvider()` / `GetXPAwarder()`. Same wallet pays the shop, the
+tycoon generator, and the weapon stall.
 
 Player-driven features (economy, progression, playtime, inventory, score, HUD)
 are all built from the **same five parts** and the **same call order**. Learn this

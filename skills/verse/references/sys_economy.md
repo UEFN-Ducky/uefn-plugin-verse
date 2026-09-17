@@ -9,6 +9,11 @@ metadata:
 
 ## Currency, wallet & shops
 
+**One economy for the whole island (HARD):** `verse_template_apply("economy")` →
+`Verse/Economy/`. Tycoon / shop / arena **spend** through
+`PlayerManager.GetCurrencyProvider()`. Never add `currency_config`, a wallet
+`weak_map`, or `AddCurrency` into `Verse/Tycoon/` (or any other mode folder).
+
 Names below are generic — adapt them to your game. All device APIs
 (`button_device`, `item_granter_device`, `hud_message_device`) come from the digest.
 

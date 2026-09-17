@@ -9,6 +9,12 @@ metadata:
 
 ## XP & level progression
 
+**One progression pack for the whole island (HARD):**
+`verse_template_apply("progression")` → `Verse/Progression/`. Modes award XP
+via `PlayerManager.GetXPAwarder()` — they do not keep their own level table,
+thresholds, or persist map. Tycoon base Level is **building tiers**, not
+this XP ladder (don't merge them).
+
 > **Snippets here are fragments.** The `using` block in this file's first code
 > block applies to all of them — copy those imports (or start from the matching
 > `verse_template_apply` pack) when pasting into a real `.verse` file.
