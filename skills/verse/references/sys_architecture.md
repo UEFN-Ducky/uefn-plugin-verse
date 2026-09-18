@@ -13,8 +13,9 @@ metadata:
 per island — used by **every** mode (tycoon, shooter, RPG, shop). A tycoon
 (or any game-mode folder) must **not** implement currency, XP, or a second
 player registry. Apply the missing pack, then `@editable PlayerManager` +
-`GetCurrencyProvider()` / `GetXPAwarder()`. Same wallet pays the shop, the
-tycoon generator, and the weapon stall.
+`GetCurrencyProvider()` / `GetXPAwarder()` / `GetPlaytimeProvider()`. Same wallet
+pays the shop, the tycoon plot, and the weapon stall. Tycoon purchaseables are
+mode-local (no new `player_manager` slot) — see `sys_tycoon`.
 
 Player-driven features (economy, progression, playtime, inventory, score, HUD)
 are all built from the **same five parts** and the **same call order**. Learn this
@@ -36,7 +37,7 @@ can be PascalCase for readability:
 Examples: `inventory_manager`, `progression_manager`, `economy_manager`,
 `player_time_tracker`, `match_controller`, `save_service`, `hud_controller`,
 `input_manager`, `ui_menu_controller`, `minigame_controller`,
-`building_unlock_manager`, `prop_spawn_manager` (see matching `sys_*` refs).
+`plot_manager`, `tycoon_controller`, `prop_spawn_manager` (see matching `sys_*` refs).
 The per-player bundle is `game_player.Services` (`game_player_services`) — not
 “PlayerSystems”.
 
@@ -291,4 +292,4 @@ exists — always look up (or subscribe) through the manager.
 Deep-dives: `sys_player_data`, `sys_economy`, `sys_progression`,
 `sys_time_tracking`, `sys_inventory`, `sys_canvas_cookbook`, `sys_hud_template`,
 `sys_ui_menus`, `sys_input_devices`, `sys_minigame_overlay`, `sys_buildings`,
-`sys_generators`, `sys_spawning`, `persistence`.
+`sys_generators`, `sys_tycoon`, `sys_spawning`, `persistence`.

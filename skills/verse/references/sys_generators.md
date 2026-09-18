@@ -15,6 +15,10 @@ wallet, `currency_config`, or `AddCurrency` in `Verse/Tycoon/`. Apply `economy`
 (+ `player_core`) first if those folders are missing. Building Level is a
 **tier**, not the island XP ladder (`progression` / `GetXPAwarder`).
 
+Shipped type: `generator_purchaseable` on `plot_manager.Generators`
+(`verse_template_apply("tycoon")`). Offline uses `GetPlaytimeProvider()`.
+Levels persist in `PlotLevels`. Kit map: `sys_tycoon`.
+
 Tycoon/idle games are **producers that pay out over time**, plus **upgrade tiers**
 that raise the rate. All names below are generic. Pair with `sys_economy` for the
 wallet and `persistence` for saving progress.

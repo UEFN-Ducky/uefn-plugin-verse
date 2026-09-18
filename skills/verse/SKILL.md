@@ -62,7 +62,7 @@ When the **UEFN Verse** plugin is enabled, **check packs before writing** player
 
 Every pack was built in UEFN with zero errors (Sep 2026); `verse_template_verify()` re-runs that build for all installed templates when UEFN is open (stages, compiles, removes). Note the island cap: Player Core + Economy + Progression + Time Tracker use all **four** allowed persistent `weak_map`s — a fifth anywhere is error 3502.
 
-Pack names match `sys_architecture` (`player_core`, `npc_core`, `economy`, `progression`, `time_tracker`, `shop`, `match_timer`, `tycoon`). NPC islands: `verse_template_apply("npc_core")` then customize (do not invent a parallel prey/hunter folder). `npc_ecosystem` is the optional cat+dog example only. Cross-pack player links use `player_manager` `?option` slots (`GetCurrencyProvider`, `GetXPAwarder`, `GetPlaytimeProvider`) so packs stay standalone.
+Pack names match `sys_architecture` (`player_core`, `npc_core`, `economy`, `progression`, `time_tracker`, `shop`, `match_timer`, `tycoon`). `tycoon` is a full plot kit (`plot_manager` + `purchaseable` types + rebirth) that **consumes** those three slots — never a tycoon-local wallet. NPC islands: `verse_template_apply("npc_core")` then customize (do not invent a parallel prey/hunter folder). `npc_ecosystem` is the optional cat+dog example only. Cross-pack player links use `player_manager` `?option` slots (`GetCurrencyProvider`, `GetXPAwarder`, `GetPlaytimeProvider`) so packs stay standalone. Details: `sys_tycoon`.
 
 ## Digests (before you write)
 
@@ -188,8 +188,10 @@ Load the closest 1–3 for the task:
   Load when: Selling entitlements, BuyOffer / GrantEntitlement, V-Bucks prices, or migrating off /Fortnite.com/Marketplace
 - `references/sys_teams.md` — Teams — the team collection API, reading/assigning a player's team, per-team counts and iteration, and role/team-based game logic
   Load when: Building team-based or role-based logic — assigning teams, counting per team, team scoring, or per-team behavior
-- `references/sys_generators.md` — Idle / tycoon systems — passive resource generators, upgrade tiers, collect-on-tick loops, and offline/away earnings orchestration with TimeTracker
+- `references/sys_generators.md` — Idle / tycoon systems — generator_purchaseable accrue/collect/upgrade, offline via playtime_provider
   Load when: Building tycoon/idle mechanics — passive income generators, buildings/upgrades with tiers, or offline earnings
+- `references/sys_tycoon.md` — Full plot tycoon — tycoon_controller, plot_manager, purchaseable types, rebirth, persist nest on player_core
+  Load when: Building a tycoon / idle plot — claim pads, purchaseables, droppers, conveyors, pets, rebirth
 - `references/sys_hud.md` — Per-player HUD management — the [agent]canvas widget map, add/remove/refresh, input modes, live text/image updates, and where to own HUD state
   Load when: Managing on-screen HUD across many players — showing/hiding/updating widgets per player, input modes, or live-updating text/bars
 - `references/sys_analytics.md` — Analytics & accolades — submitting tracked events per player, organizing analytics/accolade devices into bundles, and firing from gameplay milestones
@@ -210,7 +212,7 @@ Load the closest 1–3 for the task:
   Load when: Building interactive Verse UI — shops, collect popups, pickers, tabbed menus with button clicks and ui_input_mode.All
 - `references/sys_minigame_overlay.md` — Overlay minigames — per-agent instance map, stasis, dynamic canvas grid, input_trigger movement, game loop, cleanup
   Load when: Building an on-screen overlay or grid minigame — dynamic color_block cells, stasis, input triggers, per-player game instances
-- `references/sys_buildings.md` — Building unlock & reveal — paid upgrades via economy, underground Z-teleport prop swap, nav coupling for delivery paths
+- `references/sys_buildings.md` — Building unlock & reveal — prop_purchaseable, underground Z-teleport, nav coupling for delivery paths
   Load when: Unlocking or upgrading buildings/plots, teleporting props to reveal tiers, coupling unlocks to delivery nav paths
 - `references/sys_npc_ai.md` — NPC AI — npc_behavior templates, nearest-player lookup, spread/strafe, centralized damage, Scene Graph projectiles, wave spawn managers
   Load when: Writing npc_behavior subclasses, enemy AI loops, melee/ranged combat, Scene Graph projectiles, or npc_spawner wave managers
