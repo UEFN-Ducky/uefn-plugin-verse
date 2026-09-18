@@ -1,7 +1,7 @@
 {
   "id": "verse",
   "kind": "plugin",
-  "version": "1.0.57",
+  "version": "1.0.58",
   "label": "UEFN Verse",
   "description": "Verse digests, device wiring, compile/errors, skill reader, UMG Widget Blueprint tools, and New-file system template packs (Player Core, NPC Core, Economy, Progression, Tycoon, UMG Widget, …). Bundles verse + islandsettings skills. Serial editor ops (one MCP call per turn).",
   "min_app_version": "1.0.0",
@@ -272,23 +272,72 @@
       },
       {
         "id": "tycoon",
-        "name": "Tycoon Core",
+        "name": "Tycoon",
         "icon": "🏭",
-        "description": "building_unlock_manager + generator_manager. Consumes Economy (never owns currency/XP); offline via Time Tracker.",
+        "description": "Full plot tycoon: purchaseables, belt, pets, rebirth. Consumes Economy / Progression / Time Tracker (never owns currency/XP).",
         "folder": "Tycoon",
         "connects": [
           "consumes:currency_provider",
+          "consumes:xp_awarder",
           "consumes:playtime_provider",
           "needs:PlayerCore"
         ],
         "files": [
           {
-            "path": "building_unlock_manager.verse",
-            "file": "templates/tycoon/building_unlock_manager.verse"
+            "path": "purchaseable.verse",
+            "file": "templates/tycoon/purchaseable.verse"
           },
           {
-            "path": "generator_manager.verse",
-            "file": "templates/tycoon/generator_manager.verse"
+            "path": "plot_manager.verse",
+            "file": "templates/tycoon/plot_manager.verse"
+          },
+          {
+            "path": "tycoon_controller.verse",
+            "file": "templates/tycoon/tycoon_controller.verse"
+          },
+          {
+            "path": "prop_purchaseable.verse",
+            "file": "templates/tycoon/prop_purchaseable.verse"
+          },
+          {
+            "path": "generator_purchaseable.verse",
+            "file": "templates/tycoon/generator_purchaseable.verse"
+          },
+          {
+            "path": "dropper_purchaseable.verse",
+            "file": "templates/tycoon/dropper_purchaseable.verse"
+          },
+          {
+            "path": "conveyor_purchaseable.verse",
+            "file": "templates/tycoon/conveyor_purchaseable.verse"
+          },
+          {
+            "path": "upgrader_purchaseable.verse",
+            "file": "templates/tycoon/upgrader_purchaseable.verse"
+          },
+          {
+            "path": "npc_purchaseable.verse",
+            "file": "templates/tycoon/npc_purchaseable.verse"
+          },
+          {
+            "path": "pet_purchaseable.verse",
+            "file": "templates/tycoon/pet_purchaseable.verse"
+          },
+          {
+            "path": "dancefloor_purchaseable.verse",
+            "file": "templates/tycoon/dancefloor_purchaseable.verse"
+          },
+          {
+            "path": "hitable_purchaseable.verse",
+            "file": "templates/tycoon/hitable_purchaseable.verse"
+          },
+          {
+            "path": "shootable_purchaseable.verse",
+            "file": "templates/tycoon/shootable_purchaseable.verse"
+          },
+          {
+            "path": "plot_runtime.verse",
+            "file": "templates/tycoon/plot_runtime.verse"
           }
         ],
         "order": 70
