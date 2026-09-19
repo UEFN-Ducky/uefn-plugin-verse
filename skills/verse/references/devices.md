@@ -7,8 +7,6 @@ metadata:
   load_condition: "Writing a placed device — @editable wiring, OnBegin, subscribing to triggers/buttons/player events, or working with agent/player/fort_character"
 ---
 
-**Tool order (HARD):** 1) Official UEFN MCP first (`ducky_get_status` → `epic_mcp_online` → nested `unreal__*`). 2) Ducky listener second. 3) `execute_python` LAST — never a placement path, even if Epic and listener failed. Map: `skill_read_subskill("uefn", "epic_mcp")`.
-
 ## Devices, `@editable` & events
 
 > **Snippets here are fragments.** The `using` block in this file's first code
@@ -65,7 +63,7 @@ Group related references into a `struct<concrete>()` (see `classes`) so one
 > Wiring the *actual* placed references (which prop/device a field points to) is
 > done with MCP `wire_verse_device_ref` / `wire_verse_device_array` /
 > `set_verse_editable` (**one field per turn** — never parallel wire/spawn;
-> `skill_read_subskill("uefn", "batch_commands")`) when the listener is
+> SERIAL: one mutating/editor call per assistant message.) when the listener is
 > online — **not** by writing paths in source, and **not** by asking the user to
 > drag Details or paste T3D. Storage names, Script object, and wrapper outering:
 > `skill_read_subskill("uefn", "verse_editable_internals")`. The source only

@@ -7,8 +7,6 @@ metadata:
   load_condition: "Using umg_* MCP tools to create or edit Widget Blueprints, inspect Verse fields on a UW_*, or scaffold a widget tree"
 ---
 
-**Tool order (HARD):** 1) Official UEFN MCP first (`ducky_get_status` → `epic_mcp_online` → nested `unreal__*`). 2) Ducky listener second. 3) `execute_python` LAST — never a placement path, even if Epic and listener failed. Map: `skill_read_subskill("uefn", "epic_mcp")`.
-
 ## UMG MCP tools workflow
 
 **Probe first:** `ducky_get_status` → when `epic_mcp_online` use nested `unreal__*`
