@@ -5,7 +5,7 @@ description: "Writing Verse source — syntax, effects (no_rollback/transacts/de
 license: MIT
 metadata:
   label: UEFN Verse
-  version: 46
+  version: 47
   managed_by: uefn-ducky
   author: UEFN-Ducky
   copyright: Copyright 2026 Mindful Path Company, LLC
@@ -13,8 +13,6 @@ metadata:
 ---
 
 # Verse — writing code for UEFN
-
-**Tool order (HARD):** 1) Official UEFN MCP first — `ducky_get_status`; when `epic_mcp_online` use nested `unreal__*` (`unreal__list_toolsets` → `unreal__describe_toolset` → `unreal__call_tool`; 5+ ops → ProgrammaticToolset `execute_tool_script`). 2) Ducky listener second (Epic-offline gaps + Ducky-only tools listed in this skill). 3) `execute_python` LAST — never a placement/layout path, even if Epic and listener already failed. Never spawn, move, or assign materials. Map: `skill_read_subskill("uefn", "epic_mcp")`.
 
 Verse *source* on disk still starts with `workspace_list_verse_errors` / `workspace_*`. This tool order is for compile, place, UMG, and devices.
 
@@ -26,7 +24,7 @@ wiring `@editable` refs, one heavy MCP call → wait → next. Never parallel
 rewrites stay on the **same** Verse device — never `_v2`:
 `skill_read_subskill("uefn", "verse_devices")`. SFX fields use Creative
 **Audio Player** (`audio_player_device`). Details:
-`skill_read_subskill("uefn", "batch_commands")` and `creative_devices`.
+SERIAL: one mutating/editor call per assistant message. and `creative_devices`.
 
 
 **Never invent API names.** Copy names and signatures from a loaded skill or template as-is; for any name no loaded skill shows, `search_verse_digest` once — if it is in no digest it is almost certainly invented (`Log10`, `MoveToLocation`, `team_selector`, `timer_device.Reset` do not exist). Exception: core intrinsics `Abs`, `ConcatenateMaps`, `Max`, `Min` are not listed in the digests yet compile — the build's "Unknown identifier" is the final word. Epic doc samples also omit `using` lines; add them. Budget ~5 lookups per task, then write.
@@ -228,3 +226,7 @@ Load the closest 1–3 for the task:
   Load when: Using UI materials/textures on a User Widget or migrating from the UI Feature Template
 - `references/umg_mcp_tools.md` — UMG MCP tools — umg_capabilities first, create/inspect/tree/bindings, schema-dump crash ban
   Load when: Using umg_* tools to create or edit Widget Blueprints
+
+## Verify
+
+`workspace_list_verse_errors` then `workspace_compile_verse`. Wiring waits until the build succeeds.

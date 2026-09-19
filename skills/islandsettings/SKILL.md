@@ -14,13 +14,11 @@ metadata:
 
 # UEFN Island Settings — CORE session setup
 
-**Tool order (HARD):** 1) Official UEFN MCP first — `ducky_get_status`; when `epic_mcp_online` use nested `unreal__*` (`unreal__list_toolsets` → `unreal__describe_toolset` → `unreal__call_tool`; 5+ ops → ProgrammaticToolset `execute_tool_script`). 2) Ducky listener second (Epic-offline gaps + Ducky-only tools listed in this skill). 3) `execute_python` LAST — never a placement/layout path, even if Epic and listener already failed. Never spawn, move, or assign materials. Map: `skill_read_subskill("uefn", "epic_mcp")`.
-
 Island Settings + spawn pads: Epic `ValkyrieToolset.DeviceToolset` (`PlaceDevice`, `GetDeviceProperties`, `SetDeviceProperty`).
 
 **CRITICAL — editor mutations are SERIAL:** spawn pads / Creative field sets —
 one heavy MCP call → wait → next. Never parallel `spawn_actor` for N pads in
-one turn. Details: `skill_read_subskill("uefn", "batch_commands")`.
+one turn. Details: SERIAL: one mutating/editor call per assistant message..
 
 Island Settings (`Device_ExperienceSettings_V2_UEFN_C`) is **where you configure the game for players** — not a side device. This is the source of truth for:
 
