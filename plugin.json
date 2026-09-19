@@ -1,9 +1,9 @@
 {
   "id": "verse",
   "kind": "plugin",
-  "version": "1.0.58",
+  "version": "1.0.59",
   "label": "UEFN Verse",
-  "description": "Verse digests, device wiring, compile/errors, skill reader, UMG Widget Blueprint tools, and New-file system template packs (Player Core, NPC Core, Economy, Progression, Tycoon, UMG Widget, …). Bundles verse + islandsettings skills. Serial editor ops (one MCP call per turn).",
+  "description": "Verse digests, device wiring, compile/errors, skill reader, UMG Widget Blueprint tools, and New-file system template packs (Player Core, NPC Core, Economy, Progression, Tycoon, UMG Widget, \u2026). Bundles verse + islandsettings skills. Serial editor ops (one MCP call per turn).",
   "min_app_version": "1.0.0",
   "default_enabled": true,
   "secret_keys": [],
@@ -78,7 +78,7 @@
       {
         "id": "device_onbegin",
         "name": "Device + OnBegin",
-        "icon": "⚡",
+        "icon": "\u26a1",
         "description": "Single-file creative_device with OnBegin",
         "file": "templates/device_onbegin.verse",
         "order": 5
@@ -86,7 +86,7 @@
       {
         "id": "hud_canvas",
         "name": "HUD Canvas",
-        "icon": "🖥️",
+        "icon": "\ud83d\udda5\ufe0f",
         "description": "Single-file canvas + text_block starter",
         "file": "templates/hud_canvas.verse",
         "order": 6
@@ -94,7 +94,7 @@
       {
         "id": "helpers",
         "name": "Subscribe Helpers",
-        "icon": "🧰",
+        "icon": "\ud83e\uddf0",
         "description": "Subscribe* wrappers with ExtraData for listenables",
         "file": "templates/subscribe_helpers.verse",
         "order": 8
@@ -102,7 +102,7 @@
       {
         "id": "player_core",
         "name": "Player Core",
-        "icon": "👤",
+        "icon": "\ud83d\udc64",
         "description": "player_manager + game_player + save_service. ?option slots for Economy / Progression / Playtime.",
         "folder": "PlayerCore",
         "connects": [
@@ -129,8 +129,8 @@
       {
         "id": "npc_core",
         "name": "NPC Core",
-        "icon": "🧑",
-        "description": "Default NPC pack (like Player Core): session prey/hunter registries, prey FSM, hunter FSM, spawn controller. Compiles with no clips — duplicate react clips then Play(AS_…). Standalone; no Player Core required.",
+        "icon": "\ud83e\uddd1",
+        "description": "Default NPC pack (like Player Core): session prey/hunter registries, prey FSM, hunter FSM, spawn controller. Compiles with no clips \u2014 duplicate react clips then Play(AS_\u2026). Standalone; no Player Core required.",
         "folder": "NPCCore",
         "files": [
           {
@@ -155,7 +155,7 @@
       {
         "id": "economy",
         "name": "Economy Manager",
-        "icon": "💰",
+        "icon": "\ud83d\udcb0",
         "description": "Currencies + HUD canvas. Registers currency_provider. Needs Player Core.",
         "folder": "Economy",
         "connects": [
@@ -181,7 +181,7 @@
       {
         "id": "progression",
         "name": "Progression Manager",
-        "icon": "📈",
+        "icon": "\ud83d\udcc8",
         "description": "XP / levels + HUD. Registers xp_awarder. Currency rewards when Economy present.",
         "folder": "Progression",
         "connects": [
@@ -208,7 +208,7 @@
       {
         "id": "time_tracker",
         "name": "Time Tracker",
-        "icon": "⏱️",
+        "icon": "\u23f1\ufe0f",
         "description": "Session / playtime + offline seconds. Registers playtime_provider.",
         "folder": "TimeTracker",
         "connects": [
@@ -230,7 +230,7 @@
       {
         "id": "shop",
         "name": "Shop Controllers",
-        "icon": "🛒",
+        "icon": "\ud83d\uded2",
         "description": "Buy + currency exchange via ?currency_provider. Standalone; no-ops without Economy.",
         "folder": "Shop",
         "connects": [
@@ -252,7 +252,7 @@
       {
         "id": "match_timer",
         "name": "Match Timer",
-        "icon": "⏲️",
+        "icon": "\u23f2\ufe0f",
         "description": "Countdown/count-up controller + swappable timer_canvas builder.",
         "folder": "MatchTimer",
         "connects": [
@@ -273,7 +273,7 @@
       {
         "id": "tycoon",
         "name": "Tycoon",
-        "icon": "🏭",
+        "icon": "\ud83c\udfed",
         "description": "Full plot tycoon: purchaseables, belt, pets, rebirth. Consumes Economy / Progression / Time Tracker (never owns currency/XP).",
         "folder": "Tycoon",
         "connects": [
@@ -345,8 +345,8 @@
       {
         "id": "npc_ecosystem",
         "name": "NPC Ecosystem (optional cat+dog example)",
-        "icon": "🐱",
-        "description": "OPTIONAL cat+dog example only. Default NPC pack is npc_core → Verse/NPCCore/. Apply this pack only if the user asked for the exact cat+dog island, with parent_relative=Content/AI after duplicating react clips into that folder.",
+        "icon": "\ud83d\udc31",
+        "description": "OPTIONAL cat+dog example only. Default NPC pack is npc_core \u2192 Verse/NPCCore/. Apply this pack only if the user asked for the exact cat+dog island, with parent_relative=Content/AI after duplicating react clips into that folder.",
         "folder": "CatReacts",
         "files": [
           {
@@ -371,7 +371,7 @@
       {
         "id": "umg_widget",
         "name": "UMG Widget Device",
-        "icon": "🖱️",
+        "icon": "\ud83d\uddb1\ufe0f",
         "description": "event_subscription helpers + creative_device skeleton for driving a UW_* User Widget (Verse fields / field events). Uncomment SETUP lines after the widget exists in Assets digest.",
         "folder": "UMGWidget",
         "files": [
@@ -389,7 +389,7 @@
       {
         "id": "custom_movement",
         "name": "Custom Entity Movement (Experimental)",
-        "icon": "🚶",
+        "icon": "\ud83d\udeb6",
         "description": "Fully custom player locomotion on a Scene Graph entity: 42.10 Move input action, editable speed/accel/friction/gravity/jump, OnSimulate delta loop (TickEvents.Subscribe is Epic-internal), Scene Graph orbit camera via fort_orbit_camera_modifier on the camera's modifier stack (AddModifier = parens) plus camera_director_component.AddCamera[...] (brackets), stock character parked in stasis. Experimental: cannot publish.",
         "folder": "CustomMovement",
         "files": [
