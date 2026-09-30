@@ -13,13 +13,13 @@ Starting with **Fortnite / UEFN 38.00**, you can define **Verse fields** directl
 
 One-way for the initial release: **Verse → widget**. Widget → Verse clicks need **Verse field events** (39.40+) — see `umg_verse_field_events`.
 
-### Author the fields in UMG
+### Author the fields
 
-1. Open the User Widget (`UW_*`).
-2. Open the **Variables** window in the designer.
-3. Add Verse fields. Common types (Epic 38.00 notes): `logic`, `int`, `float`, `message`, material, texture.
-4. Open **View Bindings** and bind each field to a widget property (text, material, visibility, progress, etc.). Conversion functions: `umg_view_bindings`.
-5. Save. Confirm with `get_verse_api("UW_YourWidget")` / `list_verse_types(digest="assets", name_filter="UW_")`.
+`add_verse_field(widget_path, field_name, field_type, default_value)`. Live `fieldType` values: `bool`, `int`, `float`, `string`, `color`, `color_alpha`, `texture`, `material`, `message`. Pass `logic` and the tool stores `bool`. Visibility is `Public`. The field is a mutable `var`.
+
+`event` fields exist on widgets but **AddVerseField cannot create or retype them**. Clicks use `bind_widget_event` onto a bool or int, or `Subscribe` when the digest already shows an `event()` member (`umg_verse_field_events`).
+
+Bind with `bind_verse_field` (`umg_view_bindings`). Confirm with `list_verse_fields` and, after a Verse build, `get_verse_api` / `list_verse_types(digest="assets", name_filter="UW_")`.
 
 ### Drive from a creative_device
 

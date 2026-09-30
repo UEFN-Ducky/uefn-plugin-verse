@@ -37,24 +37,27 @@ Also: `uefn_editor_python_hints(topic="umg")`.
 
 | Tool | Job |
 |------|-----|
-| `umg_capabilities` | Probe |
-| `list_widget_blueprints` | Find `UW_*` / WidgetBlueprint assets |
-| `get_widget_blueprint_info` | Member vars (Verse fields), event dispatchers, tree (GetWidgets), bindings |
-| `create_widget_blueprint` | Empty WidgetBlueprint via `WidgetBlueprintFactory` |
-| `add_widget_to_tree` | Scaffold child via UMGToolSet.AddWidget |
-| `remove_widget_from_tree` | Remove instance |
-| `set_widget_property` | ObjectTools list → set (names vary — list first) |
-| `list_widget_bindings` | MVVM bindings |
-| `add_widget_binding` / `remove_widget_binding` | Best-effort MVVM; complex binds → designer |
+| `umg_capabilities` | Probe classes and toolsets |
+| `list_widget_classes` / `get_widget_class_info` | Palette. Call before a class name |
+| `build_widget_tree` | Nested `{class, name, slot, properties, children}`. One compile |
+| `set_widget_slot` | Anchors, offsets, alignment, ZOrder, padding, grid |
+| `list_named_slots` / `set_named_slot_content` | Named slot fill |
+| `get_widget_blueprint_info` | Tree, `slots`, animation key counts, `verse_fields`, `view_bindings` |
+| `create_widget_animation` / `add_animation_keys` / `list_widget_animations` | Opacity, Color, Transform keys |
+| `add_verse_field` / `list_verse_fields` | bool, int, float, string, message, color, texture, material. `logic` → bool. `event` is refused |
+| `bind_verse_field` | Verse field → widget property, optional conversion |
+| `bind_widget_event` | `OnClicked` / `OnButtonHighlight` → a Verse field |
+| `list_bindable_properties` | Destination and event names |
 
 ### Recommended agent flow
 
-1. `umg_capabilities`
-2. `create_widget_blueprint(asset_name="UW_MyHud", folder="")` (auto-pins `{content_root}UI`) **or** `list_widget_blueprints(search="UW_")` — never invent `/Game/UI`
-3. Optional scaffold: `add_widget_to_tree(..., widget_class="CanvasPanel", widget_name="RootCanvas")` then TextBlock / Button children with `parent_ref_path` from info
-4. `open_asset_in_uefn` — add Verse fields, View Bindings, polish layout
-5. After digest refresh: `list_verse_types(digest="assets", name_filter="UW_")` → write Verse (`umg_widgets` / `umg_verse_fields` / `umg_verse_field_events`)
-6. Template: `verse_template_apply("umg_widget")` for the device + event helpers
+1. `ducky_get_status`. Epic `unreal__*` when `epic_mcp_online`. Listener tools otherwise.
+2. `list_widget_classes`.
+3. `build_widget_tree` (`umg_recipes`). Folder `""` pins `{content_root}/UI`. Never invent `/Game/UI`.
+4. `create_widget_animation` + `add_animation_keys`.
+5. `add_verse_field` + `bind_verse_field` + `bind_widget_event`.
+6. `get_widget_blueprint_info` must show anchors, `z_order`, key counts, and `view_bindings.binding_count`.
+7. Verse build, then `list_verse_types(digest="assets")`. Device: `verse_template_apply("umg_widget")`.
 
 ### In-editor preview (v42.20)
 
@@ -63,17 +66,11 @@ just to see an animation play or button text update. Multiple in-world UMG
 instances of the same class now all show Verse-bound values (pre-42.20 only
 the first instance did).
 
-### Scriptable vs designer-only
+### What the tools write
 
-| Scriptable (tools) | Designer (open_asset_in_uefn) |
-|--------------------|-------------------------------|
-| Create empty WBP | Visual layout polish |
-| Add/remove basic tree widgets | Anchors, fancy slots, animations |
-| List/set properties when ObjectTools works | Verse field declaration UI |
-| List bindings / attempt add_binding | View Binding conversion graphs |
-| Compile + save after edits | Auto Play animation tracks |
+Tree, canvas anchors, ZOrder, image brushes, opacity/color/transform keys, Verse fields except `event`, and event→field bindings. `event()` creation is refused by `AddVerseField` — use a bool field or an event the digest already lists. Material-parameter MovieScene tracks are not exposed; use a Verse float and `Conv_SetScalarParameter`.
 
-Tree tools are **scaffolding**. If `add_widget_to_tree` fails on a build, fall back to the designer — do not poke protected `WidgetTree` via `get_editor_property` (it is protected and will error).
+Never `get_editor_property` on `WidgetTree`. Never dump a toolset JSON schema. Never patch `.uasset` bytes.
 
 ### Runtime is still Verse
 

@@ -22,6 +22,9 @@ That file is the default button type (chrome-less native `button` + `SetFocus`).
 Use stock `button_loud` / `button_quiet` only for plain text CTAs with Epic
 chrome — not for painted cards/rows.
 
+More than 6 controls on one popup: prefer a Widget Blueprint (`umg_recipes`).
+More than 12: the screen is UMG. Repeating rows are one card widget in a stack.
+
 ### Modal recipe
 
 1. Build canvas: full-screen dim `color_block` + centered panel + title/body +

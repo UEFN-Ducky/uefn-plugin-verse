@@ -1,9 +1,9 @@
-# SETUP: Device skeleton for a UMG User Widget driven by Verse fields / field events.
-# 1. Create UW_* in Content (umg_capabilities → create_widget_blueprint, or designer).
-# 2. Add Verse fields + events; bind in View Bindings (see umg_widgets / umg_verse_fields).
-# 3. Confirm type name: list_verse_types(digest="assets", name_filter="UW_")
-# 4. Uncomment the SETUP blocks below and replace UW_YourWidget / field names.
-# 5. Build Verse, place this device, wire volumes if you use them.
+# Device for one UMG User Widget instance per player.
+# The widget type is the Assets digest name after build_widget_tree.
+# Do not invent card_widget_bp := class. Replace WIDGET with that digest name
+# (list_verse_types digest=assets) and uncomment the WIDGET lines.
+# Fields: TriggerIntro is a bool (add_verse_field logic). CloseEvent is Subscribe
+# only when the digest already lists that event (add_verse_field cannot create event).
 using { /Fortnite.com/Devices }
 using { /Fortnite.com/UI }
 using { /UnrealEngine.com/Temporary/UI }
@@ -14,38 +14,50 @@ umg_widget_device := class(creative_device):
     @editable
     ShowVolume : volume_device = volume_device{}
 
-    var WidgetReady : logic = false
+    @editable
+    HideVolume : volume_device = volume_device{}
 
-    # SETUP: uncomment after UW_YourWidget exists in Assets digest
-    # var MyWidget : UW_YourWidget = UW_YourWidget{}
+    var WidgetReady : logic = false
+    var Shown : [player]logic = map{}
+
+    # WIDGET: var Widgets : [player]UW_CustomButtonMenu = map{}
 
     OnBegin<override>()<suspends>:void =
         ShowVolume.AgentEntersEvent.Subscribe(OnShow)
+        HideVolume.AgentEntersEvent.Subscribe(OnHide)
 
     OnShow(InAgent : agent):void =
-        EnsureInitialized()
         if (Player := player[InAgent], PlayerUI := GetPlayerUI[Player]):
-            # SETUP: uncomment
-            # PlayerUI.AddWidget(MyWidget, player_ui_slot{ InputMode := ui_input_mode.All })
-            Print("umg_widget_device: show (uncomment SETUP lines after UW_* exists)")
+            EnsureInitialized()
+            if (set Shown[Player] = true) {}
+            # WIDGET:
+            # Widget := UW_CustomButtonMenu{}
+            # if (set Widgets[Player] = Widget) {}
+            # set Widget.TriggerIntro = true
+            # PlayerUI.SetFocus(Widget)
+            # PlayerUI.AddWidget(Widget, player_ui_slot{ InputMode := ui_input_mode.All })
 
-    # Subscribe once — never re-Subscribe on every volume enter (double-fire bug).
+    OnHide(InAgent : agent):void =
+        if (Player := player[InAgent], PlayerUI := GetPlayerUI[Player]):
+            if (set Shown[Player] = false) {}
+            # WIDGET:
+            # if (Widget := Widgets[Player]):
+            #     PlayerUI.RemoveWidget(Widget)
+
     EnsureInitialized():void =
         if (WidgetReady = true):
             return
-        # SETUP: set defaults + subscribe to Verse field events
-        # set MyWidget.Progress = 0.0
-        # MyWidget.CloseEvent.Subscribe(OnClose)
-        # MyWidget.RandomizeEvent.Subscribe(OnRandomize)
+        # WIDGET: subscribe once, not on every volume enter.
+        # First widget instance's CloseEvent, or read the bool bind_widget_event wrote.
+        # Widget.CloseEvent.Subscribe(OnClose)
         set WidgetReady = true
 
     OnClose():void =
         for:
-            Player:GetPlayspace().GetPlayers()
+            Player : GetPlayspace().GetPlayers()
             PlayerUI := GetPlayerUI[Player]
         do:
-            # SETUP: PlayerUI.RemoveWidget(MyWidget)
-            Print("umg_widget_device: close")
-
-    OnRandomize():void =
-        Print("umg_widget_device: randomize")
+            if (set Shown[Player] = false) {}
+            # WIDGET:
+            # if (Widget := Widgets[Player]):
+            #     PlayerUI.RemoveWidget(Widget)

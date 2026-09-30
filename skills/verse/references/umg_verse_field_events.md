@@ -13,11 +13,14 @@ Starting with **39.40**, UMG Verse fields can be **events**. Bind a Button's **O
 
 Requires basics from `umg_verse_fields` / `umg_widgets`.
 
-### Author the events in UMG
+### Author the click
 
-1. Open `UW_*`. Add Verse field events (e.g. `RandomizeEvent`, `CloseEvent`) in Variables.
-2. Select the Button → bind **On Clicked** to the Verse event field (View Bindings / event binding — follow Epic's Verse field events tutorial).
-3. Save. Confirm with `get_verse_api("UW_…")` that the event members exist.
+`add_verse_field` cannot create an `event` field. Two paths:
+
+1. **Field that already exists.** If `get_verse_api` shows `CloseEvent` or `RandomizeEvent`, `Subscribe` once as in the sample below.
+2. **Scriptable path.** `bind_widget_event(widget_path, widget_name, event_name, destination_field)` writes the MVVM event. Live Custom Button names: `OnClicked`, `OnButtonHighlight`, `OnButtonUnhighlight`. Destination is a bool or int you added with `add_verse_field` (the verified call bound `OnClicked` → `TriggerIntro`). The device reads that var. Highlight and loop playback pins are in `umg_animations`.
+
+Do not invent a second widget to get a click.
 
 ### Subscribe from Verse (do this once)
 

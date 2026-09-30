@@ -18,6 +18,9 @@ list rows, modals, tabs). Layout still comes from `sys_canvas_cookbook`;
 open/close lifetime from `sys_ui_menus` — but the **clickable widget type is
 this file**, not bare `button_loud`.
 
+More than 6 controls on one popup, use a Widget Blueprint (`umg_recipes`)
+instead of stacking Verse buttons. Above 12 that is required.
+
 Stock `button_loud` / `button_quiet` / `button_regular` are OK only for plain
 text CTAs with Epic chrome. They look wrong for whole-card/row UIs and teach
 nothing about hover/lock/selected skins.

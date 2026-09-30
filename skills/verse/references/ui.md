@@ -23,7 +23,8 @@ and game logic elsewhere.
 | Path | Load |
 |------|------|
 | Code-built HUD / shop / grid (`canvas`, `text_block`, …) | this file → `sys_canvas_cookbook` → `sys_hud_template` / `sys_ui_menus` |
-| Designer Widget Blueprint (`UW_*`) + Verse fields / events | **`umg_widgets`** → `umg_verse_fields` / `umg_verse_field_events` / `umg_view_bindings` |
+| 6 or fewer controls | this file → `sys_canvas_cookbook` |
+| More than 6, or any animated material button | **`umg_widgets`** → `umg_recipes`. Above 12 the screen is a Widget Blueprint |
 
 Both use `GetPlayerUI` + `AddWidget`. Do not invent a fake `MyUMGWidget := class:` stub — UMG types come from the Assets digest.
 

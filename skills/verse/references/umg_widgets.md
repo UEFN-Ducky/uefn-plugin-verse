@@ -9,24 +9,38 @@ metadata:
 
 ## UMG User Widgets — proper Verse usage
 
-UMG (User Widget / Widget Blueprint) is the **designer-authored** UI path. You build the layout in the UMG editor, then drive it from Verse with **Verse fields** (38.00+) and **Verse field events** (39.40+). Do not invent a fake `MyUMGWidget := class:` placeholder — the widget type comes from the Assets digest after you create the asset.
+A Widget Blueprint is a nested tree plus slots, brushes, animations, and Verse fields. Author those with the tools in `umg_mcp_tools`. The Verse type is the Assets digest name after the asset exists. Do not invent `MyUMGWidget := class` or `card_widget_bp := class`.
 
-For pure Verse-built trees (`canvas` / `text_block` / `button_loud`), stay on `ui` → `sys_canvas_cookbook`. For designer visuals, materials, and View Bindings, start here.
+Load the reference for the layer you are writing:
+
+| Layer | Reference |
+|-------|-----------|
+| Which class | `umg_palette` |
+| Anchors, ZOrder | `umg_slots` |
+| Brush, visibility, transform | `umg_style` |
+| Hierarchy | `umg_layout` |
+| UI materials | `umg_ui_materials` |
+| Highlight / loop keys | `umg_animations` |
+| Fields | `umg_verse_fields` |
+| Clicks | `umg_verse_field_events` |
+| Bindings | `umg_view_bindings` |
+| Gamepad | `umg_navigation` |
+| Nested widgets | `umg_compose` |
+| Finished builds | `umg_recipes` |
 
 ### UMG vs Verse canvas
 
 | Choose | When |
 |--------|------|
-| **UMG User Widget** | Designer layout, UI materials, animations (Auto Play), View Bindings, Verse fields / field events |
-| **Verse canvas** | Code-built HUD rows, shops, grids, anything you want fully invented in Verse without a `.uasset` widget |
+| **Verse canvas** | 6 or fewer controls on one popup |
+| **Widget Blueprint `UW_*`** | More than 6 controls. Required above 12. Also for material buttons and Widget Animations |
+| **One card instanced in a stack** | Repeating rows. Do not hand-place N buttons |
 
 Both end the same way: `GetPlayerUI[Player].AddWidget(...)`.
 
 ### Create the widget asset
 
-**In the editor:** Content Browser → right-click → **User Interface → Widget Blueprint**. Name it `UW_*` (e.g. `UW_StyleHud`). Design Text / Image / ProgressBar / Button widgets. Animations: Animations tab → Details → **Auto Play** if they should run on construct (Verse cannot call PlayAnimation by name — verify with digests / Epic docs if that changes).
-
-**Via MCP tools:** `umg_capabilities` → `get_project_info()` for `content_root` → `create_widget_blueprint(asset_name="UW_StyleHud", folder="/MyProject/UI")` (or omit `folder` / pass `""` so the listener auto-pins) → scaffold with `add_widget_to_tree` → polish with `open_asset_in_uefn`. Details: `umg_mcp_tools`.
+**Via tools:** `list_widget_classes` → `build_widget_tree` (omit `folder` so the listener pins `{content_root}/UI`). Then animations, fields, and bindings from `umg_mcp_tools`. Read back with `get_widget_blueprint_info`. Verse cannot call `PlayAnimation` by name — key the animation and bind it (`umg_animations`).
 
 **Preview in editor (v42.20):** interact with the widget in the UMG designer —
 do not Launch Session just to check animation / button text. Multiple in-world
@@ -77,10 +91,11 @@ One shared `var MyWidget : UW_X = UW_X{}` on a device is a **single instance**. 
 | Need | Subskill |
 |------|----------|
 | `set MyWidget.Progress = 0.5` / materials / messages | `umg_verse_fields` |
-| Button → `MyWidget.RandomizeEvent.Subscribe(...)` | `umg_verse_field_events` |
+| Button → `Subscribe` once | `umg_verse_field_events` |
 | View Bindings / ToText / textures | `umg_view_bindings` |
 | UI materials / MI_* | `umg_ui_materials` |
-| MCP create / tree / bindings | `umg_mcp_tools` |
+| Tree, slots, animations, fields | `umg_mcp_tools` |
+| A finished menu or shop | `umg_recipes` |
 
 Template scaffold: `verse_template_apply("umg_widget")`.
 
@@ -95,7 +110,7 @@ Agents keep meeting a "display UMG from Verse" snippet that is partly obsolete. 
 | Must wrap UMG in a Verse `canvas` to show it | **Optional.** `player_ui.AddWidget(Widget)` / `AddWidget(Widget, player_ui_slot{…})` is enough. |
 | `canvas.GetSlots()` / `canvas.SetSlot(...)` | **Do not exist.** Digest: `canvas` has `Slots` (init), `AddWidget(Slot)`, `RemoveWidget(Widget)` only. |
 | `SizeToContent` / `ZOrder` on `canvas_slot` | **Real** — both exist on `canvas_slot` in UnrealEngine digest. |
-| Verse can call UMG `PlayAnimation` by name | **Not exposed** — use UMG **Auto Play**, Verse field–driven material params, or procedural Verse motion. |
+| Verse can call UMG `PlayAnimation` by name | **Not exposed.** Key tracks with `add_animation_keys` and trigger them from a Verse field binding. |
 | ScrollBox offset scrubbing from Verse | Limited — you can place scroll widgets; do not assume a Verse "set scroll offset" API without checking digests. |
 
 ### Folder layout

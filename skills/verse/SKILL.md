@@ -47,7 +47,7 @@ SERIAL: one mutating/editor call per assistant message. and `creative_devices`.
 
 **Epic Text Localization / PO / publish L10N readiness:** named `<localizes>` + `message` for gatherable copy — `skill_read_subskill("localization", "ui_ready")` (pipeline: `localization` pack).
 
-**Designer UMG User Widget (`UW_*`, Verse fields 38.00+, field events 39.40+):** `umg_widgets` first → `umg_verse_fields` / `umg_verse_field_events` / `umg_view_bindings` / `umg_ui_materials`. MCP create/inspect: `umg_mcp_tools` (`umg_capabilities` before other umg_* tools). Never invent a placeholder `MyUMGWidget := class:` — types come from the Assets digest.
+**Designer UMG User Widget (`UW_*`):** more than 6 controls on one popup, required above 12. `umg_widgets` (index) → the layer you are writing (`umg_palette`, `umg_slots`, `umg_style`, `umg_layout`, `umg_ui_materials`, `umg_animations`, `umg_verse_fields`, `umg_verse_field_events`, `umg_view_bindings`, `umg_navigation`, `umg_compose`) → `umg_recipes`. Tools: `umg_mcp_tools`. Never invent `MyUMGWidget := class` or `card_widget_bp := class` — the type is the Assets digest name.
 
 ## Verse templates (before you invent a system)
 
@@ -224,8 +224,24 @@ Load the closest 1–3 for the task:
   Load when: Wiring View Bindings or a viewmodel on a User Widget
 - `references/umg_ui_materials.md` — UI materials & textures — Fortnite UI Material folder, MI_* Verse fields, material-parameter conversions
   Load when: Using UI materials/textures on a User Widget or migrating from the UI Feature Template
-- `references/umg_mcp_tools.md` — UMG MCP tools — umg_capabilities first, create/inspect/tree/bindings, schema-dump crash ban
+- `references/umg_mcp_tools.md` — UMG tools — list classes, build_widget_tree, slots, animations, Verse fields, bindings, schema-dump crash ban
   Load when: Using umg_* tools to create or edit Widget Blueprints
+- `references/umg_palette.md` — UEFN widget classes AddWidget accepts, and the text/button classes it rejects
+  Load when: Choosing a UMG class or AddWidget rejected a name
+- `references/umg_slots.md` — Canvas anchors, offsets, alignment, ZOrder, overlay/box/grid slots
+  Load when: Setting UMG layout slots
+- `references/umg_style.md` — Brush, color, visibility, opacity, render transform
+  Load when: Setting how a UMG widget looks
+- `references/umg_layout.md` — Root canvas, Z bands, custom button hierarchy, one card per list
+  Load when: Composing a UMG screen
+- `references/umg_animations.md` — Widget Animation opacity, color, and transform keys
+  Load when: Authoring a highlight, loop, or intro animation
+- `references/umg_navigation.md` — Gamepad focus, SetFocus, InputMode
+  Load when: A UMG menu must work on a controller
+- `references/umg_compose.md` — Nested User Widgets, named slots, instanced rows
+  Load when: Embedding a header, details pane, or offer row
+- `references/umg_recipes.md` — HUD, float, custom button menu, shop frame, and the 6/12 rule
+  Load when: Building a finished UMG screen
 
 ## Verify
 
