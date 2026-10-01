@@ -339,6 +339,14 @@ def register(api) -> None:
     import backend.tools.verse.verse_diagnostics  # noqa: F401
     import backend.tools.verse.skill_tool  # noqa: F401
     import backend.tools.verse.template_verify  # noqa: F401
+    # Typed UMG / Verse-field tools from the app (add_verse_field, bind_widget_event, …).
+    # Without this the app exposes those listener commands as one-`params`-dict
+    # passthroughs and flat arguments are dropped. Before _register_umg_tools: the
+    # names both define keep the app's typed version.
+    try:
+        import backend.tools.verse.umg  # noqa: F401
+    except ImportError as exc:  # very old app without the module
+        api.log(f"app UMG tools unavailable: {exc}")
 
     _register_template_tools(api)
     _register_umg_tools(api)
