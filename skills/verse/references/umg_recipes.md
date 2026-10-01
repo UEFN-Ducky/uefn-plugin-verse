@@ -40,7 +40,7 @@ CanvasPanel Root
 - `Anim_Highlight` on `ButtonFill`, Opacity, keys at 0 (0.45) and 0.35 (1).
 - `Anim_Loop` on `ButtonFill`, Transform `ScaleX` and `ScaleY`, keys at 0 (1), 0.4 (1.06), 0.8 (1).
 - `add_verse_field` `TriggerIntro` type `logic` (the tool stores `bool`). Bind to `ButtonFill.RenderOpacity` when the intro should fade the fill.
-- `bind_widget_event` `Button1` `OnClicked` → `TriggerIntro`, or to a close bool. `event` fields cannot be created by `add_verse_field`. If the widget already has `CloseEvent` in the digest, `Subscribe` once (`umg_verse_field_events`).
+- `add_verse_field` `CloseClicked` type `event` (42.30), then `bind_widget_event` `Button1` `OnButtonClicked` → `CloseClicked` (or → `TriggerIntro` / a close bool). Check `compiled`. Then `Subscribe` once from the device (`umg_verse_field_events`).
 - Highlight graph: `umg_animations`. Device: `umg_widget` template. Volume opens it. `SetFocus` then `InputMode.All`. Remove on leave.
 
 ### 4 — Shop frame

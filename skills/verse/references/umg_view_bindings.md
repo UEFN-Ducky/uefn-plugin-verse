@@ -36,7 +36,7 @@ Pass `conversion_name` only when the source type differs from the property. Empt
 ### One-way vs two-way
 
 - **38.00 Verse fields:** Verse → widget (one-way). Good for HUD values, materials, messages.
-- **Widget → Verse:** use **Verse field events** (39.40+) for clicks, not two-way field writes, unless digests show a two-way binding mode for your case.
+- **Widget → Verse:** use **Verse field events** (39.40+; creatable by tool in 42.30) for clicks. `bind_verse_field(mode="TwoWay")` (42.30 BindWidgetPropertyToVerseField) writes an editable widget value back to the field; `OneWayToDestination` is the default.
 - Viewmodel bindings may support more modes in the MVVM panel — check Binding Mode on the binding itself.
 
 ### When a binding re-evaluates

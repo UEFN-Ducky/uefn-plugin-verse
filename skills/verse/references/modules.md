@@ -84,6 +84,8 @@ Rules of thumb:
 | `/Fortnite.com/UI` + `/UnrealEngine.com/Temporary/UI` | canvas & widgets |
 | `/UnrealEngine.com/Temporary/SpatialMath` | `vector3`, `rotation`, `Distance` |
 | `/UnrealEngine.com/Marketplace` | entitlements, `MakePriceVBucks`, `BuyOffer`, `GrantEntitlement` (v42.20 — **not** island Coins; `/Fortnite.com/Marketplace` is deprecated aliases) |
+
+`/UnrealEngine.com/Conversations` (module since 40.00; mainstream in 42.30) — `persona_component`, `ai_session`, `prompt_binding_definition`, voices, `ai_error`s, `@ai_description` (`sys_conversations`).
 | `/Verse.org/Chat` | `voice_channel`, `AddChatChannel` on the simulation entity (v42.20) |
 | `/Verse.org/Random` | `GetRandomInt`, random selection |
 | `/Verse.org/Colors` (+ `/NamedColors`) | `color`, named colors |

@@ -5,7 +5,7 @@ description: "Writing Verse source — syntax, effects (no_rollback/transacts/de
 license: MIT
 metadata:
   label: UEFN Verse
-  version: 47
+  version: 48
   managed_by: uefn-ducky
   author: UEFN-Ducky
   copyright: Copyright 2026 Mindful Path Company, LLC
@@ -36,6 +36,8 @@ SERIAL: one mutating/editor call per assistant message. and `creative_devices`.
 **Separate systems (HARD):** currency, XP/levels, player registry, playtime, inventory are **their own packs** for every island — tycoon, FPS, RPG, shop, arena, same. `workspace_list_dir("Verse")` first. Missing folder → `verse_template_apply` that pack (`player_core`, `economy`, `progression`, `time_tracker`, `shop`). Game modes (`tycoon`, match, arena) **consume** `player_manager` `?option` slots (`GetCurrencyProvider`, `GetXPAwarder`, `GetPlaytimeProvider`). They never own a wallet, `currency_config`, XP table, or second `player_manager`. Never invent `tycoon_currency` / `base_wallet` / XP inside `Verse/Tycoon/`. Details: `sys_architecture`.
 
 **42.20 Chat / Unarmed / Marketplace (HARD):** squad voice = `/Verse.org/Chat` `voice_channel` + `AddChatChannel` on `GetSimulationEntity[]` — never invent `IsSpeaking` (it is `IsMemberSpeaking`) or a custom radio. Punch / FPS melee = grant `Unarmed_Creative_V1_Common{}` + place `gameplay_camera_first_person_device` via Epic `PlaceDevice`. Entitlements = `using { /UnrealEngine.com/Marketplace }` (`MakePriceVBucks`, `BuyOffer`, `GrantEntitlement`); `/Fortnite.com/Marketplace` is deprecated aliases. Island Coins stay `economy` / `GetCurrencyProvider`. Details: `sys_chat_channels`, `sys_marketplace`, scenegraph `itemization`.
+
+**42.30 (HARD):** talking NPCs = `/UnrealEngine.com/Conversations` `persona_component` on an `npc_behavior` (`SetPersonality[Msg]`, `PromptToTalk[Msg, Channel]`, structured output `GetAISession().RegisterAction(Def, Required, struct, Callback)`, one-shot `Session.Prompt(Msg, struct)`), with an `agent_group` + `voice_channel` and `Player.SetConversationTarget`. Epic's template page shows `AppendToPersonality`, `RegisterPromptBinding` and `ResponseType` — none exist (E3506). Ready-made: `verse_template_apply("llm_npc")`. Build `<localizes>` messages before a `[ ]` call (E3512). Ability templates: `x := class(fort_template_ability):` (no type args), `Targets := array{…}` (`Any` → `Neutral`) — scenegraph `template_abilities`. Held items: `held_item_template` — scenegraph `held_items`. UMG: `event` fields are creatable; bind `OnButtonClicked` (not `OnClicked`). Details: `sys_conversations`, `umg_verse_field_events`.
 
 **Folders before files (hard rule):** NEVER write new `.verse` files at `Content/Verse/` root. One gameplay system per folder. Prefer template packs (`verse_template_apply`) which create `Verse/Economy/`, `Verse/Shop/`, `Verse/PlayerCore/`, `Verse/NPCCore/`, `Verse/Progression/`, etc. Hand-writing: `workspace_list_dir("Verse")` → reuse that system’s folder or write `Verse/<System>/<file>.verse` (`workspace_write_file` creates parent dirs). Only `module_declarations.verse` and tiny shared helpers belong at Verse root. Before inventing a parallel layout, load `modules`.
 
@@ -180,6 +182,7 @@ Load the closest 1–3 for the task:
   Load when: Applying or reacting to damage/healing, reading/setting health or shield, detecting eliminations and the eliminator, or respawning players
 - `references/sys_party.md` — Party-aware gameplay (Social Synergy API, v42.10): GetLocalParty, party size, same-party checks, join/leave events, party-only doors, difficulty scaled to party size
   Load when: Anything about parties, friends who joined together, party bonuses, party-only access, or scaling difficulty to group size
+- `references/sys_conversations.md` — LLM NPCs / conversations (v42.30) — persona_component, voice channel + conversation target, PromptToTalk, structured output with RegisterAction + @ai_description, Session.Prompt, captions, errors, rules; docs drift
 - `references/sys_chat_channels.md` — Channel API (v42.20) — `/Verse.org/Chat` `voice_channel`, AddChatChannel on GetSimulationEntity, mute/cut comms, IsMemberSpeaking + Begin/EndBroadcastEvent
   Load when: Voice chat channels, squad comms, muting a team, cutting comms, detecting who is speaking, or custom Game Voice Chat
 - `references/sys_marketplace.md` — In-island entitlements / V-Bucks offers (v42.20) — `using { /UnrealEngine.com/Marketplace }`, not island Coins
@@ -218,7 +221,7 @@ Load the closest 1–3 for the task:
   Load when: Creating or driving a UMG User Widget / Widget Blueprint from Verse, or deciding UMG vs canvas
 - `references/umg_verse_fields.md` — Verse fields in UMG (38.00+) — declare fields, View Bindings, set from creative_device, Style1/Style2 example
   Load when: Driving a UMG widget with Verse fields (progress, message, material, texture, logic)
-- `references/umg_verse_field_events.md` — Verse field events (39.40+) — Button OnClicked → event() fields, Subscribe once, Await helpers
+- `references/umg_verse_field_events.md` — Verse field events (39.40+, tool-created in 42.30) — Custom Button OnButtonClicked → event() fields (≤1 param), Subscribe once, Await helpers, re-check after reload
   Load when: Handling UMG button clicks / widget events from Verse
 - `references/umg_view_bindings.md` — View Bindings & viewmodel — ToText, textures, conversion functions, one-way vs two-way
   Load when: Wiring View Bindings or a viewmodel on a User Widget

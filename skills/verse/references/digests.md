@@ -78,3 +78,10 @@ pass `digest_path=` an absolute path to target one file. Content Browser weapon/
 To read one digest in full (rarely needed — prefer search), open its path with
 `workspace_read_file` only — never `workspace_write_file`. If a name appears in
 no digest, don't write it (and never invent it by editing a digest).
+
+### Digest format note (42.30)
+
+From 42.30 the digests print `<final>` inside the class specifiers:
+`fort_item_ability_component<native><public> := class<final><final_super>(component)` (was
+`fort_item_ability_component<native><final><public> := class<final_super>(component)`). Same
+meaning — a final class you cannot subclass. Read both forms the same way.

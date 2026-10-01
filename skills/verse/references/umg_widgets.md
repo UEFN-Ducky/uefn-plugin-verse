@@ -106,7 +106,7 @@ Agents keep meeting a "display UMG from Verse" snippet that is partly obsolete. 
 | Myth / bad pattern | Truth (verified) |
 |--------------------|------------------|
 | `MyUMGWidget := class:` empty placeholder + `@editable myUMGWidget : ?MyUMGWidget` | **Wrong.** Type is the real `UW_*` from Assets digest. Instantiate with `UW_X{}`. |
-| "Verse cannot get a named button from a UMG widget" | **Obsolete since 39.40.** Use **Verse field events** on the widget (`event()` fields bound to Button OnClicked). |
+| "Verse cannot get a named button from a UMG widget" | **Obsolete since 39.40.** Use **Verse field events** on the widget (`event()` fields bound to the Custom Button's `OnButtonClicked`; creatable by tool since 42.30). |
 | Must wrap UMG in a Verse `canvas` to show it | **Optional.** `player_ui.AddWidget(Widget)` / `AddWidget(Widget, player_ui_slot{…})` is enough. |
 | `canvas.GetSlots()` / `canvas.SetSlot(...)` | **Do not exist.** Digest: `canvas` has `Slots` (init), `AddWidget(Slot)`, `RemoveWidget(Widget)` only. |
 | `SizeToContent` / `ZOrder` on `canvas_slot` | **Real** — both exist on `canvas_slot` in UnrealEngine digest. |

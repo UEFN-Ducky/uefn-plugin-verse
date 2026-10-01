@@ -33,7 +33,7 @@ Keys are `{time, value}` in seconds. Two keys minimum (start pose, end pose). A 
 |--------------|---------|
 | `OnButtonHighlight` | Play `Anim_Highlight` forward, and play `Anim_Loop` looped (template uses 999 loops, speed 1.0) |
 | `OnButtonUnhighlight` | Reverse `Anim_Highlight`, stop `Anim_Loop` |
-| `OnClicked` | Signal close (`umg_verse_field_events`) |
+| `OnButtonClicked` | Signal close (`umg_verse_field_events`; `OnClicked` fails to compile in 42.30) |
 
 `bind_widget_event` writes the event → Verse field link. Queue Play / Queue Stop pins (forward, reverse, loop count, speed) are View Binding pins. When that destination is not a field path, keep the animation keys in the asset and trigger them by the field the binding already watches (`TriggerIntro` bool). Auto Play only for motion that starts on construct.
 

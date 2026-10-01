@@ -9,6 +9,8 @@ metadata:
 
 ## Chat channels — Channel API (v42.20)
 
+> Conversations (LLM NPCs, 42.30) use the same `agent_group` + `voice_channel`, plus `Player.SetConversationTarget(Persona, Channel)` — `sys_conversations`.
+
 Custom **voice** groups so players hear only who you put in the channel, and so
 you can mute, cut comms, or react when someone talks. Everything below is
 verified against the 42.20 `Verse.digest.verse` `/Verse.org/Chat` module.

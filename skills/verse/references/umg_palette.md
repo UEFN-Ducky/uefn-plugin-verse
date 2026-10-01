@@ -50,6 +50,6 @@ Do not pass them. The tool raises before the editor call:
 
 ### Custom Button events
 
-`list_bindable_properties` on `UIFrameworkCustomButtonWidget` includes `OnClicked`, `OnPressed`, `OnReleased`, `OnHovered`, `OnUnhovered`, `OnButtonClicked`, `OnButtonHighlight`, `OnButtonUnhighlight`, plus `IsFocusable`, `RenderOpacity`, `RenderTransform`, `ColorAndOpacity`, `Visibility`.
+`list_bindable_properties` on `UIFrameworkCustomButtonWidget` includes `OnClicked`, `OnPressed`, `OnReleased`, `OnHovered`, `OnUnhovered`, `OnButtonClicked`, `OnButtonHighlight`, `OnButtonUnhighlight`, plus `IsFocusable`, `RenderOpacity`, `RenderTransform`, `ColorAndOpacity`, `Visibility`. In 42.30 only `OnButtonClicked` / `OnButtonHighlight` / `OnButtonUnhighlight` compile as event-binding sources; the others fail with "The property path … is invalid".
 
 Bind with `bind_widget_event`. Highlight uses `OnButtonHighlight` / `OnButtonUnhighlight`.

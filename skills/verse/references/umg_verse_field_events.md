@@ -1,8 +1,8 @@
 ---
-description: "Verse field events in UMG (39.40+) — event() fields bound to Button OnClicked, Subscribe from Verse, event_subscription + AwaitForEvent helper, double-subscribe fix"
+description: "Verse field events in UMG (39.40+, creatable by tool in 42.30) — add_verse_field type event (≤1 bool/int/float param), Custom Button OnButtonClicked → event field (OnClicked no longer compiles), Subscribe from Verse, event_subscription + AwaitForEvent helper, double-subscribe fix"
 metadata:
   order: 62
-  label: "UMG Verse field events (39.40+)"
+  label: "UMG Verse field events (39.40+, 42.30)"
   default_enabled: false
   load_condition: "Handling UMG button clicks / hover via Verse field events, or awaiting widget events from Verse"
 ---
@@ -13,12 +13,31 @@ Starting with **39.40**, UMG Verse fields can be **events**. Bind a Button's **O
 
 Requires basics from `umg_verse_fields` / `umg_widgets`.
 
-### Author the click
+### Author the click (42.30 — verified live Oct 1 2026)
 
-`add_verse_field` cannot create an `event` field. Two paths:
+1. **Make the event field.** `add_verse_field(widget_path, "BuyClicked", "event")` — or with one
+   parameter: `add_verse_field(widget_path, "PickedSlot", "event", event_parameters=["int"])`.
+   Event parameters are `bool`, `int` or `float`, **at most one** (`VerseTypeEditor.MaxEventParametersNumberCreation`
+   is 1; two are refused). Events have no default and are never `var`. Before 42.30 the tool could not
+   create events — then bind to a bool/int instead (path 3).
+2. **Bind the button.** `bind_widget_event(widget_path, "BuyButton", "OnButtonClicked", "BuyClicked")`.
+   On a Custom Button (`UIFrameworkCustomButtonWidget`) only **`OnButtonClicked`**, **`OnButtonHighlight`**,
+   **`OnButtonUnhighlight`** compile. `OnClicked`, `OnPressed`, `OnReleased`, `OnHovered`, `OnUnhovered` are
+   listed by the editor but fail the compile ("The property path 'BuyButton.OnClicked' is invalid") — the
+   tool remaps them and returns `compiled` / `compile_error`; never report a bind as done when
+   `compiled` is false. An `event(int)` destination compiles with `OnButtonClicked` too.
+3. **No event field?** Bind the click to a `bool` / `int` field the device watches (works the same way).
 
-1. **Field that already exists.** If `get_verse_api` shows `CloseEvent` or `RandomizeEvent`, `Subscribe` once as in the sample below.
-2. **Scriptable path.** `bind_widget_event(widget_path, widget_name, event_name, destination_field)` writes the MVVM event. Live Custom Button names: `OnClicked`, `OnButtonHighlight`, `OnButtonUnhighlight`. Destination is a bool or int you added with `add_verse_field` (the verified call bound `OnClicked` → `TriggerIntro`). The device reads that var. Highlight and loop playback pins are in `umg_animations`.
+**Check before you say it works (HARD):**
+- The binding can be **dropped when the editor reloads the widget** (seen in 42.30: after a reload the
+  compile warns "The event could not be generated" and the binding list is empty). After a reload or
+  editor restart, run `bind_widget_event` again and check `compiled`.
+- Verse sees widget fields only through the **Assets digest**. In the 42.30 test, fields made by the tool
+  were on the widget (`list_verse_fields`) but not yet in the digest after save + Verse build, so Verse got
+  E3506 "Unknown member `BuyClicked`". After building, confirm with
+  `list_verse_types(digest="assets", name_filter="UW_…")`. If the members are missing, ask the user to
+  open the widget in the UMG editor, press **Compile** and **Save**, then **Verse → Build Verse Code**, and
+  check again before writing Verse that uses them.
 
 Do not invent a second widget to get a click.
 

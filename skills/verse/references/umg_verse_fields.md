@@ -15,11 +15,18 @@ One-way for the initial release: **Verse → widget**. Widget → Verse clicks n
 
 ### Author the fields
 
-`add_verse_field(widget_path, field_name, field_type, default_value)`. Live `fieldType` values: `bool`, `int`, `float`, `string`, `color`, `color_alpha`, `texture`, `material`, `message`. Pass `logic` and the tool stores `bool`. Visibility is `Public`. The field is a mutable `var`.
+`add_verse_field(widget_path, field_name, field_type, default_value, event_parameters=[], mutable=True, visibility="public")`.
+Types (42.30, `list_verse_field_types`): `bool` (`logic`), `int`, `float`, `string`, `message`, `color`,
+`color_alpha`, `texture`, `material`, `event`. 42.30 changed the editor's AddVerseField to a nested
+`spec`; the tool sends it (and the old flat call on older builds). The result has `compiled` /
+`compile_error` — a field is not done until `compiled` is true.
 
-`event` fields exist on widgets but **AddVerseField cannot create or retype them**. Clicks use `bind_widget_event` onto a bool or int, or `Subscribe` when the digest already shows an `event()` member (`umg_verse_field_events`).
+Change fields with `edit_verse_field` (retype, default, `mutable`, `visibility`, `new_name`),
+`duplicate_verse_field`, `remove_verse_field`.
 
-Bind with `bind_verse_field` (`umg_view_bindings`). Confirm with `list_verse_fields` and, after a Verse build, `get_verse_api` / `list_verse_types(digest="assets", name_filter="UW_")`.
+`event` fields (42.30: creatable, ≤1 bool/int/float parameter) are for clicks — `umg_verse_field_events`.
+
+Bind with `bind_verse_field` (`umg_view_bindings`). Confirm with `list_verse_fields` and, after a Verse build, `get_verse_api` / `list_verse_types(digest="assets", name_filter="UW_")`. In a 42.30 test the Assets digest did not yet list tool-made fields after save + build (Verse: E3506 unknown member) — if they are missing, have the user Compile + Save the widget in the UMG editor and Build Verse Code, then check again.
 
 ### Drive from a creative_device
 
