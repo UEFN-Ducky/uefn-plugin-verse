@@ -24,9 +24,14 @@ Types (42.30, `list_verse_field_types`): `bool` (`logic`), `int`, `float`, `stri
 Change fields with `edit_verse_field` (retype, default, `mutable`, `visibility`, `new_name`),
 `duplicate_verse_field`, `remove_verse_field`.
 
-`event` fields (42.30: creatable, ≤1 bool/int/float parameter) are for clicks — `umg_verse_field_events`.
+`event` fields (42.30: creatable, ≤1 bool/int/float parameter) are for clicks — `umg_verse_field_events`. They reflect as `event(tuple())` / `event(tuple(int))`: await them, they have no `Subscribe`.
 
-Bind with `bind_verse_field` (`umg_view_bindings`). Confirm with `list_verse_fields` and, after a Verse build, `get_verse_api` / `list_verse_types(digest="assets", name_filter="UW_")`. In a 42.30 test the Assets digest did not yet list tool-made fields after save + build (Verse: E3506 unknown member) — if they are missing, have the user Compile + Save the widget in the UMG editor and Build Verse Code, then check again.
+Bind with `bind_verse_field` (`umg_view_bindings`). Confirm with `list_verse_fields` and, after a Verse build, `get_verse_api` / `list_verse_types(digest="assets", name_filter="UW_")`.
+
+**42.30 (verified):** fields reach the Assets digest only once the widget's asset editor has been
+opened in the editor session — before that Verse gets E3506 "Unknown member". The field tools open
+and close the editor once per session for you (`verse_ready` in the result). Fields made another way:
+`open_asset_in_uefn` on the widget, then build Verse.
 
 ### Drive from a creative_device
 

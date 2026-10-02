@@ -2,8 +2,8 @@
 # The widget type is the Assets digest name after build_widget_tree.
 # Do not invent card_widget_bp := class. Replace WIDGET with that digest name
 # (list_verse_types digest=assets) and uncomment the WIDGET lines.
-# Fields: TriggerIntro is a bool (add_verse_field logic). CloseEvent is Subscribe
-# only when the digest already lists that event (add_verse_field cannot create event).
+# Fields: TriggerIntro is a bool (add_verse_field logic). CloseEvent is an event field: Await it
+# (add_verse_field type event, then bind_widget_event OnButtonClicked; see umg_verse_field_events).
 using { /Fortnite.com/Devices }
 using { /Fortnite.com/UI }
 using { /UnrealEngine.com/Temporary/UI }
@@ -49,7 +49,7 @@ umg_widget_device := class(creative_device):
             return
         # WIDGET: subscribe once, not on every volume enter.
         # First widget instance's CloseEvent, or read the bool bind_widget_event wrote.
-        # Widget.CloseEvent.Subscribe(OnClose)
+        # spawn{ AwaitForEvent(Widget.CloseEvent, OnClose, event_subscription{}) }  # event fields have no Subscribe
         set WidgetReady = true
 
     OnClose():void =

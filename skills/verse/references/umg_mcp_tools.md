@@ -44,7 +44,7 @@ Also: `uefn_editor_python_hints(topic="umg")`.
 | `list_named_slots` / `set_named_slot_content` | Named slot fill |
 | `get_widget_blueprint_info` | Tree, `slots`, animation key counts, `verse_fields`, `view_bindings` |
 | `create_widget_animation` / `add_animation_keys` / `list_widget_animations` | Opacity, Color, Transform keys |
-| `add_verse_field` / `list_verse_fields` | bool, int, float, string, message, color, color_alpha, texture, material, **event** (42.30, ≤1 bool/int/float param). `logic` → bool. Returns `compiled` |
+| `add_verse_field` / `list_verse_fields` | bool, int, float, string, message, color, color_alpha, texture, material, **event** (42.30, ≤1 bool/int/float param). `logic` → bool. Returns `compiled` and `verse_ready` (it opens the widget's editor once per session so fields reach Verse and click bindings save — 42.30) |
 | `edit_verse_field` / `duplicate_verse_field` / `remove_verse_field` | Retype, re-default, rename, copy, delete (42.30) |
 | `list_verse_field_types` | Field and event-parameter types this build accepts |
 | `bind_verse_field` | Verse field → widget property; `mode` OneWayToDestination (default) / TwoWay / OneTime… |
@@ -82,7 +82,7 @@ the first instance did).
 
 ### What the tools write
 
-Tree, canvas anchors, ZOrder, image brushes, opacity/color/transform keys, Verse fields including `event` (42.30), and event→field bindings (re-check them after the editor reloads the widget). Material-parameter MovieScene tracks are not exposed; use a Verse float and `Conv_SetScalarParameter`.
+Tree, canvas anchors, ZOrder, image brushes, opacity/color/transform keys, Verse fields including `event` (42.30), and event→field bindings that survive a save + reload (the field tools open the widget's editor once first — without that, 42.30 saves the binding with no target). Material-parameter MovieScene tracks are not exposed; use a Verse float and `Conv_SetScalarParameter`.
 
 Never `get_editor_property` on `WidgetTree`. Never dump a toolset JSON schema. Never patch `.uasset` bytes.
 
