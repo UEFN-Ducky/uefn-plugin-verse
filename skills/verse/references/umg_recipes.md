@@ -20,7 +20,7 @@ The Verse type is the Assets digest name after the asset exists. Do not write `c
 
 ### 1 — HUD message
 
-Image or Custom Button is optional. `add_verse_field` name `Banner`, type `message`. Bind that field to the visible text on a nested User Widget or the button. No click. `InputMode.None`. One instance per player.
+Image or Custom Button is optional. `add_verse_field` name `Banner`, type `message`. Bind that field to the text of a `Text` widget (`Txt_Banner`). No click. `InputMode.None`. One instance per player.
 
 ### 2 — Slider or progress
 
