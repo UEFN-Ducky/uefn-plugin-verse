@@ -33,17 +33,22 @@ Call `list_widget_classes` before any class name. `get_widget_class_info` return
 | class | Use |
 |-------|-----|
 | `Image` | Brush. `properties.brush_material` or `brush_texture` |
+| `UEFN_TextBlock_C` | Text Block. Pass class `Text`. Label: `properties.text`. Other properties (`font`, `colorAndOpacity`, `justification`, `autoWrapText`) via `list_properties` |
 | `CommonActionWidget` | Input glyph |
 | `ActionWidget` | Input action |
 | `DeveloperLayoutButtonProxy` | Editor layout proxy |
 
 Project User Widgets also appear (`BP_TestWidget_C`). Nest those by class name from `list_widget_classes`.
 
+### Text
+
+The palette text class is `/Game/Valkyrie/UMG/UEFN_TextBlock.UEFN_TextBlock_C`. `Text`, `TextBlock`, and `UEFNTextBlockBase` all resolve to it. AddWidget alone cannot construct it ("classe non prise en charge"), so `add_widget_to_tree` and `build_widget_tree` add a placeholder Image and swap it with `ReplaceWidgetWithTemplate`. The name and slot are kept. Raw toolset calls must do the same two steps.
+
 ### AddWidget rejects these
 
 Do not pass them. The tool raises before the editor call:
 
-- Text: `Text`, `TextBlock`, `CommonTextBlock`, `RichTextBlock`, `UIFrameworkTextBlock`, `VerseFortniteUIFrameworkTextBlock`. Put the label on a Custom Button or a nested User Widget.
+- Other text classes: `CommonTextBlock`, `RichTextBlock`, `UIFrameworkTextBlock`, `VerseFortniteUIFrameworkTextBlock`. Use `Text`.
 - Preset buttons: `LoudButton`, `QuietButton`, `RegularButton`, and `VerseFortniteUIFrameworkButton_Loud` / `_Quiet` / `_Regular`. The palette button is `CustomButton`.
 
 `Button`, `ProgressBar`, and `Slider` were absent from `ListWidgetClasses`. A float Verse field drives a progress-style value when the class is missing (`umg_recipes` recipe 2).

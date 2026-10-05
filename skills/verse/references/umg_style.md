@@ -13,7 +13,7 @@ Widget JSON on `build_widget_tree` `properties`. These are the keys `_apply_widg
 
 | Key | Effect |
 |-----|--------|
-| `text` | String on a widget that has a text property. Palette text classes are rejected — see `umg_palette` |
+| `text` | String on a `Text` widget (palette `UEFN_TextBlock_C`) — see `umg_palette` |
 | `color` | `[R, G, B, A]` on `ColorAndOpacity` |
 | `render_opacity` | 0–1 |
 | `visibility` | `Visible`, `Collapsed`, `Hidden`, `HitTestInvisible`, `SelfHitTestInvisible` |

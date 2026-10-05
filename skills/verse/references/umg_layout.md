@@ -33,8 +33,9 @@ CanvasPanel
   Grid or Overlay          z 10
     Image                  material brush (fill / stroke)
     CustomButton           hit target, IsFocusable
+      Text                 label (UEFN_TextBlock_C)
 ```
 
-The label lives on the Custom Button or a nested User Widget. A separate text widget is not in the palette.
+The label is a `Text` widget inside the Custom Button (see `umg_palette`).
 
 One full-screen hit target per layer.
